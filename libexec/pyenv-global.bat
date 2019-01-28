@@ -2,13 +2,13 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: rbenv global ^<version^>
+echo Usage: pyenv global ^<version^>
 echo.
-echo Sets the global Ruby version. You can override the global version at
-echo any time by setting a directory-specific version with `rbenv local'
-echo or by setting the `RBENV_VERSION' environment variable.
+echo Sets the global Python version. You can override the global version at
+echo any time by setting a directory-specific version with `pyenv local'
+echo or by setting the `PYENV_VERSION' environment variable.
 echo.
 EXIT /B
 )
 
-rem Implementation of this command is in the rbenv.vbs file .
+:: Implementation of this command is in the pyenv.vbs file

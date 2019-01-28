@@ -2,20 +2,20 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: rbenv local ^<version^>
-echo        rbenv local --unset
+echo Usage: pyenv local ^<version^>
+echo        pyenv local --unset
 echo.
-echo Sets the local application-specific Ruby version by writing the
-echo version name to a file named `.ruby-version'.
+echo Sets the local application-specific Python version by writing the
+echo version name to a file named `.python-version'.
 echo.
-echo When you run a Ruby command, rbenv will look for a `.ruby-version'
+echo When you run a Python command, pyenv will look for a `.python-version'
 echo file in the current directory and each parent directory. If no such
-echo file is found in the tree, rbenv will use the global Ruby version
-echo specified with `rbenv global'. A version specified with the
-echo `RBENV_VERSION' environment variable takes precedence over local
+echo file is found in the tree, pyenv will use the global Python version
+echo specified with `pyenv global'. A version specified with the
+echo `PYENV_VERSION' environment variable takes precedence over local
 echo and global versions.
 echo.
 EXIT /B
 )
 
-rem Implementation of this command is in the rbenv.vbs file .
+:: Implementation of this command is in the pyenv.vbs file
