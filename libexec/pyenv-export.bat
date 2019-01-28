@@ -2,11 +2,11 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: rbenv duplicate ^<available_envirment^> ^<new_enviroment^>
+echo Usage: pyenv duplicate ^<available_envirment^> ^<new_enviroment^>
 echo.
 echo Export your enviroment.
 echo. 
-echo ex.^) rbenv duplicate 2.3.0 ./vendor/ruby
+echo ex.^) pyenv duplicate 3.5.3 ./vendor/python
 echo.
 echo To use when you want to build application-specific environment.
 EXIT /B

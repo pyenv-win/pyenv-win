@@ -2,11 +2,11 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: rbenv duplicate ^<available_envirment^> ^<new_enviroment^>
+echo Usage: pyenv duplicate ^<available_envirment^> ^<new_enviroment^>
 echo.
 echo Duplicate your enviroment.
 echo. 
-echo ex.^) rbenv duplicate 2.3.0 myapp_env
+echo ex.^) pyenv duplicate 3.5.3 myapp_env
 echo.
 echo To use when you want to create a sandbox and 
 echo the environment when building application-specific environment.

@@ -2,10 +2,10 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: rbenv versions [--bare] [--skip-aliases]
+echo Usage: pyenv versions [--bare] [--skip-aliases]
 echo.
-echo Lists all Ruby versions found in `$RBENV_ROOT/versions/*'.
+echo Lists all Python versions found in `$PYENV_ROOT/versions/*'.
 EXIT /B
 )
 
-rem Implementation of this command is in the rbenv.vbs file .
+:: Implementation of this command is in the pyenv.vbs file
