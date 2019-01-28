@@ -6,21 +6,21 @@ Set objws = WScript.CreateObject("WScript.Shell")
 Set objfs = CreateObject("Scripting.FileSystemObject")
 
 Dim strCurrent
-Dim strRbenvHome
+Dim strPyenvHome
 Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
 strCurrent   = objfs.GetAbsolutePathName(".")
-strRbenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strDirCache  = strRbenvHome & "\install_cache"
-strDirVers   = strRbenvHome & "\versions"
-strDirLibs   = strRbenvHome & "\libexec"
+strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
+strDirCache  = strPyenvHome & "\install_cache"
+strDirVers   = strPyenvHome & "\versions"
+strDirLibs   = strPyenvHome & "\libexec"
 
 
 Dim tool7z
 Dim strDirDevKit
-tool7z = """" & strRbenvHome & "\tools\7z\7zdec.exe"" x "
-strDirDevKit  = strRbenvHome & "\tools\DevKit"
+tool7z = """" & strPyenvHome & "\tools\7z\7zdec.exe"" x "
+strDirDevKit  = strPyenvHome & "\tools\DevKit"
 
 
 Sub ShowHelp()

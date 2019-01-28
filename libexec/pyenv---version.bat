@@ -16,3 +16,5 @@ EXIT /B
 )
 
 echo pyenv 0.0.1
+
+:: need to add a variable for version

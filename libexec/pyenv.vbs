@@ -134,7 +134,7 @@ Sub ShowHelp()
      Wscript.echo "   exec        Runs an executable by first preparing PATH so that the selected Python"
      Wscript.echo ""
      Wscript.echo "See `pyenv help <command>' for information on a specific command."
-     Wscript.echo "For full documentation, see: https://github.com/pyenv/pyenv#readme"
+     Wscript.echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
      Exit Sub
 
 
