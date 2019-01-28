@@ -1,0 +1,22 @@
+Install rbenv for windows to your USERPROFILE directory.
+
+Clone git repositry
+
+> git clone https://github.com/nak1114/rbenv-win.git %USERPROFILE%\.rbenv-win
+Config path
+Add the bin & shims directory to your PATH environment variable for access to the rbenv command
+
+> for /f "skip=2 delims=" %a in ('reg query HKCU\Environment /v Path') do set orgpath=%a
+> setx Path "%USERPROFILE%\.rbenv-win\bin;%USERPROFILE%\.rbenv-win\shims;%orgpath:~22%"
+Restart your shell
+
+> exit
+Run the following command after rbenv installation , to enable the ruby.
+
+> rbenv install 2.2.4
+> rbenv global 2.2.4
+> rbenv rehash
+
+
+for /f "skip=2 delims=" %a in ('reg query HKCU\Environment /v Path') do set orgpath=%a
+setx Path "%USERPROFILE%\.rbenv-win\bin;%USERPROFILE%\.rbenv-win\shims;%orgpath:~22%"
