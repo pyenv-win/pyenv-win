@@ -95,7 +95,7 @@ Sub extract(cur)
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & "/quite InstallAllUsers=1 Include_launcher=0 Include_test=0 SimpleInstall=1 DefaultCustomTargetDir=" & cur(1), 0, true
 
-    Wscript.echo "comlete! " & cur(0)
+    Wscript.echo "complete! " & cur(0)
 
 End Sub
 
