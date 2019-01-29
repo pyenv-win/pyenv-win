@@ -49,7 +49,7 @@ Function DownloadFile(strUrl,strFile)
     end if
     httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
     if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
-    	objHttp.setProxy 2, httpProxy
+        objHttp.setProxy 2, httpProxy
     end if
     objHttp.Send
 
@@ -89,7 +89,7 @@ Sub extract(cur)
     If objfs.FolderExists(cur(1)) Then Exit Sub
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
-    
+
      Wscript.echo "install " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
@@ -113,7 +113,7 @@ Sub main(arg)
     optList=False
     version=""
 
-    For idx = 0 To arg.Count - 1 
+    For idx = 0 To arg.Count - 1
         Select Case arg(idx)
            Case "--help"          ShowHelp
            Case "-l"              optList=True
@@ -127,7 +127,7 @@ Sub main(arg)
                Exit For
         End Select
     Next
-    
+
     Dim list
     Dim cur
     If optList Then
@@ -137,7 +137,7 @@ Sub main(arg)
         Exit Sub
     ElseIf version <> "" Then
         For Each list In listEnv
-            If list(0) = version Then 
+            If list(0) = version Then
                 cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
                 If optForce Then  clear(cur)
                 extract(cur)
@@ -153,3 +153,4 @@ Sub main(arg)
 End Sub
 
 main(WScript.Arguments)
+
