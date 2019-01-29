@@ -86,8 +86,8 @@ End Function
 
 Function GetBinDir(ver)
     Dim str
-    str=strDirVers & "\" & ver & "\bin" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version `"&ver&"' not installed"
+    str=strDirVers & "\" & ver & "\"
+    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version '"&ver&"' not installed"
     GetBinDir = str
 End Function
 
@@ -392,3 +392,6 @@ End Sub
 
 
 main(WScript.Arguments)
+
+
+
