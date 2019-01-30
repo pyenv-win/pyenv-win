@@ -44,7 +44,7 @@ Function GetCurrentVersionLocal(path)
     Dim fname
     Dim objFile
     Do While path <> ""
-        fname = path & "\.pyenv_version"
+        fname = path & "\.python-version"
         If objfs.FileExists( fname ) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
@@ -224,7 +224,7 @@ Sub CommandRehash(arg)
             ofile.WriteLine("if bundle show >/dev/null; then")
             ofile.WriteLine("bundle exec $(basename ""$0"") $*")
             ofile.WriteLine("else")
-            ofile.WriteLine("rbenv exec $(basename ""$0"") $*")
+            ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
             ofile.WriteLine("fi")
             ofile.Close()
         Loop
@@ -279,13 +279,13 @@ Sub CommandLocal(arg)
         ver=arg(1)
         If ver = "--unset" Then
             ver = ""
-            objfs.DeleteFile strCurrent & "\.pyenv_version", True
+            objfs.DeleteFile strCurrent & "\.python-version", True
             Exit Sub
         Else
             GetBinDir(ver)
         End If
         Dim ofile
-        Set ofile = objfs.CreateTextFile( strCurrent & "\.pyenv_version" , True )
+        Set ofile = objfs.CreateTextFile( strCurrent & "\.python-version" , True )
         ofile.WriteLine(ver)
         ofile.Close()
     End If
