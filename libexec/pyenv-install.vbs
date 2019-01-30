@@ -99,6 +99,58 @@ Sub extract(cur)
 
 End Sub
 
+Function GetCurrentVersionGlobal()
+    GetCurrentVersionGlobal = Null
+
+    Dim fname
+    Dim objFile
+    fname = strRbenvHome & "\version"
+    If objfs.FileExists( fname ) Then
+        Set objFile = objfs.OpenTextFile(fname)
+        If objFile.AtEndOfStream <> True Then
+           GetCurrentVersionGlobal = Array(objFile.ReadLine,fname)
+        End If
+        objFile.Close
+    End If
+End Function
+
+Function GetCurrentVersionLocal(path)
+    GetCurrentVersionLocal = Null
+
+    Dim fname
+    Dim objFile
+    Do While path <> ""
+        fname = path & "\.rbenv_version"
+        If objfs.FileExists( fname ) Then
+            Set objFile = objfs.OpenTextFile(fname)
+            If objFile.AtEndOfStream <> True Then
+               GetCurrentVersionLocal = Array(objFile.ReadLine,fname)
+            End If
+            objFile.Close
+            Exit Function
+        End If
+        path = objfs.getParentFolderName(path)
+    Loop
+End Function
+
+Function GetCurrentVersionShell()
+    GetCurrentVersionShell = Null
+
+    Dim str
+    str=objws.ExpandEnvironmentStrings("%RBENV_VERSION%")
+    If str <> "%RBENV_VERSION%" Then
+        GetCurrentVersionShell = Array(str,"%RBENV_VERSION%")
+    End If
+End Function
+
+Function GetCurrentVersionNoError()
+    Dim str
+    str=GetCurrentVersionShell
+    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
+    If IsNull(str) Then str = GetCurrentVersionGlobal
+    GetCurrentVersionNoError = str
+End Function
+
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp
 
@@ -127,6 +179,10 @@ Sub main(arg)
                Exit For
         End Select
     Next
+
+    If version = "" Then
+        version=GetCurrentVersionNoError()(0)
+    End If
 
     Dim list
     Dim cur

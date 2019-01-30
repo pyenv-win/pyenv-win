@@ -86,7 +86,7 @@ End Function
 
 Function GetBinDir(ver)
     Dim str
-    str=strDirVers & "\" & ver & "\"
+    str=strDirVers & "\" & ver & "\" 
     If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version '"&ver&"' not installed"
     GetBinDir = str
 End Function
@@ -173,6 +173,10 @@ Sub CommandRehash(arg)
           ofile.WriteLine("@echo off")
           ofile.WriteLine("pyenv exec %~n0 %*")
           ofile.Close()
+          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+          ofile.WriteLine("#!/bin/sh")
+          ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+          ofile.Close()
         End If
     Next
     
@@ -214,6 +218,14 @@ Sub CommandRehash(arg)
             ofile.WriteLine(") else (")
             ofile.WriteLine("bundle exec %~n0 %*")
             ofile.WriteLine(")")
+            ofile.Close()
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( str ) )
+            ofile.WriteLine("#!/bin/sh")
+            ofile.WriteLine("if bundle show >/dev/null; then")
+            ofile.WriteLine("bundle exec $(basename ""$0"") $*")
+            ofile.WriteLine("else")
+            ofile.WriteLine("rbenv exec $(basename ""$0"") $*")
+            ofile.WriteLine("fi")
             ofile.Close()
         Loop
     end if
@@ -384,6 +396,7 @@ Sub main(arg)
            Case "versions"    CommandVersions(arg)
            Case "commands"    CommandCommands(arg)
            Case "help"        CommandHelp(arg)
+           Case "--help"        CommandHelp(arg)
            Case Else          PlugIn(arg)
         End Select
     End If
@@ -392,6 +405,3 @@ End Sub
 
 
 main(WScript.Arguments)
-
-
-
