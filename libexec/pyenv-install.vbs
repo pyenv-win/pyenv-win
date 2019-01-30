@@ -104,7 +104,7 @@ Function GetCurrentVersionGlobal()
 
     Dim fname
     Dim objFile
-    fname = strRbenvHome & "\version"
+    fname = strPyenvHome & "\version"
     If objfs.FileExists( fname ) Then
         Set objFile = objfs.OpenTextFile(fname)
         If objFile.AtEndOfStream <> True Then
