@@ -31,10 +31,10 @@ End Sub
 
 Dim listEnv
 listEnv = Array(_
-    Array("3.7.2-x64",  "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2-amd64.exe","x64"),_
-    Array("3.7.2",      "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2.exe",      "i386"),_
-    Array("3.6.8-x64",  "https://www.python.org/ftp/python/3.6.8/", "python-3.6.8-amd64.exe","x64"),_
-    Array("3.6.8",      "https://www.python.org/ftp/python/3.6.8/", "python-3.6.8.exe",      "i386" )_
+    Array("3.7.2",  "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2-amd64.exe", "x64"),_
+    Array("3.7.2-x86",      "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2.exe", "i386"),_
+    Array("3.6.8",  "https://www.python.org/ftp/python/3.6.8/", "python-3.6.8-amd64.exe", "x64"),_
+    Array("3.6.8-x86",      "https://www.python.org/ftp/python/3.6.8/", "python-3.6.8.exe", "i386" )_
 )
 
 Function DownloadFile(strUrl,strFile)
