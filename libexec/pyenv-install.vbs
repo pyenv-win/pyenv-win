@@ -74,7 +74,7 @@ End Function
 
 Sub clear(cur)
     If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True 
-    If objfs.FileExists(  cur(2)) Then objfs.DeleteFile   cur(2),True 
+    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True 
 End Sub
 
 Sub download(cur)
@@ -137,9 +137,9 @@ Function GetCurrentVersionShell()
     GetCurrentVersionShell = Null
 
     Dim str
-    str=objws.ExpandEnvironmentStrings("%RBENV_VERSION%")
-    If str <> "%RBENV_VERSION%" Then
-        GetCurrentVersionShell = Array(str,"%RBENV_VERSION%")
+    str=objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
+    If str <> "%PYENV_VERSION%" Then
+        GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
     End If
 End Function
 
