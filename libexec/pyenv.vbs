@@ -44,7 +44,7 @@ Function GetCurrentVersionLocal(path)
     Dim fname
     Dim objFile
     Do While path <> ""
-        fname = path & "\.pyenv_version"
+        fname = path & "\.python-version"
         If objfs.FileExists( fname ) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
@@ -86,8 +86,8 @@ End Function
 
 Function GetBinDir(ver)
     Dim str
-    str=strDirVers & "\" & ver & "\bin" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version `"&ver&"' not installed"
+    str=strDirVers & "\" & ver & "\" 
+    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version '"&ver&"' not installed"
     GetBinDir = str
 End Function
 
@@ -173,6 +173,10 @@ Sub CommandRehash(arg)
           ofile.WriteLine("@echo off")
           ofile.WriteLine("pyenv exec %~n0 %*")
           ofile.Close()
+          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+          ofile.WriteLine("#!/bin/sh")
+          ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+          ofile.Close()
         End If
     Next
     
@@ -214,6 +218,14 @@ Sub CommandRehash(arg)
             ofile.WriteLine(") else (")
             ofile.WriteLine("bundle exec %~n0 %*")
             ofile.WriteLine(")")
+            ofile.Close()
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( str ) )
+            ofile.WriteLine("#!/bin/sh")
+            ofile.WriteLine("if bundle show >/dev/null; then")
+            ofile.WriteLine("bundle exec $(basename ""$0"") $*")
+            ofile.WriteLine("else")
+            ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+            ofile.WriteLine("fi")
             ofile.Close()
         Loop
     end if
@@ -267,13 +279,13 @@ Sub CommandLocal(arg)
         ver=arg(1)
         If ver = "--unset" Then
             ver = ""
-            objfs.DeleteFile strCurrent & "\.pyenv_version", True
+            objfs.DeleteFile strCurrent & "\.python-version", True
             Exit Sub
         Else
             GetBinDir(ver)
         End If
         Dim ofile
-        Set ofile = objfs.CreateTextFile( strCurrent & "\.pyenv_version" , True )
+        Set ofile = objfs.CreateTextFile( strCurrent & "\.python-version" , True )
         ofile.WriteLine(ver)
         ofile.Close()
     End If
@@ -384,6 +396,7 @@ Sub main(arg)
            Case "versions"    CommandVersions(arg)
            Case "commands"    CommandCommands(arg)
            Case "help"        CommandHelp(arg)
+           Case "--help"        CommandHelp(arg)
            Case Else          PlugIn(arg)
         End Select
     End If

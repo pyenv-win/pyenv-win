@@ -2,14 +2,14 @@ Install pyenv for windows to your USERPROFILE directory.
 
 Clone git repositry
 
-> git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv-win
+> git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv
 Config path
 Add the bin & shims directory to your PATH environment variable for access to the pyenv command
 
 
 # TODO: need to modifiy and validate the commands. How to add to the Env. path. 
-> for /f "skip=2 delims=" %a in ('reg query HKCU\Environment /v Path') do set orgpath=%a
-> setx Path "%USERPROFILE%\.pyenv-win\bin;%USERPROFILE%\.pyenv-win\shims;%orgpath:~22%"
+for /f "skip=2 delims=" %a in ('reg query HKCU\Environment /v Path') do set orgpath=%a
+setx Path "%USERPROFILE%\.pyenv\bin;%USERPROFILE%\.pyenv\shims;%orgpath:~22%"
 Restart your shell
 
 > exit

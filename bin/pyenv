@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cmd //c call "$(dirname "$0")/pyenv.bat" $*
