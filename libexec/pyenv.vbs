@@ -272,7 +272,7 @@ Sub CommandLocal(arg)
     Dim ver
     If arg.Count < 2 Then  
         ver=GetCurrentVersionLocal(strCurrent)
-        If ver = Null Then
+        If IsNull(ver) Then
             Wscript.echo "no local version configured for this directory"
         Else
             Wscript.echo ver(0)
@@ -297,7 +297,7 @@ Sub CommandShell(arg)
     Dim ver
     If arg.Count < 2 Then  
         ver=GetCurrentVersionShell
-        If ver = Null Then
+        If IsNull(ver) Then
             Wscript.echo "no shell-specific version configured"
         Else
             Wscript.echo ver(0)
