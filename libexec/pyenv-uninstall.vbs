@@ -87,11 +87,9 @@ Sub extract(cur)
     If Not objfs.FolderExists( strDirCache ) Then objfs.CreateFolder(strDirCache)
     If Not objfs.FolderExists( strDirVers  ) Then objfs.CreateFolder(strDirVers )
 
-    If objfs.FolderExists(cur(1)) Then Exit Sub
-
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-      Wscript.echo ":: [Un-installing] ::  " & cur(0) & " ..."
+    Wscript.echo ":: [Un-installing] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & " /uninstall ", 0, true
@@ -128,8 +126,10 @@ Sub main(arg)
         End Select
     Next
 
-    Dim str,ans
-    ans=""
+    Dim str
+    Dim list
+    Dim cur
+
     str=strDirVers&"\"&version
     If IsVersion(version) And objfs.FolderExists(str) Then
         For Each list In listEnv
