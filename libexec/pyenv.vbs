@@ -10,11 +10,13 @@ Dim strPyenvHome
 Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
+Dim strVerFile
 strCurrent   = objfs.GetAbsolutePathName(".")
 strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
 strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
+strVerFile   = "\.python-version"
 
 Function IsVersion(version)
     Dim re
@@ -44,7 +46,7 @@ Function GetCurrentVersionLocal(path)
     Dim fname
     Dim objFile
     Do While path <> ""
-        fname = path & "\.python-version"
+        fname = path & strVerFile
         If objfs.FileExists( fname ) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
@@ -279,13 +281,13 @@ Sub CommandLocal(arg)
         ver=arg(1)
         If ver = "--unset" Then
             ver = ""
-            objfs.DeleteFile strCurrent & "\.python-version", True
+            objfs.DeleteFile strCurrent & strVerFile, True
             Exit Sub
         Else
             GetBinDir(ver)
         End If
         Dim ofile
-        Set ofile = objfs.CreateTextFile( strCurrent & "\.python-version" , True )
+        Set ofile = objfs.CreateTextFile( strCurrent & strVerFile , True )
         ofile.WriteLine(ver)
         ofile.Close()
     End If
