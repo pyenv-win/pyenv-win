@@ -182,6 +182,18 @@ Sub CommandRehash(arg)
         End If
     Next
     
+    For Each file In objfs.GetFolder(GetBinDir(GetCurrentVersion()(0)) & "\Scripts").Files
+        If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" Then
+          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
+          ofile.WriteLine("@echo off")
+          ofile.WriteLine("pyenv exec %~n0 %*")
+          ofile.Close()
+          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+          ofile.WriteLine("#!/bin/sh")
+          ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+          ofile.Close()
+        End If
+    Next
 
     If arg.Count < 2 Then
      Exit Sub
