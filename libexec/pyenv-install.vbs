@@ -95,7 +95,7 @@ Sub extract(cur)
 
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & cur(1), 0, true
-    objws.Run pyenv rehash cur(0), 0, true
+    objws.Run "pyenv rehash " & cur(0), 0, true
 
     Wscript.echo ":: [Info] :: completed! " & cur(0)
 
