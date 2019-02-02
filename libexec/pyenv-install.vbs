@@ -181,7 +181,9 @@ Sub main(arg)
     Next
 
     If version = "" Then
-        version=GetCurrentVersionNoError()
+        Dim ary
+        ary=GetCurrentVersionNoError()
+        If Not IsNull(ary) Then version=ary(0)
     End If
 
     Dim list
