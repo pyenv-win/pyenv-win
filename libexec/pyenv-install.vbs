@@ -10,12 +10,13 @@ Dim strPyenvHome
 Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
+Dim strVerFile
 strCurrent   = objfs.GetAbsolutePathName(".")
 strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
 strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
-
+strVerFile   = "\.python-version"
 
 Sub ShowHelp()
      Wscript.echo "Usage: pyenv install [-f|-s] <version>"
@@ -120,7 +121,7 @@ Function GetCurrentVersionLocal(path)
     Dim fname
     Dim objFile
     Do While path <> ""
-        fname = path & "\.python-version"
+        fname = path & strVerFile
         If objfs.FileExists( fname ) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
