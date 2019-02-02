@@ -60,7 +60,7 @@ Function DownloadFile(strUrl,strFile)
     end if
     on error goto 0
     if objHttp.status = 404 then
-        Wscript.Echo "404:file not found"
+        Wscript.Echo ":: [ERROR] :: 404 :: file not found"
         Wscript.Quit
     end if
 
@@ -79,7 +79,7 @@ Sub clear(cur)
 End Sub
 
 Sub download(cur)
-    Wscript.echo "download " & cur(0) & " ..."
+    Wscript.echo ":: [Downloading] ::  " & cur(0) & " ..."
     DownloadFile cur(3) , cur(2)
 End Sub
 
@@ -91,12 +91,13 @@ Sub extract(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-     Wscript.echo "install " & cur(0) & " ..."
+      Wscript.echo ":: [Installing] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & cur(1), 0, true
+    objws.Run pyenv rehash cur(0), 0, true
 
-    Wscript.echo "complete! " & cur(0)
+    Wscript.echo ":: [Info] :: completed! " & cur(0)
 
 End Sub
 
