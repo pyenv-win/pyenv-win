@@ -103,3 +103,7 @@ venv.bak/
 # mypy
 .mypy_cache/
 .tags
+install_cache/
+shims/
+version
+versions/
