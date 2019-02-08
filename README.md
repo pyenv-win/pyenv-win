@@ -48,8 +48,9 @@ Found a similar system for [rbenv-win][3] for ruby developers. This project was 
 1. Link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
 2. Extract to your `%USERPROFILE%/.pyenv`
 3. Add the following paths to your PATH ENVIRONMENT variable for accessing to pyenv command
-	__ENVIRONMENT -> My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
-	add following line in the starting of the PATH `%USERPROFILE%\.pyenv\bin;%USERPROFILE%\.pyenv\shims;` 
+`%USERPROFILE%\.pyenv\bin;%USERPROFILE%\.pyenv\shims;`
+    - __ENVIRONMENT -> My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
+
 4. Open command prompt (new session) and type `pyenv`
 5. **pyenv** -> This will list the useful pyenv commands
 
@@ -76,11 +77,12 @@ For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme
 
 - Installing by git: 
 
-1. Clone the repository to the user profile
-	`git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
+1. Clone the repository to the user profile  
+`git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
 2. Add the following paths to your PATH ENVIRONMENT variable for accessing to pyenv command
-	__ENVIRONMENT -> My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
-	add following line in the starting of the PATH `%USERPROFILE%\.pyenv\bin;%USERPROFILE%\.pyenv\shims;`
+`%USERPROFILE%\.pyenv\bin;%USERPROFILE%\.pyenv\shims;`
+    - __ENVIRONMENT -> My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
+
 3. Open command prompt (new session) and type `pyenv`
 4. **pyenv** -> This will list the useful pyenv commands
 
