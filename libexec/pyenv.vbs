@@ -198,51 +198,6 @@ Sub CommandRehash(arg)
     If arg.Count < 2 Then
      Exit Sub
     End If
-    If arg(1) <> "bundle" Then
-     Exit Sub
-    End If
-
-    Dim oExec,str,re,mts
-    set oExec = objws.Exec("bundle.bat config")
-    Do While oExec.Status = 0
-        WScript.Sleep 100
-    Loop
-    str = oExec.StdOut.ReadAll
-    
-    set re=new regexp
-    re.multiline=true
-    re.pattern="^path\r\n.*\((.+?)\)\: ""(.+?)"""
-    set mts=re.execute(str)
-
-    if mts.count > 0 then
-        str= mts(0).submatches(0) & "/../../" & mts(0).submatches(1)
-
-	    set oExec = objws.Exec("where -R """ & Replace(str,"/","\") &""" *.bat")
-	    Do While oExec.Status = 0
-	        WScript.Sleep 100
-	    Loop
-
-	    Do While Not oExec.StdOut.AtEndOfStream
-            str = oExec.StdOut.ReadLine
-            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( str ) & ".bat" )
-            ofile.WriteLine("@echo off")
-            ofile.WriteLine("call bundle show > NUL")
-            ofile.WriteLine("if ERRORLEVEL 1 (")
-            ofile.WriteLine("pyenv exec %~n0 %*")
-            ofile.WriteLine(") else (")
-            ofile.WriteLine("bundle exec %~n0 %*")
-            ofile.WriteLine(")")
-            ofile.Close()
-            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( str ) )
-            ofile.WriteLine("#!/bin/sh")
-            ofile.WriteLine("if bundle show >/dev/null; then")
-            ofile.WriteLine("bundle exec $(basename ""$0"") $*")
-            ofile.WriteLine("else")
-            ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
-            ofile.WriteLine("fi")
-            ofile.Close()
-        Loop
-    end if
 End Sub
 
 Sub CommandExecute(arg)
