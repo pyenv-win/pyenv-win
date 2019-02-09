@@ -1,6 +1,6 @@
 # pyenv for Windows
 
-The [pyenv][1] is a great tool. I ported it to Windows.
+The [pyenv][1] is a great tool. I ported it to Windows. Some commands doesn't implemented, but wouldn't be a problem in basic use.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
@@ -18,7 +18,9 @@ The [pyenv][1] is a great tool. I ported it to Windows.
 
 ## Introduction
 
-The [pyenv][1] is a great tool, but it doesn't supports windowns platform, which was the same case in [rbenv][2] for ruby developers. After a bit of research and feedbacks from python developer loves to have such a feature for windows systems.
+The [pyenv][1] for python is a great tool, but it doesn't supports windowns platform directly, which was the same case in [rbenv][2] for ruby developers. After a bit of research and feedbacks from python developer loves to have such a feature for windows systems.
+
+I got inspired from the pyenv [issues][4] for windows support, personally I too use mac and linux with beautiful [pyenv][1], but in some companies they still use windows for there development. This library is to help windows users to manage multiple pythons.
 
 Found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some commands doesn't implemented, but wouldn't be a problem in basic use.
 
@@ -109,7 +111,13 @@ For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme
 
 ## How it works
 
-TBA
+- To view list of python versions supported by pyenv windows. `pyenv install -l `
+- To install python version.  `pyenv install 3.5.2`
+- To set a python version as global version. `pyenv global 3.5.2` _Note:- version needs to be installed_
+- To set a python version as local version. `pyenv local 3.5.2` you can give any version which you wanted to use to the project, this will be auto activated by entering to the folder not like other virtual env. to activate.
+- To uninstall any python version. `pyenv uninstall 3.5.2`
+- To know which python you are using and it's path `pyenv version`
+- To view all the python versions installed in this system `pyenv versions`
 
 ## FAQ
 
@@ -125,7 +133,7 @@ TBA
 - Create an upstream remote and sync your local copy before you branch.
 - Branch for each separate piece of work. It's a good practise to write test cases.
 - Do the work, write good commit messages, and read the CONTRIBUTING file if there is one.
-- Test the changes by running `test\test.bat` --> TBA
+- Test the changes by running `test\test.bat`
 - Push to your origin repository.
 - Create a new Pull Request in GitHub.
 
@@ -146,3 +154,4 @@ pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari)
 [1]: https://github.com/pyenv/pyenv
 [2]: https://github.com/rbenv/rbenv
 [3]: https://github.com/nak1114/rbenv-win
+[4]: https://github.com/pyenv/pyenv/issues/62
