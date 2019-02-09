@@ -194,10 +194,6 @@ Sub CommandRehash(arg)
           ofile.Close()
         End If
     Next
-
-    If arg.Count < 2 Then
-     Exit Sub
-    End If
 End Sub
 
 Sub CommandExecute(arg)
