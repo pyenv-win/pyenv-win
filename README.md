@@ -112,8 +112,8 @@ For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme
 ## How it works
 
 - To view list of python versions supported by pyenv windows. `pyenv install -l `
-- To install python version.  `pyenv install 3.5.2`
-- To set a python version as global version. `pyenv global 3.5.2` _Note:- version needs to be installed_
+- To install python version.  `pyenv install 3.5.2` _Note: older version of python is msi file just click on next to install (no need of changing any options it in)_
+- To set a python version as global version. `pyenv global 3.5.2` _Note: version needs to be installed_
 - To set a python version as local version. `pyenv local 3.5.2` you can give any version which you wanted to use to the project, this will be auto activated by entering to the folder not like other virtual env. to activate.
 - To uninstall any python version. `pyenv uninstall 3.5.2`
 - To know which python you are using and it's path `pyenv version`
