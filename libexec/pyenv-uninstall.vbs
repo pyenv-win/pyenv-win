@@ -19,11 +19,14 @@ strDirLibs   = strPyenvHome & "\libexec"
 strVerFile   = "\.python-version"
 
 Sub ShowHelp()
-     Wscript.echo "Usage: pyenv uninstall [-f|--force] <version>"
+     Wscript.echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
      Wscript.echo ""
      Wscript.echo "   -f  Attempt to remove the specified version without prompting"
      Wscript.echo "       for confirmation. If the version does not exist, do not"
      Wscript.echo "       display an error message."
+     Wscript.echo ""
+     Wscript.echo "   -msi  Attempt to remove the specified version of python installed"
+     Wscript.echo "         using msi file. e.g. 2.7*"
      Wscript.echo ""
      Wscript.echo "See `pyenv versions` for a complete list of installed versions."
      Wscript.echo ""
@@ -392,8 +395,10 @@ Sub main(arg)
     Dim idx
     Dim optForce
     Dim version
+    Dim optMsi
 
     optForce=False
+    optMsi=False
     version=""
 
     For idx = 0 To arg.Count - 1
@@ -401,6 +406,7 @@ Sub main(arg)
            Case "--help"          ShowHelp
            Case "-f"              optForce=True
            Case "--force"         optForce=True
+           Case "--msi"           optMsi=True
            Case Else
                version = arg(idx)
                Exit For
@@ -413,14 +419,18 @@ Sub main(arg)
 
     str=strDirVers&"\"&version
     If IsVersion(version) And objfs.FolderExists(str) Then
-        For Each list In listEnv
-            If list(0) = version Then
-                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
-                If optForce Then  clear(cur)
-                extract(cur)
-                Exit Sub
-            End If
-        Next
+        If optMsi then
+            objfs.DeleteFolder str , True
+        Else
+            For Each list In listEnv
+                If list(0) = version Then
+                    cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
+                    If optForce Then  clear(cur)
+                    extract(cur)
+                    Exit Sub
+                End If
+            Next
+        End If
     Else
       Wscript.echo "pyenv: version '"&version&"' not installed"
     End If
