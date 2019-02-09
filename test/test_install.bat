@@ -6,9 +6,11 @@ set PATH=%~dp0..\bin;%~dp0..\shims;%PATH%
 echo :install: test
 call pyenv install -l
 call pyenv install 3.5.2
+call pyenv rehash 3.5.2
 call pyenv install 2.7.15
+call pyenv rehash 2.7.15
 call pyenv install 3.7.2
-
+call pyenv rehash 3.7.2
 
 mkdir test
 cd test

@@ -25,7 +25,7 @@ Sub ShowHelp()
      Wscript.echo "       for confirmation. If the version does not exist, do not"
      Wscript.echo "       display an error message."
      Wscript.echo ""
-     Wscript.echo "   -msi  Attempt to remove the specified version of python installed"
+     Wscript.echo "   --msi  Attempt to remove the specified version of python installed"
      Wscript.echo "         using msi file. e.g. 2.7*"
      Wscript.echo ""
      Wscript.echo "See `pyenv versions` for a complete list of installed versions."
@@ -373,13 +373,34 @@ Sub extract(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    Wscript.echo ":: [Un-installing] ::  " & cur(0) & " ..."
+    Wscript.echo ":: [Uninstalling] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & " /uninstall ", 0, true
 
-    Wscript.echo ":: [Info] :: completed! " & cur(0)
+    If Not objfs.FileExists(cur(1)) Then
+        Wscript.echo ":: [Info] :: completed! " & cur(0)
+    Else
+        Wscript.echo ":: [Error] :: Couldn't able to uninstall"
+    End If  
+End Sub
 
+Sub extract_msi(cur)
+    If Not objfs.FolderExists( strDirCache ) Then objfs.CreateFolder(strDirCache)
+    If Not objfs.FolderExists( strDirVers  ) Then objfs.CreateFolder(strDirVers )
+
+    If Not objfs.FileExists(cur(2)) Then download(cur)
+
+    Wscript.echo ":: [Uninstalling] ::  Msi " & cur(0) & " ..."
+
+    objws.CurrentDirectory = strDirCache
+    objws.Run "msiexec /x " & cur(2), 1, true
+
+    If Not objfs.FileExists(cur(1)) Then
+        Wscript.echo ":: [Info] :: completed! " & cur(0)
+    Else
+        Wscript.echo ":: [Error] :: Couldn't able to uninstall"
+    End If
 End Sub
 
 Function IsVersion(version)
@@ -419,18 +440,18 @@ Sub main(arg)
 
     str=strDirVers&"\"&version
     If IsVersion(version) And objfs.FolderExists(str) Then
-        If optMsi then
-            objfs.DeleteFolder str , True
-        Else
-            For Each list In listEnv
-                If list(0) = version Then
-                    cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
-                    If optForce Then  clear(cur)
+        For Each list In listEnv
+            If list(0) = version Then
+                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
+                If optForce Then  clear(cur)
+                If optMsi then
+                    extract_msi(cur)
+                Else
                     extract(cur)
-                    Exit Sub
                 End If
-            Next
-        End If
+                Exit Sub
+            End If
+        Next
     Else
       Wscript.echo "pyenv: version '"&version&"' not installed"
     End If
