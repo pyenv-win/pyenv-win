@@ -133,7 +133,7 @@ For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme
 - Create an upstream remote and sync your local copy before you branch.
 - Branch for each separate piece of work. It's a good practise to write test cases.
 - Do the work, write good commit messages, and read the CONTRIBUTING file if there is one.
-- Test the changes by running `test\test_install.bat` and `test\test_uninstall.bat`
+- Test the changes by running `tests\test_install.bat` and `tests\test_uninstall.bat`
 - Push to your origin repository.
 - Create a new Pull Request in GitHub.
 
