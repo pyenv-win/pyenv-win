@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
 	name='pyenv-win',
-	version='1.1.0',
+	version='1.1.1',
 	description="pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.",
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
@@ -34,6 +34,6 @@ setup(
 		],
 	keywords = 'pyenv for windows, multiple versions of python',
 	packages = find_packages(exclude=['tests']),
-        package_dir = {'pyenv-win': 'pyenv-win'},
-        package_data = {'pyenv-win': ['bin/*', 'libexec/*']},
+	package_dir = {'pyenv-win': 'pyenv-win'},
+	package_data = {'pyenv-win': ['bin/*', 'libexec/*']},
 )
