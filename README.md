@@ -104,6 +104,8 @@ For git bash or alternative use following command `pip install pyenv-win --targe
    - Get updates via pip `pip install --upgrade pyenv-win`
 - Installed via git
    - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and type `git pull`
+- Installed via zip
+   - Go to the path `%USERPROFILE$/.pyenv/pyenv-win/` replace `libexec` and `bin` folder 
 
 ## FAQ
 
@@ -112,6 +114,15 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 
 - **Question:** Does pyenv for windows support python3?  
  **Answer:** Yes, we are supporting python3 from the version 3.0. We are supporting from 3.0 until the python.org officially removes.
+
+- **Question:** I am getting an issue `batch file cannot be found.` while installing python, what to do?
+ **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
+
+- **Question:** System is stuck while uninstalling the python version, what to do?
+ **Answer:** It's based on the system policies, you can manually uninstall by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
+
+ - **Question:** I installed pyenv-win using pip how to uninstall it?
+  **Answer:** Follow How to get updates in pip [link](#how-to-get-updates) and then `pip uninstall pyenv-win`
 
 ## How to contribute
 
