@@ -10,6 +10,7 @@ The [pyenv][1] is a great tool. I ported it to Windows. Some commands doesn't im
 - [pyenv-win does](#pyenv-win-does)
 - [Installation](#installation)
 - [How it works](#how-it-works)
+- [How to get updates](#how-to-get-updates)
 - [FAQ](#faq)
 - [How to contribute](#how-to-contribute)
 - [Bug Tracker and Support](#bug-tracker-and-support)
@@ -95,6 +96,14 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 - To uninstall any python version. `pyenv uninstall 3.5.2`
 - To know which python you are using and it's path `pyenv version`
 - To view all the python versions installed in this system `pyenv versions`
+
+## How to get updates
+
+- Installed via pip
+   - Add pyenv-win installed path to easy_install.pth file which is located in site-package. Now pyenv-win is registered in pip 
+   - Get updates via pip `pip install --upgrade pyenv-win`
+- Installed via git
+   - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and type `git pull`
 
 ## FAQ
 
