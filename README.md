@@ -2,6 +2,8 @@
 
 The [pyenv][1] is a great tool. I ported it to Windows. Some commands doesn't implemented, but wouldn't be a problem in basic use.
 
+For existing python users, we are supporting installation via pip [follow instructions](#installation)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 
