@@ -16,7 +16,7 @@ setup(
 	url = 'https://github.com/pyenv-win/pyenv-win.git',
 	author = 'Kiran Kumar Kotari',
 	author_email='kotarikirankumar@gmail.com',
-	classifiers = [ 
+	classifiers = [
 		'Development Status :: 4 - Beta',
 		'Intended Audience :: Developers',
 		'Topic :: Software Development :: Build Tools',
@@ -34,4 +34,6 @@ setup(
 		],
 	keywords = 'pyenv for windows, multiple versions of python',
 	packages = find_packages(exclude=['tests']),
+        package_dir = {'pyenv-win': 'pyenv-win'},
+        package_data = {'pyenv-win': ['bin/*', 'libexec/*']},
 )
