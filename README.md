@@ -102,7 +102,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 ## How to get updates
 
 - Installed via pip
-   - Add pyenv-win installed path to easy_install.pth file which is located in site-package. Now pyenv-win is registered in pip 
+   - Add pyenv-win installed path to `easy_install.pth` file which is located in site-package. Now pyenv-win is recognised by pip 
    - Get updates via pip `pip install --upgrade pyenv-win`
 - Installed via git
    - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and type `git pull`
