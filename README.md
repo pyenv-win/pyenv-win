@@ -121,7 +121,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
   **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
 
 - **Question:** System is stuck while uninstalling the python version, what to do?  
-  **Answer:** It's based on the system policies, you can manually uninstall by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
+  **Answer:** It's based on the system policies in few computers, recommend to uninstall in these computers by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
 
 - **Question:** I installed pyenv-win using pip how to uninstall it?  
   **Answer:** Follow How to get updates in pip [link](#how-to-get-updates) and then `pip uninstall pyenv-win`
