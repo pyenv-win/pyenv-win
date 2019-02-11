@@ -9,18 +9,20 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
 	name='pyenv-win',
-	version='0.0.1',
+	version='1.0.3',
 	description="pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.",
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
 	url = 'https://github.com/pyenv-win/pyenv-win.git',
 	author = 'Kiran Kumar Kotari',
 	author_email='kotarikirankumar@gmail.com',
-	classifiers = [ 
+	classifiers = [
 		'Development Status :: 4 - Beta',
 		'Intended Audience :: Developers',
 		'Topic :: Software Development :: Build Tools',
-		'License :: OSI Approved :: MIT License', 
+		'License :: OSI Approved :: MIT License',
+		'Operating System :: Microsoft :: Windows',
+		'Programming Language :: Python :: 2.6',
 		'Programming Language :: Python :: 2.7',
 		'Programming Language :: Python :: 3.1',
 		'Programming Language :: Python :: 3.2',
@@ -31,5 +33,7 @@ setup(
 		'Programming Language :: Python :: 3.7',
 		],
 	keywords = 'pyenv for windows, multiple versions of python',
-	packages = find_packages(exclude=[]),
+	packages = find_packages(exclude=['tests']),
+        package_dir = {'pyenv-win': 'pyenv-win'},
+        package_data = {'pyenv-win': ['bin/*', 'libexec/*']},
 )
