@@ -15,6 +15,6 @@ echo.
 EXIT /B
 )
 
-echo pyenv 1.0.1
+echo pyenv 1.0.2
 
 :: need to add a variable for version

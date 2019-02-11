@@ -378,6 +378,10 @@ Sub extract(cur)
     objws.CurrentDirectory = strDirCache
     objws.Run cur(2) & " /uninstall ", 0, true
 
+    If objfs.FileExists(cur(1)) Then 
+        objfs.DeleteFolder cur(1) , True
+    End If
+
     If Not objfs.FileExists(cur(1)) Then
         Wscript.echo ":: [Info] :: completed! " & cur(0)
     Else
@@ -396,6 +400,10 @@ Sub extract_msi(cur)
     objws.CurrentDirectory = strDirCache
     objws.Run "msiexec /x " & cur(2), 1, true
 
+    If objfs.FileExists(cur(1)) Then 
+        objfs.DeleteFolder cur(1) , True
+    End If
+    
     If Not objfs.FileExists(cur(1)) Then
         Wscript.echo ":: [Info] :: completed! " & cur(0)
     Else
