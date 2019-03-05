@@ -2,6 +2,8 @@
 
 The [pyenv][1] is a great tool. I ported it to Windows. Some commands doesn't implemented, but wouldn't be a problem in basic use.
 
+For existing python users, we are supporting installation via pip [follow instructions](#installation)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
@@ -101,7 +103,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 ## How to get updates
 
 - Installed via pip
-   - Add pyenv-win installed path to easy_install.pth file which is located in site-package. Now pyenv-win is registered in pip 
+   - Add pyenv-win installed path to `easy_install.pth` file which is located in site-package. Now pyenv-win is recognised by pip 
    - Get updates via pip `pip install --upgrade pyenv-win`
 - Installed via git
    - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and type `git pull`
@@ -120,7 +122,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
   **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
 
 - **Question:** System is stuck while uninstalling the python version, what to do?  
-  **Answer:** It's based on the system policies, you can manually uninstall by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
+  **Answer:** It's based on the system policies in few computers, recommend to uninstall in these computers by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
 
 - **Question:** I installed pyenv-win using pip how to uninstall it?  
   **Answer:** Follow How to get updates in pip [link](#how-to-get-updates) and then `pip uninstall pyenv-win`
