@@ -32,6 +32,8 @@ End Sub
 
 Dim listEnv
 listEnv = Array(_
+    Array("2.7.16", "https://www.python.org/ftp/python/2.7.16/", "python-2.7.16.msi", "i386"),_
+    Array("2.7.16.amd64", "https://www.python.org/ftp/python/2.7.16/", "python-2.7.16.amd64.msi", "x64"),_
     Array("3.7.2", "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2.exe", "i386"),_
     Array("3.7.2-amd64", "https://www.python.org/ftp/python/3.7.2/", "python-3.7.2-amd64.exe", "x64"),_
     Array("3.6.8", "https://www.python.org/ftp/python/3.6.8/", "python-3.6.8.exe", "i386"),_
