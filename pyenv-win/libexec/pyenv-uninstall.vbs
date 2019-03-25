@@ -19,18 +19,18 @@ strDirLibs   = strPyenvHome & "\libexec"
 strVerFile   = "\.python-version"
 
 Sub ShowHelp()
-     Wscript.echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
-     Wscript.echo ""
-     Wscript.echo "   -f  Attempt to remove the specified version without prompting"
-     Wscript.echo "       for confirmation. If the version does not exist, do not"
-     Wscript.echo "       display an error message."
-     Wscript.echo ""
-     Wscript.echo "   --msi  Attempt to remove the specified version of python installed"
-     Wscript.echo "         using msi file. e.g. 2.7*"
-     Wscript.echo ""
-     Wscript.echo "See `pyenv versions` for a complete list of installed versions."
-     Wscript.echo ""
-     Wscript.Quit
+     WScript.echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
+     WScript.echo ""
+     WScript.echo "   -f  Attempt to remove the specified version without prompting"
+     WScript.echo "       for confirmation. If the version does not exist, do not"
+     WScript.echo "       display an error message."
+     WScript.echo ""
+     WScript.echo "   --msi  Attempt to remove the specified version of python installed"
+     WScript.echo "         using msi file. e.g. 2.7*"
+     WScript.echo ""
+     WScript.echo "See `pyenv versions` for a complete list of installed versions."
+     WScript.echo ""
+     WScript.Quit
 End Sub
 
 Dim listEnv
@@ -325,12 +325,12 @@ listEnv = Array(_
 Function DownloadFile(strUrl,strFile)
     Dim objHttp
     Dim httpProxy
-    Set objHttp = Wscript.CreateObject("Msxml2.ServerXMLHTTP")
+    Set objHttp = WScript.CreateObject("Msxml2.ServerXMLHTTP")
     on error resume next
     Call objHttp.Open("GET", strUrl, False )
     if Err.Number <> 0 then
-        Wscript.Echo Err.Description
-        Wscript.Quit
+        WScript.Echo Err.Description
+        WScript.Quit
     end if
     httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
     if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
@@ -339,17 +339,17 @@ Function DownloadFile(strUrl,strFile)
     objHttp.Send
 
     if Err.Number <> 0 then
-        Wscript.Echo Err.Description
-        Wscript.Quit
+        WScript.Echo Err.Description
+        WScript.Quit
     end if
     on error goto 0
     if objHttp.status = 404 then
-        Wscript.Echo ":: [ERROR] :: 404 :: file not found"
-        Wscript.Quit
+        WScript.Echo ":: [ERROR] :: 404 :: file not found"
+        WScript.Quit
     end if
 
     Dim Stream
-    Set Stream = Wscript.CreateObject("ADODB.Stream")
+    Set Stream = WScript.CreateObject("ADODB.Stream")
     Stream.Open
     Stream.Type = 1
     Stream.Write objHttp.responseBody
@@ -363,7 +363,7 @@ Sub clear(cur)
 End Sub
 
 Sub download(cur)
-    Wscript.echo ":: [Downloading] ::  " & cur(0) & " ..."
+    WScript.echo ":: [Downloading] ::  " & cur(0) & " ..."
     DownloadFile cur(3) , cur(2)
 End Sub
 
@@ -373,7 +373,7 @@ Sub extract(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    Wscript.echo ":: [Uninstalling] ::  " & cur(0) & " ..."
+    WScript.echo ":: [Uninstalling] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
 	Dim exe_file
@@ -385,9 +385,9 @@ Sub extract(cur)
     End If
 
     If Not objfs.FileExists(cur(1)) Then
-        Wscript.echo ":: [Info] :: completed! " & cur(0)
+        WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
-        Wscript.echo ":: [Error] :: Couldn't able to uninstall"
+        WScript.echo ":: [Error] :: Couldn't able to uninstall"
     End If  
 End Sub
 
@@ -397,7 +397,7 @@ Sub extract_msi(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    Wscript.echo ":: [Uninstalling] ::  Msi " & cur(0) & " ..."
+    WScript.echo ":: [Uninstalling] ::  Msi " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
     objws.Run "msiexec /x " & cur(2), 1, true
@@ -407,9 +407,9 @@ Sub extract_msi(cur)
     End If
     
     If Not objfs.FileExists(cur(1)) Then
-        Wscript.echo ":: [Info] :: completed! " & cur(0)
+        WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
-        Wscript.echo ":: [Error] :: Couldn't able to uninstall"
+        WScript.echo ":: [Error] :: Couldn't able to uninstall"
     End If
 End Sub
 
@@ -463,7 +463,7 @@ Sub main(arg)
             End If
         Next
     Else
-      Wscript.echo "pyenv: version '"&version&"' not installed"
+      WScript.echo "pyenv: version '"&version&"' not installed"
     End If
 
 End Sub
