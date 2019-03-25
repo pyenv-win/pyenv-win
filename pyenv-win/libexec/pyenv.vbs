@@ -129,7 +129,7 @@ Sub ExecCommand(str)
 End Sub
 
 Sub ShowHelp()
-	 WScript.echo "pyenv 2.2.2"
+	 WScript.echo "pyenv 1.2.2"
      WScript.echo "Usage: pyenv <command> [<args>]"
      WScript.echo ""
      WScript.echo "Some useful pyenv commands are:"
