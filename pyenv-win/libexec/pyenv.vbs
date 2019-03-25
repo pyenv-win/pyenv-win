@@ -74,8 +74,12 @@ Function GetCurrentVersion()
     str=GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
     If IsNull(str) Then str = GetCurrentVersionGlobal
-    If IsNull(str) Then Err.Raise vbError + 1, "version not found", "please set 'pyenv global <version>'"
-    GetCurrentVersion = str
+    If IsNull(str) Then 
+		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
+		WScript.echo "pyenv global 3.7.2"
+		WScript.quit
+	End If
+	GetCurrentVersion = str
 End Function
 
 Function GetCurrentVersionNoError()
@@ -89,7 +93,11 @@ End Function
 Function GetBinDir(ver)
     Dim str
     str=strDirVers & "\" & ver & "\" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then Err.Raise vbError + 2, "pyenv", "version '"&ver&"' not installed"
+    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then 
+		WScript.echo "pyenv specific python requisite didn't meet. Project is using different version of python."
+		WScript.echo "Install python '"&ver&"' by typing: 'pyenv install "&ver&"'"
+		WScript.quit
+	End If
     GetBinDir = str
 End Function
 
@@ -121,27 +129,28 @@ Sub ExecCommand(str)
 End Sub
 
 Sub ShowHelp()
-     Wscript.echo "Usage: pyenv <command> [<args>]"
-     Wscript.echo ""
-     Wscript.echo "Some useful pyenv commands are:"
-     Wscript.echo "   commands    List all available pyenv commands"
-     Wscript.echo "   local       Set or show the local application-specific Python version"
-     Wscript.echo "   global      Set or show the global Python version"
-     Wscript.echo "   shell       Set or show the shell-specific Python version"
-     Wscript.echo "   install     Install a Python version using python-build"
-     Wscript.echo "   uninstall   Uninstall a specific Python version"
-     Wscript.echo "   rehash      Rehash pyenv shims (run this after installing executables)"
-     Wscript.echo "   version     Show the current Python version and its origin"
-     Wscript.echo "   versions    List all Python versions available to pyenv"
-     Wscript.echo "   exec        Runs an executable by first preparing PATH so that the selected Python"
-     Wscript.echo ""
-     Wscript.echo "See `pyenv help <command>' for information on a specific command."
-     Wscript.echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
+	 WScript.echo "pyenv 2.2.2"
+     WScript.echo "Usage: pyenv <command> [<args>]"
+     WScript.echo ""
+     WScript.echo "Some useful pyenv commands are:"
+     WScript.echo "   commands    List all available pyenv commands"
+     WScript.echo "   local       Set or show the local application-specific Python version"
+     WScript.echo "   global      Set or show the global Python version"
+     WScript.echo "   shell       Set or show the shell-specific Python version"
+     WScript.echo "   install     Install a Python version using python-build"
+     WScript.echo "   uninstall   Uninstall a specific Python version"
+     WScript.echo "   rehash      Rehash pyenv shims (run this after installing executables)"
+     WScript.echo "   version     Show the current Python version and its origin"
+     WScript.echo "   versions    List all Python versions available to pyenv"
+     WScript.echo "   exec        Runs an executable by first preparing PATH so that the selected Python"
+     WScript.echo ""
+     WScript.echo "See `pyenv help <command>' for information on a specific command."
+     WScript.echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
      Exit Sub
 
 
-     Wscript.echo "   which       Display the full path to an executable"
-     Wscript.echo "   whence      List all Python versions that contain the given executable"
+     WScript.echo "   which       Display the full path to an executable"
+     WScript.echo "   whence      List all Python versions that contain the given executable"
 End Sub
 
 Sub CommandHelp(arg)
@@ -151,7 +160,7 @@ Sub CommandHelp(arg)
         If list.Exists(arg(1)) Then
             ExecCommand(list(arg(1)) & " --help")
         Else
-             Wscript.echo "unknown pyenv command '"&arg(1)&"'"
+             WScript.echo "unknown pyenv command '"&arg(1)&"'"
         End If
     Else
         ShowHelp
@@ -218,9 +227,9 @@ Sub CommandGlobal(arg)
         Dim ver
         ver=GetCurrentVersionGlobal()
         If IsNull(ver) Then
-            Wscript.echo "no global version configured"
+            WScript.echo "no global version configured"
         Else
-            Wscript.echo ver(0)
+            WScript.echo ver(0)
         End If
     Else
         GetBinDir(arg(1))
@@ -236,9 +245,9 @@ Sub CommandLocal(arg)
     If arg.Count < 2 Then  
         ver=GetCurrentVersionLocal(strCurrent)
         If IsNull(ver) Then
-            Wscript.echo "no local version configured for this directory"
+            WScript.echo "no local version configured for this directory"
         Else
-            Wscript.echo ver(0)
+            WScript.echo ver(0)
         End If
     Else
         ver=arg(1)
@@ -261,9 +270,9 @@ Sub CommandShell(arg)
     If arg.Count < 2 Then  
         ver=GetCurrentVersionShell
         If IsNull(ver) Then
-            Wscript.echo "no shell-specific version configured"
+            WScript.echo "no shell-specific version configured"
         Else
-            Wscript.echo ver(0)
+            WScript.echo ver(0)
         End If
     Else
         ver=arg(1)
@@ -281,7 +290,7 @@ Sub CommandVersion(arg)
 
     Dim curVer
     curVer=GetCurrentVersion
-    Wscript.echo curVer(0) & " (set by " &curVer(1)&")"
+    WScript.echo curVer(0) & " (set by " &curVer(1)&")"
 End Sub
 
 Sub CommandVersions(arg)
@@ -305,11 +314,11 @@ Sub CommandVersions(arg)
     For Each dir In objfs.GetFolder(strDirVers).subfolders
         ver=objfs.GetFileName( dir )
         If isBare Then
-            Wscript.echo ver
+            WScript.echo ver
         ElseIf ver = curVer(0) Then
-            Wscript.echo "* " & ver & " (set by " &curVer(1)&")"
+            WScript.echo "* " & ver & " (set by " &curVer(1)&")"
         Else
-            Wscript.echo "  " & ver
+            WScript.echo "  " & ver
         End If
     Next
 End Sub
@@ -324,8 +333,8 @@ Sub PlugIn(arg)
     ElseIf objfs.FileExists( fname & ".vbs" ) Then
         str="cscript //nologo """ & fname & ".vbs"""
     Else
-       Wscript.echo "pyenv: no such command `"&arg(0)&"'"
-       Wscript.Quit
+       WScript.echo "pyenv: no such command `"&arg(0)&"'"
+       WScript.Quit
     End If
 
     For idx = 1 To arg.Count - 1 
@@ -338,12 +347,12 @@ End Sub
 Sub CommandCommands(arg)
     Dim cname
     For Each cname In GetCommandList()
-        Wscript.echo cname
+        WScript.echo cname
     Next
 End Sub
 
 Sub Dummy()
-     Wscript.echo "command not implement"
+     WScript.echo "command not implement"
 End Sub
 
 

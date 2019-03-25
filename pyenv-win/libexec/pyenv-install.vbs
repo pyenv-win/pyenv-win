@@ -19,15 +19,15 @@ strDirLibs   = strPyenvHome & "\libexec"
 strVerFile   = "\.python-version"
 
 Sub ShowHelp()
-     Wscript.echo "Usage: pyenv install [-f|-s] <version>"
-     Wscript.echo "       pyenv install [-f|-s] <definition-file>"
-     Wscript.echo "       pyenv install -l|--list"
-     Wscript.echo ""
-     Wscript.echo "  -l/--list          List all available versions"
-     Wscript.echo "  -f/--force         Install even if the version appears to be installed already"
-     Wscript.echo "  -s/--skip-existing Skip if the version appears to be installed already"
-     Wscript.echo ""
-     Wscript.Quit
+     WScript.echo "Usage: pyenv install [-f|-s] <version>"
+     WScript.echo "       pyenv install [-f|-s] <definition-file>"
+     WScript.echo "       pyenv install -l|--list"
+     WScript.echo ""
+     WScript.echo "  -l/--list          List all available versions"
+     WScript.echo "  -f/--force         Install even if the version appears to be installed already"
+     WScript.echo "  -s/--skip-existing Skip if the version appears to be installed already"
+     WScript.echo ""
+     WScript.Quit
 End Sub
 
 Dim listEnv
@@ -322,12 +322,12 @@ listEnv = Array(_
 Function DownloadFile(strUrl,strFile)
     Dim objHttp
     Dim httpProxy
-    Set objHttp = Wscript.CreateObject("Msxml2.ServerXMLHTTP")
+    Set objHttp = WScript.CreateObject("Msxml2.ServerXMLHTTP")
     on error resume next
     Call objHttp.Open("GET", strUrl, False )
     if Err.Number <> 0 then
-        Wscript.Echo Err.Description
-        Wscript.Quit
+        WScript.Echo Err.Description
+        WScript.Quit
     end if
     httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
     if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
@@ -336,17 +336,17 @@ Function DownloadFile(strUrl,strFile)
     objHttp.Send
 
     if Err.Number <> 0 then
-        Wscript.Echo Err.Description
-        Wscript.Quit
+        WScript.Echo Err.Description
+        WScript.Quit
     end if
     on error goto 0
     if objHttp.status = 404 then
-        Wscript.Echo ":: [ERROR] :: 404 :: file not found"
-        Wscript.Quit
+        WScript.Echo ":: [ERROR] :: 404 :: file not found"
+        WScript.Quit
     end if
 
     Dim Stream
-    Set Stream = Wscript.CreateObject("ADODB.Stream")
+    Set Stream = WScript.CreateObject("ADODB.Stream")
     Stream.Open
     Stream.Type = 1
     Stream.Write objHttp.responseBody
@@ -360,28 +360,32 @@ Sub clear(cur)
 End Sub
 
 Sub download(cur)
-    Wscript.echo ":: [Downloading] ::  " & cur(0) & " ..."
+    WScript.echo ":: [Downloading] ::  " & cur(0) & " ..."
     DownloadFile cur(3) , cur(2)
 End Sub
 
 Sub extract(cur)
-    If Not objfs.FolderExists( strDirCache ) Then objfs.CreateFolder(strDirCache)
+	If Not objfs.FolderExists( strDirCache ) Then objfs.CreateFolder(strDirCache)
     If Not objfs.FolderExists( strDirVers  ) Then objfs.CreateFolder(strDirVers )
 
     If objfs.FolderExists(cur(1)) Then Exit Sub
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-      Wscript.echo ":: [Installing] ::  " & cur(0) & " ..."
+      WScript.echo ":: [Installing] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
-    objws.Run cur(2) & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & cur(1), 0, true
+	Dim exe_file
+	Dim target_location
+	exe_file = """" & cur(2) & """"
+    target_location = """" & cur(1) & """"
+    objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
     
     If objfs.FolderExists(cur(1)) Then
         objws.Run "pyenv rehash " & cur(0), 0, false
-        Wscript.echo ":: [Info] :: completed! " & cur(0)
+        WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
-        Wscript.echo ":: [Error] :: couldn't install .. " & cur(0)
+        WScript.echo ":: [Error] :: couldn't install .. " & cur(0)
     End If
 End Sub
 
@@ -476,7 +480,7 @@ Sub main(arg)
     Dim cur
     If optList Then
         For Each list In listEnv
-            Wscript.echo list(0)
+            WScript.echo list(0)
         Next
         Exit Sub
     ElseIf version <> "" Then
@@ -488,9 +492,9 @@ Sub main(arg)
                 Exit Sub
             End If
         Next
-        Wscript.echo "pyenv-install: definition not found: " & version
-        Wscript.echo ""
-        Wscript.echo "See all available versions with `pyenv install --list'."
+        WScript.echo "pyenv-install: definition not found: " & version
+        WScript.echo ""
+        WScript.echo "See all available versions with `pyenv install --list'."
     Else
         ShowHelp
     End If
