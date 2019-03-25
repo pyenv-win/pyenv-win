@@ -376,7 +376,9 @@ Sub extract(cur)
     Wscript.echo ":: [Uninstalling] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
-    objws.Run cur(2) & " /uninstall ", 0, true
+	Dim exe_file
+	exe_file = """" & cur(2) & """"
+    objws.Run exe_file & " /uninstall ", 0, true
 
     If objfs.FileExists(cur(1)) Then 
         objfs.DeleteFolder cur(1) , True
