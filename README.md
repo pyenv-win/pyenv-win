@@ -22,9 +22,9 @@ For existing python users, we are supporting installation via pip [follow instru
 
 ## Introduction
 
-The [pyenv][1] for python is a great tool, but it doesn't supports windowns platform directly, which was the same case in [rbenv][2] for ruby developers. After a bit of research and feedbacks from python developers, they loves to have such a feature for windows systems.
+The [pyenv][1] for python is a great tool, but it doesn't supports windows platform directly, which was the same case in [rbenv][2] for ruby developers. After a bit of research and feedbacks from python developers, they loves to have such a feature for windows systems.
 
-I got inspired from the pyenv [issues][4] for windows support, personally I too use mac and linux with beautiful [pyenv][1], but in some companies they still use windows for there development. This library is to help windows users to manage multiple pythons.
+I got inspired from the pyenv [issues][4] for windows support, personally I too use Mac and Linux with beautiful [pyenv][1], but in some companies they still use windows for their development. This library is to help windows users to manage multiple pythons.
 
 Found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some commands doesn't implemented, but wouldn't be a problem in basic use.
 
@@ -54,8 +54,8 @@ Found a similar system for [rbenv-win][3] for ruby developers. This project was 
    1. For command prompt use following command `pip install pyenv-win --target %USERPROFILE%/.pyenv` (or)  
 For git bash or alternative use following command `pip install pyenv-win --target $HOME/.pyenv`
    2. Add the following paths to your ENVIRONMENT PATH variable for accessing to pyenv command
-`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the begining
-      - __ENVIRONMENT PATH :: My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
+`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the beginning
+      - __ENVIRONMENT PATH :: My Computer -> properties -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
    3. Open command prompt (new session) and type `pyenv --version`
    4. You need to see current pyenv version. If you are getting an error go through the steps again still facing the issue [open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
    5. Type `pyenv` to see list of commands it support. [More..](#how-it-works)
@@ -67,8 +67,8 @@ For git bash or alternative use following command `pip install pyenv-win --targe
    1. Link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
    2. Extract to your `%USERPROFILE%/.pyenv/pyenv-win`
    3. Add the following paths to your ENVIRONMENT PATH variable for accessing to pyenv command
-`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the begining
-       - __ENVIRONMENT PATH :: My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
+`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the beginning
+       - __ENVIRONMENT PATH :: My Computer -> properties -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
 
    4. Open command prompt (new session) and type `pyenv --version`
    5. You need to see current pyenv version. If you are getting an error go through the steps again still facing the issue [open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
@@ -81,8 +81,8 @@ For git bash or alternative use following command `pip install pyenv-win --targe
    1. Clone the repository to the user profile  
 `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv/pyenv-win`
    2. Add the following paths to your ENVIRONMENT PATH variable for accessing to pyenv command
-`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the begining
-       - __ENVIRONMENT PATH :: My Computer -> Propertires -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
+`%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the beginning
+       - __ENVIRONMENT PATH :: My Computer -> properties -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
 
    3. Open command prompt (new session) and type `pyenv --version`
    4. You need to see current pyenv version. If you are getting an error go through the steps again still facing the issue [open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
@@ -97,7 +97,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 - To set a python version as global version. `pyenv global 3.5.2` _Note: version needs to be installed_
 - To set a python version as local version. `pyenv local 3.5.2` you can give any version which you wanted to use to the project, this will be auto activated by entering to the folder not like other virtual env. to activate.
 - To uninstall any python version. `pyenv uninstall 3.5.2`
-- To know which python you are using and it's path `pyenv version`
+- To know which python you are using and its path `pyenv version`
 - To view all the python versions installed in this system `pyenv versions`
 
 ## How to get updates
@@ -139,7 +139,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 
 ## Bug Tracker and Support
 
-- Please report any suggestions, bug reports, or annoyances with pyenv-win through the [Github bug tracker](https://github.com/pyenv-win/pyenv-win/issues).
+- Please report any suggestions, bug reports, or annoyances with pyenv-win through the [GitHub bug tracker](https://github.com/pyenv-win/pyenv-win/issues).
 
 ## License and Copyright
 
