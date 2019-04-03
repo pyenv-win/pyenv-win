@@ -78,8 +78,9 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 
 - **Installing by git:**
 
-   1. Clone the repository to the user profile  
-`git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
+   1. Clone the repository to the user profile
+     - In CMD: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
+     - In PowerShell: `git clone https://github.com/pyenv-win/pyenv-win.git $env:USERPROFILE/.pyenv`
    2. Add the following paths to your ENVIRONMENT PATH variable for accessing to pyenv command
 `%USERPROFILE%\.pyenv\pyenv-win\bin;%USERPROFILE%\.pyenv\pyenv-win\shims;` at the beginning
        - __ENVIRONMENT PATH :: My Computer -> properties -> Advanced system settings -> Advanced -> Environment Variables -> PATH__
