@@ -381,7 +381,7 @@ Sub extract(cur)
 	Dim target_location
 	exe_file = """" & cur(2) & """"
     target_location = """" & cur(1) & """"
-    objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+    objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
     
     If objfs.FolderExists(cur(1)) Then
         objws.Run "pyenv rehash " & cur(0), 0, false
