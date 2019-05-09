@@ -96,6 +96,7 @@ For git bash or alternative use following command `pip install pyenv-win --targe
 - To install python version.  `pyenv install 3.5.2` _Note: older version of python is msi file just click on next to install (no need of changing any options it in)_
 - To set a python version as global version. `pyenv global 3.5.2` _Note: version needs to be installed_
 - To set a python version as local version. `pyenv local 3.5.2` you can give any version which you wanted to use to the project, this will be auto activated by entering to the folder not like other virtual env. to activate.
+- Now run `pyenv rehash` from home directory, this will update the python version to pyenv. _Note: definitely outside of `.pyenv` folder_
 - To uninstall any python version. `pyenv uninstall 3.5.2`
 - To know which python you are using and its path `pyenv version`
 - To view all the python versions installed in this system `pyenv versions`
