@@ -26,6 +26,7 @@ Sub ShowHelp()
      WScript.echo "  -l/--list          List all available versions"
      WScript.echo "  -f/--force         Install even if the version appears to be installed already"
      WScript.echo "  -s/--skip-existing Skip if the version appears to be installed already"
+     WScript.echo "  -q/--quiet         Install using /quiet. This does not show the UI nor does it prompt for inputs"
      WScript.echo ""
      WScript.Quit
 End Sub
@@ -383,8 +384,12 @@ Sub extract(cur)
 	Dim target_location
 	exe_file = """" & cur(2) & """"
     target_location = """" & cur(1) & """"
-    objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
-    
+    If cur(5) Then
+        objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+    Else
+        objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+    End If
+
     If objfs.FolderExists(cur(1)) Then
         objws.Run "pyenv rehash " & cur(0), 0, false
         WScript.echo ":: [Info] :: completed! " & cur(0)
@@ -452,11 +457,13 @@ Sub main(arg)
     Dim optForce
     Dim optSkip
     Dim optList
+    Dim optQuiet
     Dim version
 
     optForce=False
     optSkip=False
     optList=False
+    optQuiet=False
     version=""
 
     For idx = 0 To arg.Count - 1
@@ -468,6 +475,8 @@ Sub main(arg)
            Case "--force"         optForce=True
            Case "-s"              optSkip=True
            Case "--skip-existing" optSkip=True
+           Case "-q"              optQuiet=True
+           Case "--quiet"         optQuiet=True
            Case Else
                version = arg(idx)
                Exit For
@@ -490,7 +499,7 @@ Sub main(arg)
     ElseIf version <> "" Then
         For Each list In listEnv
             If list(0) = version Then
-                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
+                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3),optQuiet)
                 If optForce Then  clear(cur)
                 extract(cur)
                 Exit Sub
