@@ -1,0 +1,4 @@
+Default: https://www.python.org/ftp/python/
+Others:
+    http://mirrors.sohu.com/python/
+    http://npm.taobao.org/mirrors/python/
