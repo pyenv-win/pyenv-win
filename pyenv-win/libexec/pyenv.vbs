@@ -128,8 +128,13 @@ Sub ExecCommand(str)
     ofile.Close()
 End Sub
 
+Sub GetPyenvVersion()
+     Dim fileReader As String
+     GetPyenvVersion = My.Computer.FileSystem.ReadAllText("../../.version", System.Text.Encoding.UTF32)
+End Sub
+
 Sub ShowHelp()
-	 WScript.echo "pyenv 1.2.2"
+     WScript.echo "pyenv '"&GetPyenvVersion&"'"
      WScript.echo "Usage: pyenv <command> [<args>]"
      WScript.echo ""
      WScript.echo "Some useful pyenv commands are:"
