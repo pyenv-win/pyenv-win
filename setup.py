@@ -15,7 +15,7 @@ setup(
 	long_description_content_type = 'text/markdown',
 	url = 'https://github.com/pyenv-win/pyenv-win.git',
 	author = 'Kiran Kumar Kotari',
-	author_email='kotarikirankumar@gmail.com',
+	author_email='kirankotari@live.com',
 	classifiers = [
 		'Development Status :: 5 - Production/Stable',
 		'Intended Audience :: Developers',
