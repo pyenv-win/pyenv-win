@@ -15,7 +15,7 @@ echo.
 EXIT /B
 )
 
-IF "%PYENV%" == ""(
+IF "%PYENV%" == "" (
     set /p version="1.2.2"
     echo PYENV variable is not set, recommended to set the variable.
 ) ELSE (

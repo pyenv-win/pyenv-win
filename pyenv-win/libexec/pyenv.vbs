@@ -2,6 +2,7 @@ Option Explicit
 
 Dim objws
 Dim objfs
+Dim objCmdExec
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objfs = CreateObject("Scripting.FileSystemObject")
 
@@ -132,12 +133,23 @@ Sub ExecCommand(str)
     ofile.Close()
 End Sub
 
+Function getCommandOutput(theCommand)
+    Set objCmdExec = objws.exec(thecommand)
+    getCommandOutput = objCmdExec.StdOut.ReadAll
+end Function
+
 Sub CommandShims(arg)
-     Dim cmd
-     cmd="dir " & strDirShims & " /s /b"
+     Dim shims_files
+     If arg.Count < 2 then
+     ' WScript.echo join(arg.ToArray(), ", ")
      ' if --short passed then remove /s from cmd
-     WScript.echo cmd
-     objws.Run cmd, 1, true
+        shims_files = getCommandOutput("cmd /c dir "&strDirShims&"/s /b")
+     ElseIf arg(1) = "--short" then
+        shims_files = getCommandOutput("cmd /c dir "&strDirShims&" /b")
+     Else
+        shims_files = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-shims.bat --help")
+     End IF
+     WScript.echo shims_files
 End Sub
 
 Sub ShowHelp()
@@ -384,7 +396,7 @@ Sub main(arg)
            Case "commands"    CommandCommands(arg)
            Case "shims"       CommandShims(arg)
            Case "help"        CommandHelp(arg)
-           Case "--help"        CommandHelp(arg)
+           Case "--help"      CommandHelp(arg)
            Case Else          PlugIn(arg)
         End Select
     End If
