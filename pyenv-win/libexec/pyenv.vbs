@@ -194,6 +194,12 @@ End Sub
 
 
 Sub CommandRehash(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-rehash.bat --help")
+           End Sub
+	End If
+    End If
     Dim strDirShims
     strDirShims= strPyenvHome & "\shims"
     If Not objfs.FolderExists( strDirShims ) Then objfs.CreateFolder(strDirShims)
@@ -231,6 +237,13 @@ Sub CommandRehash(arg)
 End Sub
 
 Sub CommandExecute(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-exec.bat --help")
+           End Sub
+	End If
+    End If
+
     Dim str
     Dim dstr
     dstr=GetBinDir(GetCurrentVersion()(0))
@@ -248,6 +261,12 @@ Sub CommandExecute(arg)
 End Sub
 
 Sub CommandGlobal(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-global.bat --help")
+           End Sub
+	End If
+    End If
     If arg.Count < 2 Then  
         Dim ver
         ver=GetCurrentVersionGlobal()
@@ -266,6 +285,12 @@ Sub CommandGlobal(arg)
 End Sub
 
 Sub CommandLocal(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-local.bat --help")
+           End Sub
+	End If
+    End If
     Dim ver
     If arg.Count < 2 Then  
         ver=GetCurrentVersionLocal(strCurrent)
@@ -291,6 +316,12 @@ Sub CommandLocal(arg)
 End Sub
 
 Sub CommandShell(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-shell.bat --help")
+           End Sub
+	End If
+    End If
     Dim ver
     If arg.Count < 2 Then  
         ver=GetCurrentVersionShell
@@ -311,6 +342,12 @@ Sub CommandShell(arg)
 End Sub
 
 Sub CommandVersion(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-version.bat --help")
+           End Sub
+	End If
+    End If
     If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
@@ -319,6 +356,13 @@ Sub CommandVersion(arg)
 End Sub
 
 Sub CommandVersions(arg)
+    If arg.Count > 2 then
+	If arg(1) = "--help" then
+           getCommandOutput("cmd /c "&strDirLibs&"\pyenv-versions.bat --help")
+           End Sub
+	End If
+    End If
+
     Dim isBare
 
     isBare=False
