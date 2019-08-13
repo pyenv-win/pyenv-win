@@ -134,6 +134,7 @@ Sub ShowHelp()
      WScript.echo ""
      WScript.echo "Some useful pyenv commands are:"
      WScript.echo "   commands    List all available pyenv commands"
+     WScript.echo "   duplicate   Creates a duplicate python environment"
      WScript.echo "   local       Set or show the local application-specific Python version"
      WScript.echo "   global      Set or show the global Python version"
      WScript.echo "   shell       Set or show the shell-specific Python version"
