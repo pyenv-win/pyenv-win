@@ -7,15 +7,18 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 	long_description = f.read()
 
+with open(path.join(here, '.version'), encoding='utf-8') as f:
+	version = f.read()
+
 setup(
-	name='pyenv-win',
-	version='1.2.2',
-	description="pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.",
+	name = 'pyenv-win',
+	version = version,
+	description = "pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.",
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
 	url = 'https://github.com/pyenv-win/pyenv-win.git',
 	author = 'Kiran Kumar Kotari',
-	author_email='kirankotari@live.com',
+	author_email = 'kirankotari@live.com',
 	classifiers = [
 		'Development Status :: 5 - Production/Stable',
 		'Intended Audience :: Developers',
