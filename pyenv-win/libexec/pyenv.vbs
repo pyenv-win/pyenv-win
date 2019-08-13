@@ -7,15 +7,19 @@ Set objfs = CreateObject("Scripting.FileSystemObject")
 
 Dim strCurrent
 Dim strPyenvHome
+Dim strPyenvParent
 Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
+Dim strDirShims
 Dim strVerFile
 strCurrent   = objfs.GetAbsolutePathName(".")
 strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
+strPyenvParent = objfs.getParentFolderName(strPyenvHome)
 strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
+strDirShims  = strPyenvHome & "\shims"
 strVerFile   = "\.python-version"
 
 Function IsVersion(version)
@@ -128,17 +132,15 @@ Sub ExecCommand(str)
     ofile.Close()
 End Sub
 
-Sub GetPyenvVersion()
-     GetPyenvVersion = My.Computer.FileSystem.ReadAllText("../../.version", System.Text.Encoding.UTF32)
-End Sub
-
 Sub CommandShims(arg)
-     Dim ShimsCmd = "dir /s /d %PYENV%"
-     CommandShims = ShimsCmd.RunCMD()
+     Dim cmd
+     cmd="dir " & strDirShims & " /s /b"
+     WScript.echo cmd
+     objws.Run cmd, 0, true
 End Sub
 
 Sub ShowHelp()
-     WScript.echo "pyenv '"&GetPyenvVersion&"'"
+     WScript.echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
      WScript.echo "Usage: pyenv <command> [<args>]"
      WScript.echo ""
      WScript.echo "Some useful pyenv commands are:"
