@@ -129,8 +129,12 @@ Sub ExecCommand(str)
 End Sub
 
 Sub GetPyenvVersion()
-     Dim fileReader As String
      GetPyenvVersion = My.Computer.FileSystem.ReadAllText("../../.version", System.Text.Encoding.UTF32)
+End Sub
+
+Sub CommandShims(arg)
+     Dim ShimsCmd = "dir /s /d %PYENV%"
+     CommandShims = ShimsCmd.RunCMD()
 End Sub
 
 Sub ShowHelp()
@@ -375,6 +379,7 @@ Sub main(arg)
            Case "version"     CommandVersion(arg)
            Case "versions"    CommandVersions(arg)
            Case "commands"    CommandCommands(arg)
+           Case "shims"       CommandShims(arg)
            Case "help"        CommandHelp(arg)
            Case "--help"        CommandHelp(arg)
            Case Else          PlugIn(arg)
