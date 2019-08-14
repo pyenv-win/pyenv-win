@@ -2,10 +2,10 @@
 setlocal
 
 if "%1" == "--help" (
-echo Usage: pyenv which <command>
+echo Usage: pyenv which ^<command^>
 echo.
 echo Shows the full path of the executable
-echo selected. To obtain the full path , use `pyenv which pip'.
+echo selected. To obtain the full path, use `pyenv which pip'.
 EXIT /B
 )
 
