@@ -154,6 +154,30 @@ Sub CommandShims(arg)
      WScript.echo shims_files
 End Sub
 
+Sub CommandWhich(arg)
+    If arg.Count >= 2 then
+        If arg(1) = "--help" then
+            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-which.bat --help")
+            WScript.echo help
+            Exit Sub
+        End If
+    End If
+
+     WScript.echo "TO be added"
+End Sub
+
+Sub CommandWhence(arg)
+    If arg.Count >= 2 then
+        If arg(1) = "--help" then
+            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-whence.bat --help")
+            WScript.echo help
+            Exit Sub
+        End If
+    End If
+
+     WScript.echo "TO be added"
+End Sub
+
 Sub ShowHelp()
      WScript.echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
      WScript.echo "Usage: pyenv <command> [<args>]"
@@ -170,14 +194,11 @@ Sub ShowHelp()
      WScript.echo "   version     Show the current Python version and its origin"
      WScript.echo "   versions    List all Python versions available to pyenv"
      WScript.echo "   exec        Runs an executable by first preparing PATH so that the selected Python"
+     WScript.echo "   which       Display the full path to an executable"
+     WScript.echo "   whence      List all Python versions that contain the given executable"
      WScript.echo ""
      WScript.echo "See `pyenv help <command>' for information on a specific command."
      WScript.echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
-     Exit Sub
-
-
-     WScript.echo "   which       Display the full path to an executable"
-     WScript.echo "   whence      List all Python versions that contain the given executable"
 End Sub
 
 Sub CommandHelp(arg)
@@ -469,6 +490,8 @@ Sub main(arg)
            Case "versions"    CommandVersions(arg)
            Case "commands"    CommandCommands(arg)
            Case "shims"       CommandShims(arg)
+           Case "which"       CommandWhich(arg)
+           Case "whence"      CommandWhence(arg)
            Case "help"        CommandHelp(arg)
            Case "--help"      CommandHelp(arg)
            Case Else          PlugIn(arg)
