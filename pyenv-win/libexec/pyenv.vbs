@@ -339,7 +339,11 @@ Sub CommandLocal(arg)
             GetBinDir(ver)
         End If
         Dim ofile
-        Set ofile = objfs.CreateTextFile( strCurrent & strVerFile , True )
+        If objfs.FileExists(strCurrent & strVerFile) Then
+          Set ofile = objfs.OpenTextFile ( strCurrent & strVerFile , 2 )
+        Else
+          Set ofile = objfs.CreateTextFile( strCurrent & strVerFile , True )
+        End If
         ofile.WriteLine(ver)
         ofile.Close()
     End If
