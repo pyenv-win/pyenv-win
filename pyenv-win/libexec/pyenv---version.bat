@@ -16,10 +16,10 @@ EXIT /B
 )
 
 IF "%PYENV%" == "" (
-    set /p version="1.2.2"
+    set version="1.2.2"
     echo PYENV variable is not set, recommended to set the variable.
 ) ELSE (
-    set /p version=<%PYENV%/../.version
+    set version=<%PYENV%/../.version
 )
 echo pyenv %version%
 
