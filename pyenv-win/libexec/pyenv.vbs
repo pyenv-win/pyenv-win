@@ -234,8 +234,9 @@ Sub CommandRehash(arg)
     For Each file In objfs.GetFolder(strDirShims).Files
         objfs.DeleteFile file, True
     Next
+
     For Each file In objfs.GetFolder(GetBinDir(GetCurrentVersion()(0))).Files
-        If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" Then
+        If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" or objfs.GetExtensionName(file) = "py" Then
           Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
           ofile.WriteLine("@echo off")
           ofile.WriteLine("pyenv exec %~n0 %*")
@@ -247,18 +248,20 @@ Sub CommandRehash(arg)
         End If
     Next
     
-    For Each file In objfs.GetFolder(GetBinDir(GetCurrentVersion()(0)) & "\Scripts").Files
-        If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" Then
-          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-          ofile.WriteLine("@echo off")
-          ofile.WriteLine("pyenv exec Scripts/%~n0 %*")
-          ofile.Close()
-          Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-          ofile.WriteLine("#!/bin/sh")
-          ofile.WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
-          ofile.Close()
-        End If
-    Next
+    If objfs.FolderExists(GetBinDir(GetCurrentVersion()(0)) & "\Scripts") Then
+        For Each file In objfs.GetFolder(GetBinDir(GetCurrentVersion()(0)) & "\Scripts").Files
+            If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" or objfs.GetExtensionName(file) = "py" Then
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
+            ofile.WriteLine("@echo off")
+            ofile.WriteLine("pyenv exec Scripts/%~n0 %*")
+            ofile.Close()
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+            ofile.WriteLine("#!/bin/sh")
+            ofile.WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
+            ofile.Close()
+            End If
+        Next
+    End If
 End Sub
 
 Sub CommandExecute(arg)
