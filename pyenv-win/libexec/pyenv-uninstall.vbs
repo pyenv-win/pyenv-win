@@ -394,6 +394,7 @@ Sub extract(cur)
     objws.CurrentDirectory = strDirCache
 	Dim exe_file
 	exe_file = """" & cur(2) & """"
+    WScript.echo ":: [Path] :: " & exe_file
     objws.Run exe_file & " /uninstall ", 0, true
 
     If objfs.FileExists(cur(1)) Then 
