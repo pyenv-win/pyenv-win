@@ -338,16 +338,25 @@ listEnv = Array(_
 Function DownloadFile(strUrl,strFile)
     Dim objHttp
     Dim httpProxy
-    Set objHttp = WScript.CreateObject("Msxml2.ServerXMLHTTP")
+    Dim proxyArr
+    Set objHttp = WScript.CreateObject("WinHttp.WinHttpRequest.5.1")
     on error resume next
+    httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
+    if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
+        if InStr(1, httpProxy, "@") > 0 then
+            ' The http_proxy environment variable is set with basic authentication
+            ' WinHttp seems to work fine without the credentials, so we should be
+            ' okay with just the hostname/port part
+            proxyArr = Split(httpProxy, "@")
+            objHttp.setProxy 2, proxyArr(1)
+        else
+            objHttp.setProxy 2, httpProxy
+        end if
+    end if
     Call objHttp.Open("GET", strUrl, False )
     if Err.Number <> 0 then
         WScript.Echo Err.Description
         WScript.Quit
-    end if
-    httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
-    if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
-        objHttp.setProxy 2, httpProxy
     end if
     objHttp.Send
 
