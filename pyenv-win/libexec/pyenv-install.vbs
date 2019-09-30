@@ -42,6 +42,22 @@ WScript.echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
+    Array("3.8.0b4", mirror&"/3.8.0/", "python-3.8.0b4.exe", "i386"),_
+    Array("3.8.0b4-amd64", mirror&"/3.8.0/", "python-3.8.0b4-amd64.exe", "x64"),_
+    Array("3.8.0b3", mirror&"/3.8.0/", "python-3.8.0b3.exe", "i386"),_
+    Array("3.8.0b3-amd64", mirror&"/3.8.0/", "python-3.8.0b3-amd64.exe", "x64"),_
+    Array("3.8.0b2", mirror&"/3.8.0/", "python-3.8.0b2.exe", "i386"),_
+    Array("3.8.0b2-amd64", mirror&"/3.8.0/", "python-3.8.0b2-amd64.exe", "x64"),_
+    Array("3.8.0b1", mirror&"/3.8.0/", "python-3.8.0b1.exe", "i386"),_
+    Array("3.8.0b1-amd64", mirror&"/3.8.0/", "python-3.8.0b1-amd64.exe", "x64"),_
+    Array("3.8.0a4", mirror&"/3.8.0/", "python-3.8.0a4.exe", "i386"),_
+    Array("3.8.0a4-amd64", mirror&"/3.8.0/", "python-3.8.0a4-amd64.exe", "x64"),_
+    Array("3.8.0a3", mirror&"/3.8.0/", "python-3.8.0a3.exe", "i386"),_
+    Array("3.8.0a3-amd64", mirror&"/3.8.0/", "python-3.8.0a3-amd64.exe", "x64"),_
+    Array("3.8.0a2", mirror&"/3.8.0/", "python-3.8.0a2.exe", "i386"),_
+	Array("3.8.0a2-amd64", mirror&"/3.8.0/", "python-3.8.0a2-amd64.exe", "x64"),_
+    Array("3.8.0a1", mirror&"/3.8.0/", "python-3.8.0a1.exe", "i386"),_
+    Array("3.8.0a1-amd64", mirror&"/3.8.0/", "python-3.8.0a1-amd64.exe", "x64"),_
     Array("3.7.4", mirror&"/3.7.4/", "python-3.7.4.exe", "i386"),_
     Array("3.7.4-amd64", mirror&"/3.7.4/", "python-3.7.4-amd64.exe", "x64"),_
     Array("3.7.3", mirror&"/3.7.3/", "python-3.7.3.exe", "i386"),_
