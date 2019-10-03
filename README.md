@@ -1,8 +1,8 @@
 # pyenv for Windows
 
-The [pyenv][1] is a great tool. I ported it to Windows. Some commands doesn't implemented, but wouldn't be a problem in basic use.
+[pyenv][1] is a great tool. I ported it to Windows. Some commands aren't implemented, but it's good enough for basic use.
 
-For existing python users, we are supporting installation via pip [follow instructions](#installation)
+For existing python users, we support installation via pip: [follow instructions](#installation)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
@@ -10,7 +10,7 @@ For existing python users, we are supporting installation via pip [follow instru
 
 - [Introduction](#introduction)
 - [pyenv](#pyenv)
-- [pyenv-win does](#pyenv-win-does)
+- [pyenv-win commands](#pyenv-win-commands)
 - [Installation](#installation)
    - [Get pyenv-win](#get-pyenv-win)
    - [Finish the installation](#finish-the-installation)
@@ -24,17 +24,17 @@ For existing python users, we are supporting installation via pip [follow instru
 
 ## Introduction
 
-The [pyenv][1] for python is a great tool, but it doesn't supports windows platform directly, which was the same case in [rbenv][2] for ruby developers. After a bit of research and feedbacks from python developers, they loves to have such a feature for windows systems.
+[pyenv][1] for python is a great tool but, like [rbenv][2] for ruby developers, it doesn't support Windows directly. After a bit of research and feedback from python developers, I discovered they wanted a similiar feature for Windows systems.
 
-I got inspired from the pyenv [issues][4] for windows support, personally I too use Mac and Linux with beautiful [pyenv][1], but in some companies they still use windows for their development. This library is to help windows users to manage multiple pythons.
+I got inspired from the pyenv [issue][4] for Windows support. Personally, I use Mac and Linux with beautiful [pyenv][1], but some companies still use Windows for development. This library is to help Windows users manage multiple python versions.
 
-Found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some commands doesn't implemented, but wouldn't be a problem in basic use.
+I found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some command aren't implemented, but it's good enough for basic use.
 
 ## pyenv
 
 [pyenv][1] is a simple python version management tool. It lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
 
-## pyenv-win does
+## pyenv-win commands
 
 ```yml
    commands    List all available pyenv commands
@@ -95,30 +95,31 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
 
 ## How to get updates
 
-- Installed via pip
-   - Add pyenv-win installed path to `easy_install.pth` file which is located in site-package. Now pyenv-win is recognised by pip 
+- If installed via pip
+   - Add pyenv-win installed path to `easy_install.pth` file which is located in site-package. Now pyenv-win is recognised by pip
    - Get updates via pip `pip install --upgrade pyenv-win`
-- Installed via git
-   - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and type `git pull`
-- Installed via zip
-   - Go to the path `%USERPROFILE$/.pyenv/pyenv-win/` replace `libexec` and `bin` folder 
+- If installed via Git
+   - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and run `git pull`
+- If installed via zip
+   - Download the latest zip and extract it
+   - Go to `%USERPROFILE%/.pyenv/pyenv-win/` and replace the folders `libexec` and `bin` with the new ones you just downloaded
 
 ## FAQ
 
-- **Question:** Does pyenv for windows support python2?  
- **Answer:** Yes, We are supporting python2 from the version 2.0.1. We are supporting from 2.0.1 until the python.org officially removes.
+- **Question:** Does pyenv for windows support python2?
+   - **Answer:** Yes, We support python2 from version 2.0.1. We support it from 2.0.1 until python.org officially removes it.
 
-- **Question:** Does pyenv for windows support python3?  
- **Answer:** Yes, we are supporting python3 from the version 3.0. We are supporting from 3.0 until the python.org officially removes.
+- **Question:** Does pyenv for windows support python3?
+   - **Answer:** Yes, we support python3 from version 3.0. We support it from 3.0 until python.org officially removes it.
 
-- **Question:** I am getting an issue `batch file cannot be found.` while installing python, what to do?  
-  **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
+- **Question:** I am getting the issue `batch file cannot be found.` while installing python, what should I do?
+   - **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
 
-- **Question:** System is stuck while uninstalling the python version, what to do?  
-  **Answer:** It's based on the system policies in few computers, recommend to uninstall in these computers by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
+- **Question:** System is stuck while uninstalling the python version, what to do?
+   - **Answer:** It's based on the system policies in some computers, recommend to uninstall in these computers by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
 
-- **Question:** I installed pyenv-win using pip how to uninstall it?  
-  **Answer:** Follow How to get updates in pip [link](#how-to-get-updates) and then `pip uninstall pyenv-win`
+- **Question:** I installed pyenv-win using pip. How can I uninstall it?
+   - **Answer:** Follow the pip instructions in [How to get updates](#how-to-get-updates) and then run `pip uninstall pyenv-win`
 
 ## How to contribute
 
