@@ -143,7 +143,7 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
 
 ## Author and Thanks
 
-pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and Contributors
+pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)
 
 [1]: https://github.com/pyenv/pyenv
 [2]: https://github.com/rbenv/rbenv
