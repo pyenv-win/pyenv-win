@@ -69,6 +69,7 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
       - `%USERPROFILE%\.pyenv\pyenv-win\bin`
       - `%USERPROFILE%\.pyenv\pyenv-win\shims`
       - __ENVIRONMENT PATH :: This PC -> Properties -> Advanced system settings -> Advanced -> Environment Variables... -> PATH__
+      - _Be careful! People who uses Windows (>= May 2019 Update) must put these items above `%USERPROFILE%\AppData\Local\Microsoft\WindowsApps`; See [this article](https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/)._
    2. Verify the installation was successful by opening a new terminal and running `pyenv --version`
    3. Now run the `pyenv rehash` from home directory
       - You should see the [current pyenv version](https://github.com/pyenv-win/pyenv-win/blob/master/setup.py). If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
