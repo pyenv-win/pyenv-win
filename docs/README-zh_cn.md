@@ -1,7 +1,3 @@
-# Docs Language
-
-[简体中文](docs\README-zh_cn.md)
-
 # pyenv for Windows
 
 [pyenv][1] is a great tool. I ported it to Windows. Some commands aren't implemented, but it's good enough for basic use.
