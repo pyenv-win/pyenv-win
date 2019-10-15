@@ -1,6 +1,6 @@
 # Docs Language
 
-[简体中文](docs\README-zh_cn.md)
+[简体中文](docs/README-zh_cn.md)
 
 # pyenv for Windows
 
