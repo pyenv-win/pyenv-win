@@ -43,7 +43,7 @@ WScript.echo ":: [Info] ::  Mirror: " & mirror
 Dim listEnv
 listEnv = Array(_
     Array("3.8.0", mirror&"/3.8.0/", "python-3.8.0.exe", "i386"),_
-    Array("3.8.0b4-amd64", mirror&"/3.8.0/", "python-3.8.0-amd64.exe", "x64"),_
+    Array("3.8.0-amd64", mirror&"/3.8.0/", "python-3.8.0-amd64.exe", "x64"),_
     Array("3.8.0rc1", mirror&"/3.8.0/", "python-3.8.0rc1.exe", "i386"),_
     Array("3.8.0rc1-amd64", mirror&"/3.8.0/", "python-3.8.0rc1-amd64.exe", "x64"),_
     Array("3.8.0b4", mirror&"/3.8.0/", "python-3.8.0b4.exe", "i386"),_
