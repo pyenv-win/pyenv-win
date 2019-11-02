@@ -62,6 +62,8 @@ listEnv = Array(_
     Array("3.8.0a2-amd64", mirror&"/3.8.0/", "python-3.8.0a2-amd64.exe", "x64"),_
     Array("3.8.0a1", mirror&"/3.8.0/", "python-3.8.0a1.exe", "i386"),_
     Array("3.8.0a1-amd64", mirror&"/3.8.0/", "python-3.8.0a1-amd64.exe", "x64"),_
+    Array("3.7.5", mirror&"/3.7.5/", "python-3.7.5.exe", "i386"),_
+    Array("3.7.5-amd64", mirror&"/3.7.5/", "python-3.7.5-amd64.exe", "x64"),_
     Array("3.7.4", mirror&"/3.7.4/", "python-3.7.4.exe", "i386"),_
     Array("3.7.4-amd64", mirror&"/3.7.4/", "python-3.7.4-amd64.exe", "x64"),_
     Array("3.7.3", mirror&"/3.7.3/", "python-3.7.3.exe", "i386"),_
