@@ -62,6 +62,9 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
    2. Extract to `%USERPROFILE%/.pyenv/pyenv-win`
 - **With Git**
    - `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
+- **With [Chocolatey](https://chocolatey.org/)**
+   - `choco install pyenv-win`
+   - this will automagically create a shim, verify by opening a terminal and running `pyenv --version` 
 
 ### Finish the installation
 
