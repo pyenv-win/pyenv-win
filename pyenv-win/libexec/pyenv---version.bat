@@ -16,7 +16,7 @@ EXIT /B
 )
 
 IF "%PYENV%" == "" (
-    set version="1.2.2"
+    set version="1.2.3"
     echo PYENV variable is not set, recommended to set the variable.
 ) ELSE (
     set version=<%PYENV%/../.version
