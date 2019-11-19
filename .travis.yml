@@ -5,7 +5,7 @@ matrix:
     - os: windows
       language: sh
       before_install:
-        - choco install pyenv-win
+        - choco install pyenv-win --yes
         - pyenv --version
         - type .python-version
         - pyenv install -q .python-version
