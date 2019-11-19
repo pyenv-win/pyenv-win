@@ -38,5 +38,5 @@ setup(
 	keywords = 'pyenv for windows, multiple versions of python',
 	packages = find_packages(exclude=['tests']),
 	package_dir = {'pyenv-win': 'pyenv-win'},
-	package_data = {'pyenv-win': ['bin/*', 'libexec/*']},
+	package_data = {'pyenv-win': ['bin/*', 'libexec/*', '../.version']},
 )
