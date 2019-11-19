@@ -1,0 +1,4 @@
+pytest-cov==2.6.0
+pytest==4.0.2
+coveralls==1.5.1
+pathlib==1.0.1
