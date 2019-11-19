@@ -1,11 +1,15 @@
 language: python
 sudo: false
-os:
-  - windows
-
-install:
-  - pyenv install .python-version
-  - pip install -r requirements_dev.txt
+matrix:
+  include:
+    - os: windows
+      language: sh
+      before_install:
+        - choco install pyenv-win
+        - pyenv --version
+        - type .python-version
+        - pyenv install -q .python-version
+        - pip install -r requirements_dev.txt
 
 script:
   - "PYTHONPATH=. pytest -v -s --cov=pyenv-win tests"
