@@ -22,10 +22,13 @@ class TestPyenv:
         ver_path = str(setup.parent.parent / '.version')
         version = open(ver_path).read()
         result = subprocess.run(['pyenv', '--version'], capture_output=True)
-        error = str(result.stderr.decode("utf-8"))
-        result = str(result.stdout.decode("utf-8"))
-
-        if error:
-            assert False
-        assert version in result
+        print(":: Result :: {}".format(result))
+        print(":: Version :: {}".format(version))
+        assert version in str(result.stdout, "utf-8")
+    
+    def test_pyenv_features(self, setup):
+        result = subprocess.run(['pyenv'], capture_output=True)
+        print(":: Result :: {}".format(result))
+        result = str(result.stdout, "utf-8")
+        assert 'install' in result
     pass
