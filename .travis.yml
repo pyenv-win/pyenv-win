@@ -18,7 +18,7 @@ matrix:
         - pip install -r requirements_dev.txt
         
 script:
-  - "python -m pytest -v -s tests"
+  - "PYTHONPATH=. python -m pytest -v -s tests"
 
 after_success:
   - coveralls
