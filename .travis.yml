@@ -5,29 +5,20 @@ matrix:
     - os: windows
       language: sh
       before_install:
-        - git --version
         - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
-        - export PYENV="$HOME/.pyenv/pyenv-win"
-        - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims$PATH"
-        - echo $PYENV
+        - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
         - pyenv --version
         - cd $HOME/.pyenv
         - git checkout -b v1.2.5 origin/v1.2.5
-        - cat .python-version
         - pyenv install -q < .python-version
         - pyenv rehash
-        - pyenv versions
-        - pyenv global < .python-version
+        - pyenv local < .python-version
         - pyenv versions
         - python --version
-        - cat requirements_dev.txt
-        - ls $HOME/.pyenv/pyenv-win/shims
-        - python -m pip
-        - pip
         - pip install -r requirements_dev.txt
-
+        
 script:
-  - "PYTHONPATH=. pytest -v -s --cov=pyenv-win tests"
+  - "python -m pytest -v -s tests"
 
 after_success:
   - coveralls
