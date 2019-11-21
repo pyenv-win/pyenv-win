@@ -22,13 +22,10 @@ class TestPyenv:
         ver_path = str(setup.parent.parent / '.version')
         version = open(ver_path).read().strip()
         result = subprocess.run(['pyenv'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(":: Result :: {}".format(result))
-        print(":: Version :: {}".format(version))
         assert version in str(result.stdout, "utf-8")
     
     def test_check_pyenv_features_list(self, setup):
         result = subprocess.run(['pyenv'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(":: Result :: {}".format(result))
         result = str(result.stdout, "utf-8")
         assert 'commands' in result
         assert 'duplicate' in result
@@ -43,3 +40,8 @@ class TestPyenv:
         assert 'exec' in result
         assert 'which' in result
         assert 'whence' in result
+    
+    def test_check_pyenv_install_list(self, setup):
+        result = subprocess.run(['pyenv', 'install', '-l'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(':: Result :: {}'.format(result.stdout))
+        print(':: Error :: {}'.format(result.stderr))
