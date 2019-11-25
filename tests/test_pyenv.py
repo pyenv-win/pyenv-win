@@ -3,8 +3,7 @@ import sys
 import subprocess
 from pathlib import Path
 
-class TestPyenv:
-
+class TestPyenvBase:
     @pytest.fixture
     def setup(self):
         pyenv_path = Path.cwd()
@@ -14,6 +13,8 @@ class TestPyenv:
         sys.path.append(str(shims_path))
         yield bin_path
 
+
+class TestPyenv(TestPyenvBase):    
     def test_check_pyenv_path(self, setup):
         assert setup.exists() is True
         assert str(setup) in sys.path
@@ -41,7 +42,5 @@ class TestPyenv:
         assert 'which' in result
         assert 'whence' in result
     
-    def test_check_pyenv_install_list(self, setup):
-        result = subprocess.run(['pyenv', 'install', '-l'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(':: Result :: {}'.format(result.stdout))
-        print(':: Error :: {}'.format(result.stderr))
+    def test_check_pyenv_help(self, setup):
+        pass
