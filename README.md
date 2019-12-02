@@ -68,7 +68,8 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
 
 ### Finish the installation
    
-   1. Add a new variable in ENVIRONMENT with name: `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win` 
+   1. Add a new variable under System variables in ENVIRONMENT with name:  
+      `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win` 
    2. Now add the following paths to your ENVIRONMENT PATH variable in order to access the pyenv command (don't forget to separate with semicolons):
       - `%PYENV%\bin`
       - `%PYENV%\shims`
