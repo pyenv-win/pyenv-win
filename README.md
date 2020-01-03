@@ -93,7 +93,7 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
 - To set a python version as the local version: `pyenv local 3.5.2`.
    - The version given will be used whenever `python` is called from within this folder. This is different than a virtual env, which needs to be explicitly activated.
    - _Note: The version must first be installed_
-- To use the version of pip in the installed version through `pyenv` use the command `python -m pip __command__` in `\.pyenv\pyenv-win\versions\3.5.4`  
+- To use the version of pip in the installed version through `pyenv` use the command `python -m pip __command__` in `\.pyenv\pyenv-win\versions\x.x.x`  
 - After (un)installing any python version, you must run `pyenv rehash` to update pyenv with the new python version.
    - _Note: This must be run outside of the `.pyenv` folder_
 - To uninstall a python version: `pyenv uninstall 3.5.2`
