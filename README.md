@@ -2,7 +2,10 @@
 
 [pyenv][1] is a great tool. I ported it to Windows. Some commands aren't implemented, but it's good enough for basic use.
 
-For existing python users, we support installation via pip: [follow instructions](#installation)
+For existing python users, we support installation via pip: [follow instructions](#installation)  
+Contributors and Interested people can join us @ [Slack](https://join.slack.com/t/pyenvforwindows/shared_invite/enQtODQ0NTQwMjEzOTA4LWE1YjMwMGI3YTAwYjg0MGQzNjg1ZjJiYTMzMTJkNWM4NTY5OTY4YmU3ZjhjMTc3MGJhMDY1MmJkMjFmY2ViNTI)
+
+>  Link to Official [2019 Python Developers Survey](https://surveys.jetbrains.com/s3/c16-python-developers-survey-2019)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
@@ -70,8 +73,9 @@ Get pyenv-win via one of the following methods:
 ### Finish the installation
 
    1. If you installed using Chocolatey, you can skip to step 3.
-      Otherwise, add a new variable in ENVIRONMENT with name: `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win`
-   2. Now add the following paths to your ENVIRONMENT PATH variable in order to access the pyenv command (don't forget to separate with semicolons):
+      Otherwise, add a new *System* variable in ENVIRONMENT with name:  
+      `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win`
+   2. Now add the following paths to your *System* ENVIRONMENT PATH variable in order to access the pyenv command (don't forget to separate with semicolons):  
       - `%PYENV%\bin`
       - `%PYENV%\shims`
       
