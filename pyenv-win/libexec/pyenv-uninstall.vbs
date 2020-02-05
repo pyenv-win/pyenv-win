@@ -44,6 +44,8 @@ WScript.echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
+    Array("3.8.1", mirror&"/3.8.1/", "python-3.8.1.exe", "i386"),_
+    Array("3.8.1-amd64", mirror&"/3.8.1/", "python-3.8.1-amd64.exe", "x64"),_
     Array("3.8.0", mirror&"/3.8.0/", "python-3.8.0.exe", "i386"),_
     Array("3.8.0-amd64", mirror&"/3.8.0/", "python-3.8.0-amd64.exe", "x64"),_
     Array("3.8.0rc1", mirror&"/3.8.0/", "python-3.8.0rc1.exe", "i386"),_
@@ -64,14 +66,24 @@ listEnv = Array(_
     Array("3.8.0a2-amd64", mirror&"/3.8.0/", "python-3.8.0a2-amd64.exe", "x64"),_
     Array("3.8.0a1", mirror&"/3.8.0/", "python-3.8.0a1.exe", "i386"),_
     Array("3.8.0a1-amd64", mirror&"/3.8.0/", "python-3.8.0a1-amd64.exe", "x64"),_
+    Array("3.7.6", mirror&"/3.7.6/", "python-3.7.6.exe", "i386"),_
+    Array("3.7.6-amd64", mirror&"/3.7.6/", "python-3.7.6-amd64.exe", "x64"),_
+    Array("3.7.5", mirror&"/3.7.5/", "python-3.7.5.exe", "i386"),_
+    Array("3.7.5-amd64", mirror&"/3.7.5/", "python-3.7.5-amd64.exe", "x64"),_
     Array("3.7.4", mirror&"/3.7.4/", "python-3.7.4.exe", "i386"),_
     Array("3.7.4-amd64", mirror&"/3.7.4/", "python-3.7.4-amd64.exe", "x64"),_
     Array("3.7.3", mirror&"/3.7.3/", "python-3.7.3.exe", "i386"),_
     Array("3.7.3-amd64", mirror&"/3.7.3/", "python-3.7.3-amd64.exe", "x64"),_
+    Array("2.7.17", mirror&"/2.7.17/", "python-2.7.17.msi", "i386"),_
+    Array("2.7.17.amd64", mirror&"/2.7.17/", "python-2.7.17.amd64.msi", "x64"),_
     Array("2.7.16", mirror&"/2.7.16/", "python-2.7.16.msi", "i386"),_
     Array("2.7.16.amd64", mirror&"/2.7.16/", "python-2.7.16.amd64.msi", "x64"),_
     Array("3.7.2", mirror&"/3.7.2/", "python-3.7.2.exe", "i386"),_
     Array("3.7.2-amd64", mirror&"/3.7.2/", "python-3.7.2-amd64.exe", "x64"),_
+    Array("3.6.10", mirror&"/3.6.10/", "python-3.6.10.exe", "i386"),_
+    Array("3.6.10-amd64", mirror&"/3.6.10/", "python-3.6.10-amd64.exe", "x64"),_
+    Array("3.6.9", mirror&"/3.6.9/", "python-3.6.9.exe", "i386"),_
+    Array("3.6.9-amd64", mirror&"/3.6.9/", "python-3.6.9-amd64.exe", "x64"),_
     Array("3.6.8", mirror&"/3.6.8/", "python-3.6.8.exe", "i386"),_
     Array("3.6.8-amd64", mirror&"/3.6.8/", "python-3.6.8-amd64.exe", "x64"),_
     Array("3.7.2rc1", mirror&"/3.7.2/", "python-3.7.2rc1.exe", "i386"),_
@@ -393,8 +405,8 @@ Function DownloadFile(strUrl,strFile)
 End Function
 
 Sub clear(cur)
-    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True 
-    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True 
+    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True
+    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True
 End Sub
 
 Sub download(cur)
@@ -419,7 +431,7 @@ Sub extract(cur)
     WScript.echo ":: [Path] :: " & exe_file
     objws.Run exe_file & " /uninstall ", 0, true
 
-    If objfs.FileExists(cur(1)) Then 
+    If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
 
@@ -427,7 +439,7 @@ Sub extract(cur)
         WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
         WScript.echo ":: [Error] :: Couldn't able to uninstall"
-    End If  
+    End If
 End Sub
 
 Sub extract_msi(cur)
@@ -441,10 +453,10 @@ Sub extract_msi(cur)
     objws.CurrentDirectory = strDirCache
     objws.Run "msiexec /x " & cur(2), 1, true
 
-    If objfs.FileExists(cur(1)) Then 
+    If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
-    
+
     If Not objfs.FileExists(cur(1)) Then
         WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
