@@ -62,7 +62,7 @@ Get pyenv-win via one of the following methods. (Note: examples are in command p
    - `pip install pyenv-win --target %USERPROFILE%/.pyenv`
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
-   2. Extract to `%USERPROFILE%/.pyenv/pyenv-win`
+   2. Extract to `%USERPROFILE%/.pyenv`
 - **With Git**
    - `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
 
