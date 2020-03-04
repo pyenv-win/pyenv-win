@@ -187,19 +187,20 @@ Sub ShowHelp()
      WScript.Echo "Usage: pyenv <command> [<args>]"
      WScript.Echo ""
      WScript.Echo "Some useful pyenv commands are:"
-     WScript.Echo "   commands    List all available pyenv commands"
-     WScript.Echo "   duplicate   Creates a duplicate python environment"
-     WScript.Echo "   local       Set or show the local application-specific Python version"
-     WScript.Echo "   global      Set or show the global Python version"
-     WScript.Echo "   shell       Set or show the shell-specific Python version"
-     WScript.Echo "   install     Install a Python version using python-build"
-     WScript.Echo "   uninstall   Uninstall a specific Python version"
-     WScript.Echo "   rehash      Rehash pyenv shims (run this after installing executables)"
-     WScript.Echo "   version     Show the current Python version and its origin"
-     WScript.Echo "   versions    List all Python versions available to pyenv"
-     WScript.Echo "   exec        Runs an executable by first preparing PATH so that the selected Python"
-     WScript.Echo "   which       Display the full path to an executable"
-     WScript.Echo "   whence      List all Python versions that contain the given executable"
+     WScript.Echo "   commands     List all available pyenv commands"
+     WScript.Echo "   duplicate    Creates a duplicate python environment"
+     WScript.Echo "   local        Set or show the local application-specific Python version"
+     WScript.Echo "   global       Set or show the global Python version"
+     WScript.Echo "   shell        Set or show the shell-specific Python version"
+     WScript.Echo "   install      Install a Python version using python-build"
+     WScript.Echo "   uninstall    Uninstall a specific Python version"
+     WScript.Echo "   rehash       Rehash pyenv shims (run this after installing executables)"
+     WScript.Echo "   version      Show the current Python version and its origin"
+     WScript.Echo "   version-name Show the current Python version"
+     WScript.Echo "   versions     List all Python versions available to pyenv"
+     WScript.Echo "   exec         Runs an executable by first preparing PATH so that the selected Python"
+     WScript.Echo "   which        Display the full path to an executable"
+     WScript.Echo "   whence       List all Python versions that contain the given executable"
      WScript.Echo ""
      WScript.Echo "See `pyenv help <command>' for information on a specific command."
      WScript.Echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
@@ -376,6 +377,16 @@ Sub CommandVersion(arg)
     WScript.Echo curVer(0) & " (set by " &curVer(1)&")"
 End Sub
 
+Sub CommandVersionName(arg)
+    If arg.Count >= 2 Then
+        If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
+    End If
+
+    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+
+    WScript.Echo GetCurrentVersion()(0)
+End Sub
+
 Sub CommandVersions(arg)
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
@@ -456,20 +467,21 @@ Sub main(arg)
         ShowHelp
     Else
         Select Case arg(0)
-           Case "exec"        CommandExecute(arg)
-           Case "rehash"      CommandRehash(arg)
-           Case "global"      CommandGlobal(arg)
-           Case "local"       CommandLocal(arg)
-           Case "shell"       CommandShell(arg)
-           Case "version"     CommandVersion(arg)
-           Case "versions"    CommandVersions(arg)
-           Case "commands"    CommandCommands(arg)
-           Case "shims"       CommandShims(arg)
-           Case "which"       CommandWhich(arg)
-           Case "whence"      CommandWhence(arg)
-           Case "help"        CommandHelp(arg)
-           Case "--help"      CommandHelp(arg)
-           Case Else          PlugIn(arg)
+           Case "exec"         CommandExecute(arg)
+           Case "rehash"       CommandRehash(arg)
+           Case "global"       CommandGlobal(arg)
+           Case "local"        CommandLocal(arg)
+           Case "shell"        CommandShell(arg)
+           Case "version"      CommandVersion(arg)
+           Case "version-name" CommandVersionName(arg)
+           Case "versions"     CommandVersions(arg)
+           Case "commands"     CommandCommands(arg)
+           Case "shims"        CommandShims(arg)
+           Case "which"        CommandWhich(arg)
+           Case "whence"       CommandWhence(arg)
+           Case "help"         CommandHelp(arg)
+           Case "--help"       CommandHelp(arg)
+           Case Else           PlugIn(arg)
         End Select
     End If
 End Sub
