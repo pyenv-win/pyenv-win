@@ -23,8 +23,6 @@ strDirLibs   = strPyenvHome & "\libexec"
 strDirShims  = strPyenvHome & "\shims"
 strVerFile   = "\.python-version"
 
-Dim help
-
 Function IsVersion(version)
     Dim re
     Set re = new regexp
@@ -128,6 +126,13 @@ Function GetCommandList()
     Set GetCommandList = cmdList
 End Function
 
+Sub PrintHelp(cmd, exitCode)
+    Dim help
+    help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
+    WScript.Echo help
+    WScript.Quit exitCode
+End Sub
+
 Sub ExecCommand(str)
     Dim ofile
     Set ofile = CreateObject("ADODB.Stream")
@@ -158,24 +163,20 @@ Sub CommandShims(arg)
 End Sub
 
 Sub CommandWhich(arg)
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-which.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+    If arg.Count < 2 Then
+        PrintHelp "pyenv-which", 1
+    ElseIf arg(1) = "--help" Or arg(1) = "" Then
+        PrintHelp "pyenv-which", Abs(arg(1) = "")
     End If
 
      WScript.Echo "TO be added"
 End Sub
 
 Sub CommandWhence(arg)
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-whence.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+    If arg.Count < 2 Then
+        PrintHelp "pyenv-whence", 1
+    ElseIf arg(1) = "--help" Or arg(1) = "" Then
+        PrintHelp "pyenv-whence", Abs(arg(1) = "")
     End If
 
      WScript.Echo "TO be added"
@@ -221,11 +222,7 @@ End Sub
 
 Sub CommandRehash(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-rehash.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
     End If
 
     Dim strDirBin
@@ -269,11 +266,7 @@ End Sub
 
 Sub CommandExecute(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-exec.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-exec", 0
     End If
 
     Dim str
@@ -294,11 +287,7 @@ End Sub
 
 Sub CommandGlobal(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-global.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
     If arg.Count < 2 Then  
@@ -320,11 +309,7 @@ End Sub
 
 Sub CommandLocal(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-local.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-local", 0
     End If
 
     Dim ver
@@ -357,11 +342,7 @@ End Sub
 
 Sub CommandShell(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-shell.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-shell", 0
     End If
 
     Dim ver
@@ -385,11 +366,7 @@ End Sub
 
 Sub CommandVersion(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-version.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
 
     If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
@@ -401,11 +378,7 @@ End Sub
 
 Sub CommandVersions(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-versions.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
     End If
 
     Dim isBare
@@ -438,11 +411,7 @@ End Sub
 
 Sub PlugIn(arg)
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-"&arg(0)&".bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-"& arg(0), 0
     End If
 
     Dim fname
@@ -469,11 +438,7 @@ Sub CommandCommands(arg)
     Dim cname
 
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-commands.bat --help")
-            WScript.Echo help
-            Exit Sub
-        End If
+        If arg(1) = "--help" Then PrintHelp "pyenv-commands", 0
     End If
 
     For Each cname In GetCommandList()
