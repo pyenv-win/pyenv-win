@@ -179,7 +179,85 @@ Sub CommandWhence(arg)
         PrintHelp "pyenv-whence", Abs(arg(1) = "")
     End If
 
-     WScript.Echo "TO be added"
+    Dim program
+    Dim exts
+    Dim ext
+    dim path
+    Dim dir
+    Dim isPath
+    Dim found
+    Dim foundAny ' Acts as an exit code: 0=Success, 1=No files/versions found
+
+    If arg(1) = "--path" Then
+        If arg.Count < 3 Then PrintHelp "pyenv-whence", 1
+        isPath = True
+        program = arg(2)
+    Else
+        program = arg(1)
+    End If
+
+    If program = "" Then PrintHelp "pyenv-whence", 1
+    If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
+
+    exts = Split(objws.Environment("Process")("PATHEXT"), ";")
+    foundAny = 1
+
+    For Each dir In objfs.GetFolder(strDirVers).subfolders
+        found = False
+
+        If objfs.FileExists(dir & "\" & program) Then
+            found = True
+            foundAny = 0
+            If isPath Then
+                WScript.Echo objfs.GetFile(dir & "\" & program).Path
+            Else
+                WScript.Echo objfs.GetFileName( dir )
+            End If
+        End If
+
+        If Not found Or isPath Then
+            For Each ext In exts
+                If objfs.FileExists(dir & "\" & program & ext) Then
+                    found = True
+                    foundAny = 0
+                    If isPath Then
+                        WScript.Echo objfs.GetFile(dir & "\" & program & ext).Path
+                    Else
+                        WScript.Echo objfs.GetFileName( dir )
+                    End If
+                    Exit For
+                End If
+            Next
+        End If
+
+        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
+            If objfs.FileExists(dir & "\Scripts\" & program) Then
+                found = True
+                foundAny = 0
+                If isPath Then
+                    WScript.Echo objfs.GetFile(dir & "\Scripts\" & program).Path
+                Else
+                    WScript.Echo objfs.GetFileName( dir )
+                End If
+            End If
+        End If
+
+        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
+            For Each ext In exts
+                If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
+                    foundAny = 0
+                    If isPath Then
+                        WScript.Echo objfs.GetFile(dir & "\Scripts\" & program & ext).Path
+                    Else
+                        WScript.Echo objfs.GetFileName( dir )
+                    End If
+                    Exit For
+                End If
+            Next
+        End If
+    Next
+
+    WScript.Quit foundAny
 End Sub
 
 Sub ShowHelp()
