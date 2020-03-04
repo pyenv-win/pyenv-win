@@ -68,8 +68,8 @@ Function GetCurrentVersionShell()
     GetCurrentVersionShell = Null
 
     Dim str
-    str = objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
-    If str <> "%PYENV_VERSION%" Then
+    str = objws.Environment("Process")("PYENV_VERSION")
+    If str <> "" Then
         GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
     End If
 End Function
@@ -162,6 +162,22 @@ Sub CommandShims(arg)
      WScript.Echo shims_files
 End Sub
 
+'Function RemoveFromPath(pathToRemove)
+'    Dim path_before
+'    Dim result
+
+'    result = objws.Environment("Process")("PATH")
+'    If Left(result, 1) <> ";" Then result = ";"&result
+'    If Right(result, 1) <> ";" Then result = result&";"
+
+'    Do While path_before <> result
+'        path_before = result
+'        result = Replace(result, ";"& pathToRemove &";", ";")
+'    Loop
+
+'    RemoveFromPath = Mid(result, 2, Len(result)-2)
+'End Function
+
 Sub CommandWhich(arg)
     If arg.Count < 2 Then
         PrintHelp "pyenv-which", 1
@@ -169,7 +185,61 @@ Sub CommandWhich(arg)
         PrintHelp "pyenv-which", Abs(arg(1) = "")
     End If
 
-     WScript.Echo "TO be added"
+    Dim path
+    Dim program
+    Dim exts
+    Dim ext
+    Dim version
+
+    program = arg(1)
+    version = objws.Environment("Process")("PYENV_VERSION")
+
+    If program = "" Then PrintHelp "pyenv-which", 1
+    If version = "" Then version = GetCurrentVersion()(0)
+    If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
+
+    exts = Split(objws.Environment("Process")("PATHEXT"), ";")
+
+    If Not objfs.FolderExists(strDirVers &"\"& version) Then
+        WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
+        WScript.Quit 1
+    End If
+
+    If objfs.FileExists(strDirVers &"\"& version &"\"& program) Then
+        WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program).Path
+        WScript.Quit 0
+    End If
+
+    For Each ext In exts
+        If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
+            WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
+            WScript.Quit 0
+        End If
+    Next
+
+    If objfs.FolderExists(strDirVers &"\"& version & "\Scripts") Then
+        If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program) Then
+            WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program).Path
+            WScript.Quit 0
+        End If
+
+        For Each ext In exts
+            If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
+                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
+                WScript.Quit 0
+            End If
+        Next
+    End If
+    WScript.Echo "pyenv: "& arg(1) &": command not found"
+
+    version = getCommandOutput("cscript //Nologo "& WScript.ScriptFullName &" whence "& program)
+    If Trim(version) <> "" Then
+        WScript.Echo
+        WScript.Echo "The `"& arg(1) &"' command exists in these Python versions:"
+        WScript.Echo "  "& Replace(version, vbCrLf, vbCrLf &"  ")
+    End If
+
+    WScript.Quit 127
 End Sub
 
 Sub CommandWhence(arg)
