@@ -126,6 +126,19 @@ Function GetCommandList()
     Set GetCommandList = cmdList
 End Function
 
+Function PyExtensions()
+    Dim exts
+    exts = ";"& objws.Environment("Process")("PATHEXT") &";"
+
+    If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
+    If InStr(1, exts, ";.PYW;", 1) = 0 Then exts = exts &".PYW;"
+    exts = Mid(exts, 2, Len(exts)-2)
+    Do While InStr(1, exts, ";;", 1) <> 0
+        exts = Replace(exts, ";;", ";")
+    Loop
+    PyExtensions = Split(exts, ";")
+End Function
+
 Sub PrintHelp(cmd, exitCode)
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
@@ -198,7 +211,7 @@ Sub CommandWhich(arg)
     If version = "" Then version = GetCurrentVersion()(0)
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = Split(objws.Environment("Process")("PATHEXT"), ";")
+    exts = PyExtensions()
 
     If Not objfs.FolderExists(strDirVers &"\"& version) Then
         WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
@@ -269,7 +282,7 @@ Sub CommandWhence(arg)
     If program = "" Then PrintHelp "pyenv-whence", 1
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = Split(objws.Environment("Process")("PATHEXT"), ";")
+    exts = PyExtensions()
     foundAny = 1
 
     For Each dir In objfs.GetFolder(strDirVers).subfolders
