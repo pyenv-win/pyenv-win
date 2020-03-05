@@ -31,13 +31,9 @@ Sub ShowHelp()
     WScript.Quit
 End Sub
 
-Dim mirrorEnvPath
-mirrorEnvPath = "%PYTHON_BUILD_MIRROR_URL%"
 Dim mirror
-mirror = objws.ExpandEnvironmentStrings(mirrorEnvPath)
-If mirror = mirrorEnvPath Then
-    mirror = "https://www.python.org/ftp/python"
-End If
+mirror = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
+If mirror = "" Then mirror = "https://www.python.org/ftp/python"
 WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
@@ -373,8 +369,8 @@ Function DownloadFile(strUrl, strFile)
     Dim proxyArr
     Set objHttp = WScript.CreateObject("WinHttp.WinHttpRequest.5.1")
     On Error Resume Next
-    httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
-    If httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
+    httpProxy = objws.Environment("Process")("http_proxy")
+    If httpProxy <> "" Then
         If InStr(1, httpProxy, "@") > 0 Then
             ' The http_proxy environment variable is set with basic authentication
             ' WinHttp seems to work fine without the credentials, so we should be
@@ -490,10 +486,8 @@ Function GetCurrentVersionShell()
     GetCurrentVersionShell = Null
 
     Dim str
-    str = objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
-    If str <> "%PYENV_VERSION%" Then
-        GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
-    End If
+    str = objws.Environment("Process")("PYENV_VERSION")
+    If str <> "" Then GetCurrentVersionShell = Array(str, "%PYENV_VERSION%")
 End Function
 
 Function GetCurrentVersionNoError()
