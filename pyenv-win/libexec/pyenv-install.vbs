@@ -19,26 +19,26 @@ strDirLibs   = strPyenvHome & "\libexec"
 strVerFile   = "\.python-version"
 
 Sub ShowHelp()
-     WScript.echo "Usage: pyenv install [-f|-s] <version>"
-     WScript.echo "       pyenv install [-f|-s] <definition-file>"
-     WScript.echo "       pyenv install -l|--list"
-     WScript.echo ""
-     WScript.echo "  -l/--list          List all available versions"
-     WScript.echo "  -f/--force         Install even if the version appears to be installed already"
-     WScript.echo "  -s/--skip-existing Skip if the version appears to be installed already"
-     WScript.echo "  -q/--quiet         Install using /quiet. This does not show the UI nor does it prompt for inputs"
-     WScript.echo ""
-     WScript.Quit
+    WScript.Echo "Usage: pyenv install [-f|-s] <version>"
+    WScript.Echo "       pyenv install [-f|-s] <definition-file>"
+    WScript.Echo "       pyenv install -l|--list"
+    WScript.Echo ""
+    WScript.Echo "  -l/--list          List all available versions"
+    WScript.Echo "  -f/--force         Install even if the version appears to be installed already"
+    WScript.Echo "  -s/--skip-existing Skip if the version appears to be installed already"
+    WScript.Echo "  -q/--quiet         Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo ""
+    WScript.Quit
 End Sub
 
 Dim mirrorEnvPath
 mirrorEnvPath = "%PYTHON_BUILD_MIRROR_URL%"
 Dim mirror
 mirror = objws.ExpandEnvironmentStrings(mirrorEnvPath)
-If mirror = mirrorEnvPath then
+If mirror = mirrorEnvPath Then
     mirror = "https://www.python.org/ftp/python"
 End If
-WScript.echo ":: [Info] ::  Mirror: " & mirror
+WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
@@ -367,41 +367,41 @@ listEnv = Array(_
     Array("2.0.1", mirror&"/2.0.1/", "Python-2.0.1.exe", "i386")_
 )
 
-Function DownloadFile(strUrl,strFile)
+Function DownloadFile(strUrl, strFile)
     Dim objHttp
     Dim httpProxy
     Dim proxyArr
     Set objHttp = WScript.CreateObject("WinHttp.WinHttpRequest.5.1")
-    on error resume next
+    On Error Resume Next
     httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
-    if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
-        if InStr(1, httpProxy, "@") > 0 then
+    If httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
+        If InStr(1, httpProxy, "@") > 0 Then
             ' The http_proxy environment variable is set with basic authentication
             ' WinHttp seems to work fine without the credentials, so we should be
             ' okay with just the hostname/port part
             proxyArr = Split(httpProxy, "@")
             objHttp.setProxy 2, proxyArr(1)
-        else
+        Else
             objHttp.setProxy 2, httpProxy
-        end if
-    end if
-    Call objHttp.Open("GET", strUrl, False )
-    if Err.Number <> 0 then
+        End If
+    End If
+    Call objHttp.Open("GET", strUrl, False)
+    If Err.Number <> 0 Then
         WScript.Echo Err.Description
         WScript.Quit
-    end if
+    End If
     objHttp.Send
-
-    if Err.Number <> 0 then
+    
+    If Err.Number <> 0 Then
         WScript.Echo Err.Description
         WScript.Quit
-    end if
-    on error goto 0
-    if objHttp.status = 404 then
+    End If
+    On Error GoTo 0
+    If objHttp.status = 404 Then
         WScript.Echo ":: [ERROR] :: 404 :: file not found"
         WScript.Quit
-    end if
-
+    End If
+    
     Dim Stream
     Set Stream = WScript.CreateObject("ADODB.Stream")
     Stream.Open
@@ -412,43 +412,43 @@ Function DownloadFile(strUrl,strFile)
 End Function
 
 Sub clear(cur)
-    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True 
-    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True 
+    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1), True 
+    If objfs.FileExists(cur(2)) Then objfs.DeleteFile cur(2), True 
 End Sub
 
 Sub download(cur)
-    WScript.echo ":: [Downloading] ::  " & cur(0) & " ..."
-    WScript.echo ":: [Downloading] ::  From " & cur(3)
-    WScript.echo ":: [Downloading] ::  To   " & cur(2)
-    DownloadFile cur(3) , cur(2)
+    WScript.Echo ":: [Downloading] ::  " & cur(0) & " ..."
+    WScript.Echo ":: [Downloading] ::  From " & cur(3)
+    WScript.Echo ":: [Downloading] ::  To   " & cur(2)
+    DownloadFile cur(3), cur(2)
 End Sub
 
 Sub extract(cur)
-	If Not objfs.FolderExists( strDirCache ) Then objfs.CreateFolder(strDirCache)
-    If Not objfs.FolderExists( strDirVers  ) Then objfs.CreateFolder(strDirVers )
+    If Not objfs.FolderExists(strDirCache) Then objfs.CreateFolder(strDirCache)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     If objfs.FolderExists(cur(1)) Then Exit Sub
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-      WScript.echo ":: [Installing] ::  " & cur(0) & " ..."
+    WScript.Echo ":: [Installing] ::  " & cur(0) & " ..."
 
     objws.CurrentDirectory = strDirCache
-	Dim exe_file
-	Dim target_location
-	exe_file = """" & cur(2) & """"
+    Dim exe_file
+    Dim target_location
+    exe_file = """" & cur(2) & """"
     target_location = """" & cur(1) & """"
     If cur(5) Then
-        objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+        objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, True
     Else
-        objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, true
+        objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, True
     End If
 
     If objfs.FolderExists(cur(1)) Then
-        objws.Run "pyenv rehash " & cur(0), 0, false
-        WScript.echo ":: [Info] :: completed! " & cur(0)
+        objws.Run "pyenv rehash " & cur(0), 0, False
+        WScript.Echo ":: [Info] :: completed! " & cur(0)
     Else
-        WScript.echo ":: [Error] :: couldn't install .. " & cur(0)
+        WScript.Echo ":: [Error] :: couldn't install .. " & cur(0)
     End If
 End Sub
 
@@ -458,10 +458,10 @@ Function GetCurrentVersionGlobal()
     Dim fname
     Dim objFile
     fname = strPyenvHome & "\version"
-    If objfs.FileExists( fname ) Then
+    If objfs.FileExists(fname) Then
         Set objFile = objfs.OpenTextFile(fname)
         If objFile.AtEndOfStream <> True Then
-           GetCurrentVersionGlobal = Array(objFile.ReadLine,fname)
+            GetCurrentVersionGlobal = Array(objFile.ReadLine, fname)
         End If
         objFile.Close
     End If
@@ -474,10 +474,10 @@ Function GetCurrentVersionLocal(path)
     Dim objFile
     Do While path <> ""
         fname = path & strVerFile
-        If objfs.FileExists( fname ) Then
+        If objfs.FileExists(fname) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
-               GetCurrentVersionLocal = Array(objFile.ReadLine,fname)
+                GetCurrentVersionLocal = Array(objFile.ReadLine, fname)
             End If
             objFile.Close
             Exit Function
@@ -490,7 +490,7 @@ Function GetCurrentVersionShell()
     GetCurrentVersionShell = Null
 
     Dim str
-    str=objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
+    str = objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
     If str <> "%PYENV_VERSION%" Then
         GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
     End If
@@ -498,7 +498,7 @@ End Function
 
 Function GetCurrentVersionNoError()
     Dim str
-    str=GetCurrentVersionShell
+    str = GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
     If IsNull(str) Then str = GetCurrentVersionGlobal
     GetCurrentVersionNoError = str
@@ -514,54 +514,61 @@ Sub main(arg)
     Dim optQuiet
     Dim version
 
-    optForce=False
-    optSkip=False
-    optList=False
-    optQuiet=False
-    version=""
+    optForce = False
+    optSkip = False
+    optList = False
+    optQuiet = False
+    version = ""
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-           Case "--help"          ShowHelp
-           Case "-l"              optList=True
-           Case "--list"          optList=True
-           Case "-f"              optForce=True
-           Case "--force"         optForce=True
-           Case "-s"              optSkip=True
-           Case "--skip-existing" optSkip=True
-           Case "-q"              optQuiet=True
-           Case "--quiet"         optQuiet=True
-           Case Else
-               version = arg(idx)
-               Exit For
+            Case "--help"          ShowHelp
+            Case "-l"              optList = True
+            Case "--list"          optList = True
+            Case "-f"              optForce = True
+            Case "--force"         optForce = True
+            Case "-s"              optSkip = True
+            Case "--skip-existing" optSkip = True
+            Case "-q"              optQuiet = True
+            Case "--quiet"         optQuiet = True
+            Case Else
+                version = arg(idx)
+                Exit For
         End Select
     Next
 
     If version = "" Then
         Dim ary
-        ary=GetCurrentVersionNoError()
-        If Not IsNull(ary) Then version=ary(0)
+        ary = GetCurrentVersionNoError()
+        If Not IsNull(ary) Then version = ary(0)
     End If
 
     Dim list
     Dim cur
     If optList Then
         For Each list In listEnv
-            WScript.echo list(0)
+            WScript.Echo list(0)
         Next
         Exit Sub
     ElseIf version <> "" Then
         For Each list In listEnv
             If list(0) = version Then
-                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3),optQuiet)
-                If optForce Then  clear(cur)
+                cur = Array(
+                    list(0),_
+                    strDirVers &"\"& list(0),_
+                    strDirCache &"\"& list(2),_
+                    list(1) & list(2),_
+                    list(3),_
+                    optQuiet_
+                )
+                If optForce Then clear(cur)
                 extract(cur)
                 Exit Sub
             End If
         Next
-        WScript.echo "pyenv-install: definition not found: " & version
-        WScript.echo ""
-        WScript.echo "See all available versions with `pyenv install --list'."
+        WScript.Echo "pyenv-install: definition not found: " & version
+        WScript.Echo
+        WScript.Echo "See all available versions with `pyenv install --list'."
     Else
         ShowHelp
     End If
