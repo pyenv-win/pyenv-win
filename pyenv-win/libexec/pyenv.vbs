@@ -1,35 +1,25 @@
 Option Explicit
 
-Dim objws
-Dim objfs
-Dim objweb
 Dim objCmdExec
-Set objws = WScript.CreateObject("WScript.Shell")
-Set objfs = CreateObject("Scripting.FileSystemObject")
-Set objweb = CreateObject("MSXML2.XMLHTTP.6.0")
 
-Dim strCurrent
-Dim strPyenvHome
-Dim strPyenvParent
-Dim strDirCache
-Dim strDirVers
-Dim strDirLibs
-Dim strDirShims
-Dim strVerFile
-strCurrent   = objfs.GetAbsolutePathName(".")
-strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strPyenvParent = objfs.getParentFolderName(strPyenvHome)
-strDirCache  = strPyenvHome & "\install_cache"
-strDirVers   = strPyenvHome & "\versions"
-strDirLibs   = strPyenvHome & "\libexec"
-strDirShims  = strPyenvHome & "\shims"
-strVerFile   = "\.python-version"
+Sub Import(importFile)
+    Dim fso, libFile
+    On Error Resume Next
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set libFile = fso.OpenTextFile(fso.getParentFolderName(WScript.ScriptFullName) &"\"& importFile, 1)
+    ExecuteGlobal libFile.ReadAll
+    If Err.number <> 0 Then
+        WScript.Echo "Error importing library """& importFile &"""("& Err.Number &"): "& Err.Description
+        WScript.Quit 1
+    End If
+    libFile.Close
+End Sub
 
-Dim mirror
+Import "pyenv-lib.vbs"
+Import "pyenv-install-lib.vbs"
+
 Dim regexVer
 Dim regexFile
-mirror = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
-If mirror = "" Then mirror = "https://www.python.org/ftp/python"
 Set regexVer = New RegExp
 Set regexFile = New RegExp
 With regexVer
@@ -42,78 +32,6 @@ With regexFile
     .Global = True
     .IgnoreCase = True
 End With
-
-Function IsVersion(version)
-    Dim re
-    Set re = new regexp
-    re.Pattern = "^[a-zA-Z_0-9-.]+$"
-    IsVersion = re.Test(version)
-End Function
-
-Function GetCurrentVersionGlobal()
-    GetCurrentVersionGlobal = Null
-
-    Dim fname
-    Dim objFile
-    fname = strPyenvHome & "\version"
-    If objfs.FileExists( fname ) Then
-        Set objFile = objfs.OpenTextFile(fname)
-        If objFile.AtEndOfStream <> True Then
-           GetCurrentVersionGlobal = Array(objFile.ReadLine,fname)
-        End If
-        objFile.Close
-    End If
-End Function
-
-Function GetCurrentVersionLocal(path)
-    GetCurrentVersionLocal = Null
-
-    Dim fname
-    Dim objFile
-    Do While path <> ""
-        fname = path & strVerFile
-        If objfs.FileExists( fname ) Then
-            Set objFile = objfs.OpenTextFile(fname)
-            If objFile.AtEndOfStream <> True Then
-               GetCurrentVersionLocal = Array(objFile.ReadLine,fname)
-            End If
-            objFile.Close
-            Exit Function
-        End If
-        path = objfs.getParentFolderName(path)
-    Loop
-End Function
-
-Function GetCurrentVersionShell()
-    GetCurrentVersionShell = Null
-
-    Dim str
-    str = objws.Environment("Process")("PYENV_VERSION")
-    If str <> "" Then
-        GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
-    End If
-End Function
-
-Function GetCurrentVersion()
-    Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
-    If IsNull(str) Then 
-        WScript.Echo "No global python version has been set yet. Please set the global version by typing:"
-        WScript.Echo "pyenv global 3.7.2"
-        WScript.Quit
-    End If
-    GetCurrentVersion = str
-End Function
-
-Function GetCurrentVersionNoError()
-    Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
-    GetCurrentVersionNoError = str
-End Function
 
 Function GetBinDir(ver)
     Dim str

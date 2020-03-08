@@ -1,22 +1,22 @@
 Option Explicit
 
-Dim objws
-Dim objfs
-Set objws = WScript.CreateObject("WScript.Shell")
-Set objfs = CreateObject("Scripting.FileSystemObject")
+Sub Import(importFile)
+    Dim fso, libFile
+    On Error Resume Next
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set libFile = fso.OpenTextFile(fso.getParentFolderName(WScript.ScriptFullName) &"\"& importFile, 1)
+    ExecuteGlobal libFile.ReadAll
+    If Err.number <> 0 Then
+        WScript.Echo "Error importing library """& importFile &"""("& Err.Number &"): "& Err.Description
+        WScript.Quit 1
+    End If
+    libFile.Close
+End Sub
 
-Dim strCurrent
-Dim strPyenvHome
-Dim strDirCache
-Dim strDirVers
-Dim strDirLibs
-Dim strVerFile
-strCurrent   = objfs.GetAbsolutePathName(".")
-strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strDirCache  = strPyenvHome & "\install_cache"
-strDirVers   = strPyenvHome & "\versions"
-strDirLibs   = strPyenvHome & "\libexec"
-strVerFile   = "\.python-version"
+Import "pyenv-lib.vbs"
+Import "pyenv-install-lib.vbs"
+
+WScript.Echo ":: [Info] ::  Mirror: "& mirror
 
 Sub ShowHelp()
      WScript.Echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
@@ -32,15 +32,6 @@ Sub ShowHelp()
      WScript.Echo ""
      WScript.Quit
 End Sub
-
-Dim mirrorEnvPath
-mirrorEnvPath = "%PYTHON_BUILD_MIRROR_URL%"
-Dim mirror
-mirror = objws.ExpandEnvironmentStrings(mirrorEnvPath)
-If mirror = mirrorEnvPath then
-    mirror = mirror&""
-End If
-WScript.echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
@@ -369,46 +360,6 @@ listEnv = Array(_
     Array("2.0.1", mirror&"/2.0.1/", "Python-2.0.1.exe", "i386")_
 )
 
-Function DownloadFile(strUrl,strFile)
-    Dim objHttp
-    Dim httpProxy
-    Set objHttp = WScript.CreateObject("Msxml2.ServerXMLHTTP")
-    on error resume next
-    Call objHttp.Open("GET", strUrl, False )
-    if Err.Number <> 0 then
-        WScript.Echo Err.Description
-        WScript.Quit
-    end if
-    httpProxy = objws.ExpandEnvironmentStrings("%http_proxy%")
-    if httpProxy <> "" AND httpProxy <> "%http_proxy%" Then
-        objHttp.setProxy 2, httpProxy
-    end if
-    objHttp.Send
-
-    if Err.Number <> 0 then
-        WScript.Echo Err.Description
-        WScript.Quit
-    end if
-    on error goto 0
-    if objHttp.status = 404 then
-        WScript.Echo ":: [ERROR] :: 404 :: file not found"
-        WScript.Quit
-    end if
-
-    Dim Stream
-    Set Stream = WScript.CreateObject("ADODB.Stream")
-    Stream.Open
-    Stream.Type = 1
-    Stream.Write objHttp.responseBody
-    Stream.SaveToFile strFile, 2
-    Stream.Close
-End Function
-
-Sub clear(cur)
-    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True
-    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True
-End Sub
-
 Sub download(cur)
     WScript.Echo ":: [Downloading] ::  "& cur(0) &" ..."
     WScript.Echo ":: [Downloading] ::  From "& cur(3)
@@ -463,13 +414,6 @@ Sub extract_msi(cur)
         WScript.Echo ":: [Error] :: Couldn't able to uninstall"
     End If
 End Sub
-
-Function IsVersion(version)
-    Dim re
-    Set re = new regexp
-    re.Pattern = "^[a-zA-Z_0-9-.]+$"
-    IsVersion = re.Test(version)
-End Function
 
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp

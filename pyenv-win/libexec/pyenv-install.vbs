@@ -1,22 +1,22 @@
 Option Explicit
 
-Dim objws
-Dim objfs
-Set objws = WScript.CreateObject("WScript.Shell")
-Set objfs = CreateObject("Scripting.FileSystemObject")
+Sub Import(importFile)
+    Dim fso, libFile
+    On Error Resume Next
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set libFile = fso.OpenTextFile(fso.getParentFolderName(WScript.ScriptFullName) &"\"& importFile, 1)
+    ExecuteGlobal libFile.ReadAll
+    If Err.number <> 0 Then
+        WScript.Echo "Error importing library """& importFile &"""("& Err.Number &"): "& Err.Description
+        WScript.Quit 1
+    End If
+    libFile.Close
+End Sub
 
-Dim strCurrent
-Dim strPyenvHome
-Dim strDirCache
-Dim strDirVers
-Dim strDirLibs
-Dim strVerFile
-strCurrent   = objfs.GetAbsolutePathName(".")
-strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strDirCache  = strPyenvHome & "\install_cache"
-strDirVers   = strPyenvHome & "\versions"
-strDirLibs   = strPyenvHome & "\libexec"
-strVerFile   = "\.python-version"
+Import "pyenv-lib.vbs"
+Import "pyenv-install-lib.vbs"
+
+WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv install [-f|-s] <version>"
@@ -30,11 +30,6 @@ Sub ShowHelp()
     WScript.Echo ""
     WScript.Quit
 End Sub
-
-Dim mirror
-mirror = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
-If mirror = "" Then mirror = "https://www.python.org/ftp/python"
-WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
@@ -361,55 +356,6 @@ listEnv = Array(_
     Array("3.8.1-amd64", mirror&"/3.8.1/", "python-3.8.1-amd64.exe", "x64")_
 )
 
-Function DownloadFile(strUrl, strFile)
-    Dim objHttp
-    Dim httpProxy
-    Dim proxyArr
-    Set objHttp = WScript.CreateObject("WinHttp.WinHttpRequest.5.1")
-    On Error Resume Next
-    httpProxy = objws.Environment("Process")("http_proxy")
-    If httpProxy <> "" Then
-        If InStr(1, httpProxy, "@") > 0 Then
-            ' The http_proxy environment variable is set with basic authentication
-            ' WinHttp seems to work fine without the credentials, so we should be
-            ' okay with just the hostname/port part
-            proxyArr = Split(httpProxy, "@")
-            objHttp.setProxy 2, proxyArr(1)
-        Else
-            objHttp.setProxy 2, httpProxy
-        End If
-    End If
-    Call objHttp.Open("GET", strUrl, False)
-    If Err.Number <> 0 Then
-        WScript.Echo Err.Description
-        WScript.Quit
-    End If
-    objHttp.Send
-    
-    If Err.Number <> 0 Then
-        WScript.Echo Err.Description
-        WScript.Quit
-    End If
-    On Error GoTo 0
-    If objHttp.status = 404 Then
-        WScript.Echo ":: [ERROR] :: 404 :: file not found"
-        WScript.Quit
-    End If
-    
-    Dim Stream
-    Set Stream = WScript.CreateObject("ADODB.Stream")
-    Stream.Open
-    Stream.Type = 1
-    Stream.Write objHttp.responseBody
-    Stream.SaveToFile strFile, 2
-    Stream.Close
-End Function
-
-Sub clear(cur)
-    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1), True 
-    If objfs.FileExists(cur(2)) Then objfs.DeleteFile cur(2), True 
-End Sub
-
 Sub download(cur)
     WScript.Echo ":: [Downloading] ::  " & cur(0) & " ..."
     WScript.Echo ":: [Downloading] ::  From " & cur(3)
@@ -445,56 +391,6 @@ Sub extract(cur)
         WScript.Echo ":: [Error] :: couldn't install .. "& cur(0)
     End If
 End Sub
-
-Function GetCurrentVersionGlobal()
-    GetCurrentVersionGlobal = Null
-
-    Dim fname
-    Dim objFile
-    fname = strPyenvHome & "\version"
-    If objfs.FileExists(fname) Then
-        Set objFile = objfs.OpenTextFile(fname)
-        If objFile.AtEndOfStream <> True Then
-            GetCurrentVersionGlobal = Array(objFile.ReadLine, fname)
-        End If
-        objFile.Close
-    End If
-End Function
-
-Function GetCurrentVersionLocal(path)
-    GetCurrentVersionLocal = Null
-
-    Dim fname
-    Dim objFile
-    Do While path <> ""
-        fname = path & strVerFile
-        If objfs.FileExists(fname) Then
-            Set objFile = objfs.OpenTextFile(fname)
-            If objFile.AtEndOfStream <> True Then
-                GetCurrentVersionLocal = Array(objFile.ReadLine, fname)
-            End If
-            objFile.Close
-            Exit Function
-        End If
-        path = objfs.getParentFolderName(path)
-    Loop
-End Function
-
-Function GetCurrentVersionShell()
-    GetCurrentVersionShell = Null
-
-    Dim str
-    str = objws.Environment("Process")("PYENV_VERSION")
-    If str <> "" Then GetCurrentVersionShell = Array(str, "%PYENV_VERSION%")
-End Function
-
-Function GetCurrentVersionNoError()
-    Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
-    GetCurrentVersionNoError = str
-End Function
 
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp
