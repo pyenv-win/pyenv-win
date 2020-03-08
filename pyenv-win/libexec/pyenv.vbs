@@ -16,22 +16,6 @@ Sub Import(importFile)
 End Sub
 
 Import "pyenv-lib.vbs"
-Import "pyenv-install-lib.vbs"
-
-Dim regexVer
-Dim regexFile
-Set regexVer = New RegExp
-Set regexFile = New RegExp
-With regexVer
-    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?((?:a|b|rc)\d+)?$"
-    .Global = True
-    .IgnoreCase = True
-End With
-With regexFile
-    .Pattern = "^python-(\d+)(?:\.(\d+))?(?:\.(\d+))?((?:a|b|rc)\d+)?([\.-]amd64)?(-webinstall)?\.(exe|msi)$"
-    .Global = True
-    .IgnoreCase = True
-End With
 
 Function GetBinDir(ver)
     Dim str
@@ -293,7 +277,8 @@ Sub ShowHelp()
      WScript.Echo "   shell        Set or show the shell-specific Python version"
      WScript.Echo "   install      Install a Python version using python-build"
      WScript.Echo "   uninstall    Uninstall a specific Python version"
-     WScript.Echo "   rehash       Rehash pyenv shims (run this after installing executables)"
+     WScript.Echo "   update       Update the cached version DB"
+     WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
      WScript.Echo "   version      Show the current Python version and its origin"
      WScript.Echo "   version-name Show the current Python version"
      WScript.Echo "   versions     List all Python versions available to pyenv"
@@ -576,134 +561,6 @@ Sub CommandCommands(arg)
     Next
 End Sub
 
-Function JoinVerString(pieces)
-    Dim strVer
-    strVer = ""
-    If Len(pieces(0)) Then strVer = strVer & pieces(0)
-    If Len(pieces(1)) Then strVer = strVer &"."& pieces(1)
-    If Len(pieces(2)) Then strVer = strVer &"."& pieces(2)
-    JoinVerString = strVer
-End Function
-
-Function JoinInstallString(pieces)
-    Dim strInstall
-    strInstall = ""
-    If Len(pieces(0)) Then strInstall = strInstall & pieces(0)
-    If Len(pieces(1)) Then strInstall = strInstall &"."& pieces(1)
-    If Len(pieces(2)) Then strInstall = strInstall &"."& pieces(2)
-    If Len(pieces(3)) Then strInstall = strInstall & pieces(3)
-    If Len(pieces(4)) Then strInstall = strInstall & pieces(4)
-    If Len(pieces(5)) Then strInstall = strInstall & pieces(5)
-    If Len(pieces(6)) Then strInstall = strInstall &"."& pieces(6)
-    JoinInstallString = strInstall
-End Function
-
-Sub EnsureBaseURL(ByRef html, ByVal URL)
-    Dim head
-    Dim base
-
-    Set head = html.getElementsByTagName("head")(0)
-    If head Is Nothing Then
-        Set head = html.createElement("head")
-        html.insertBefore html.body, head
-    End If
-
-    Set base = head.getElementsByTagName("base")(0)
-    If base Is Nothing Then
-        If Len(URL) And Right(URL, 1) <> "/" Then URL = URL &"/"
-        Set base = html.createElement("base")
-        base.href = URL
-        head.appendChild base
-    End If
-End Sub
-
-Function ScanForVersions(URL, ignoreErr)
-    Dim objHTML
-    Set objHTML = CreateObject("htmlfile")
-
-    With objweb
-        .open "GET", URL, False
-        On Error Resume Next
-        .send
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror page """& URL &""""& vbCrLf &"Error(0x"& Hex(Err.Number) &"): "& Err.Description
-            If ignoreErr Then Exit Function
-            WScript.Quit 1
-        End If
-        On Error GoTo 0
-        If .status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror page """& URL &""""& vbCrLf &"Error("& .status &"): "& .statusText
-            If ignoreErr Then Exit Function
-            WScript.Quit 1
-        End If
-
-        objHTML.write .responseText 
-    End With
-    EnsureBaseURL objHTML, URL
-    
-    Dim link
-    Dim file
-    Dim matches
-    Dim major, minor, patch, rel
-    For Each link In objHTML.links
-        file = objfs.GetFileName(link.pathname)
-        Set matches = regexFile.Execute(file)
-        If matches.Count = 1 Then
-            WScript.Echo "Found install file: "& JoinInstallString(matches(0).SubMatches)
-        End If
-    Next
-End Function
-
-Sub CommandUpdate(arg)
-    Dim ignoreErr
-    ignoreErr = False
-
-    If arg.Count >= 2 then
-        If arg(1) = "--help" then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-update.bat --help")
-            WScript.echo help
-            Exit Sub
-        ElseIf arg(1) = "--ignore" Then
-            ignoreErr = True
-        End If
-    End If
-
-    Dim objHTML
-    Set objHTML = CreateObject("htmlfile")    
-
-    With objweb
-        .open "GET", mirror, False
-        On Error Resume Next
-        .send
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If ignoreErr Then Exit Sub
-            WScript.Quit 1
-        End If
-        On Error GoTo 0
-        If .status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .status &"): "& .statusText
-            If ignoreErr Then Exit Sub
-            WScript.Quit 1
-        End If
-
-        objHTML.write .responseText 
-    End With
-    EnsureBaseURL objHTML, mirror
-
-    Dim link
-    Dim version
-    Dim matches
-    Dim major, minor, patch, rel
-    For Each link In objHTML.links
-        version = objfs.GetFileName(link.pathname)
-        Set matches = regexVer.Execute(version)
-        If matches.Count = 1 Then
-            ScanForVersions link.href, ignoreErr
-        End If
-    Next
-End Sub
-
 Sub Dummy()
      WScript.Echo "command not implement"
 End Sub
@@ -726,7 +583,6 @@ Sub main(arg)
            Case "shims"        CommandShims(arg)
            Case "which"        CommandWhich(arg)
            Case "whence"       CommandWhence(arg)
-           Case "update"       CommandUpdate(arg)
            Case "help"         CommandHelp(arg)
            Case "--help"       CommandHelp(arg)
            Case Else           PlugIn(arg)
