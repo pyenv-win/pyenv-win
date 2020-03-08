@@ -19,17 +19,17 @@ strDirLibs   = strPyenvHome & "\libexec"
 strVerFile   = "\.python-version"
 
 Sub ShowHelp()
-     WScript.echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
-     WScript.echo ""
-     WScript.echo "   -f  Attempt to remove the specified version without prompting"
-     WScript.echo "       for confirmation. If the version does not exist, do not"
-     WScript.echo "       display an error message."
-     WScript.echo ""
-     WScript.echo "   --msi  Attempt to remove the specified version of python installed"
-     WScript.echo "         using msi file. e.g. 2.7*"
-     WScript.echo ""
-     WScript.echo "See `pyenv versions` for a complete list of installed versions."
-     WScript.echo ""
+     WScript.Echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
+     WScript.Echo ""
+     WScript.Echo "   -f  Attempt to remove the specified version without prompting"
+     WScript.Echo "       for confirmation. If the version does not exist, do not"
+     WScript.Echo "       display an error message."
+     WScript.Echo ""
+     WScript.Echo "   --msi  Attempt to remove the specified version of python installed"
+     WScript.Echo "         using msi file. e.g. 2.7*"
+     WScript.Echo ""
+     WScript.Echo "See `pyenv versions` for a complete list of installed versions."
+     WScript.Echo ""
      WScript.Quit
 End Sub
 
@@ -410,10 +410,10 @@ Sub clear(cur)
 End Sub
 
 Sub download(cur)
-    WScript.echo ":: [Downloading] ::  " & cur(0) & " ..."
-    WScript.echo ":: [Downloading] ::  From " & cur(3)
-    WScript.echo ":: [Downloading] ::  To   " & cur(2)
-    WScript.echo ":: [Recommended] ::  Un-install via exe or msi"
+    WScript.Echo ":: [Downloading] ::  "& cur(0) &" ..."
+    WScript.Echo ":: [Downloading] ::  From "& cur(3)
+    WScript.Echo ":: [Downloading] ::  To   "& cur(2)
+    WScript.Echo ":: [Recommended] ::  Un-install via exe or msi"
     DownloadFile cur(3) , cur(2)
 End Sub
 
@@ -423,22 +423,22 @@ Sub extract(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    WScript.echo ":: [Uninstalling] ::  " & cur(0) & " ..."
+    WScript.Echo ":: [Uninstalling] ::  "& cur(0) &" ..."
 
     objws.CurrentDirectory = strDirCache
 	Dim exe_file
-	exe_file = """" & cur(2) & """"
-    WScript.echo ":: [Path] :: " & exe_file
-    objws.Run exe_file & " /uninstall ", 0, true
+	exe_file = """"& cur(2) &""""
+    WScript.Echo ":: [Path] :: "& exe_file
+    objws.Run exe_file &" /uninstall ", 0, true
 
     If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
 
     If Not objfs.FileExists(cur(1)) Then
-        WScript.echo ":: [Info] :: completed! " & cur(0)
+        WScript.Echo ":: [Info] :: completed! "& cur(0)
     Else
-        WScript.echo ":: [Error] :: Couldn't able to uninstall"
+        WScript.Echo ":: [Error] :: Couldn't able to uninstall"
     End If
 End Sub
 
@@ -448,19 +448,19 @@ Sub extract_msi(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    WScript.echo ":: [Uninstalling] ::  Msi " & cur(0) & " ..."
+    WScript.Echo ":: [Uninstalling] ::  Msi "& cur(0) &" ..."
 
     objws.CurrentDirectory = strDirCache
-    objws.Run "msiexec /x " & cur(2), 1, true
+    objws.Run "msiexec /x "& cur(2), 1, true
 
     If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
 
     If Not objfs.FileExists(cur(1)) Then
-        WScript.echo ":: [Info] :: completed! " & cur(0)
+        WScript.Echo ":: [Info] :: completed! "& cur(0)
     Else
-        WScript.echo ":: [Error] :: Couldn't able to uninstall"
+        WScript.Echo ":: [Error] :: Couldn't able to uninstall"
     End If
 End Sub
 
@@ -479,16 +479,16 @@ Sub main(arg)
     Dim version
     Dim optMsi
 
-    optForce=False
-    optMsi=False
-    version=""
+    optForce = False
+    optMsi = False
+    version = ""
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-           Case "--help"          ShowHelp
-           Case "-f"              optForce=True
-           Case "--force"         optForce=True
-           Case "--msi"           optMsi=True
+           Case "--help"  ShowHelp
+           Case "-f"      optForce = True
+           Case "--force" optForce = True
+           Case "--msi"   optMsi = True
            Case Else
                version = arg(idx)
                Exit For
@@ -499,12 +499,18 @@ Sub main(arg)
     Dim list
     Dim cur
 
-    str=strDirVers&"\"&version
+    str = strDirVers &"\"& version
     If IsVersion(version) And objfs.FolderExists(str) Then
         For Each list In listEnv
             If list(0) = version Then
-                cur=Array(list(0),strDirVers&"\"&list(0),strDirCache&"\"&list(2),list(1)&list(2),list(3))
-                If optForce Then  clear(cur)
+                cur = Array( _
+                    list(0), _
+                    strDirVers &"\"& list(0), _
+                    strDirCache &"\"& list(2), _
+                    list(1) & list(2), _
+                    list(3) _
+                )
+                If optForce Then clear(cur)
                 If optMsi then
                     extract_msi(cur)
                 Else
@@ -514,7 +520,7 @@ Sub main(arg)
             End If
         Next
     Else
-      WScript.echo "pyenv: version '"&version&"' not installed"
+      WScript.Echo "pyenv: version '"& version &"' not installed"
     End If
 
 End Sub

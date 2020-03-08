@@ -38,7 +38,7 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
-    Array("2.0.1", mirror&"/2.0.1/", "Python-2.0.1.exe", "i386")_
+    Array("2.0.1", mirror&"/2.0.1/", "Python-2.0.1.exe", "i386"),_
     Array("2.1.3", mirror&"/2.1.3/", "Python-2.1.3.exe", "i386"),_
     Array("2.2", mirror&"/2.2/", "Python-2.2.exe", "i386"),_
     Array("2.2.1", mirror&"/2.2.1/", "Python-2.2.1.exe", "i386"),_
@@ -358,7 +358,7 @@ listEnv = Array(_
     Array("3.8.0", mirror&"/3.8.0/", "python-3.8.0.exe", "i386"),_
     Array("3.8.0-amd64", mirror&"/3.8.0/", "python-3.8.0-amd64.exe", "x64"),_
     Array("3.8.1", mirror&"/3.8.1/", "python-3.8.1.exe", "i386"),_
-    Array("3.8.1-amd64", mirror&"/3.8.1/", "python-3.8.1-amd64.exe", "x64"),_
+    Array("3.8.1-amd64", mirror&"/3.8.1/", "python-3.8.1-amd64.exe", "x64")_
 )
 
 Function DownloadFile(strUrl, strFile)
@@ -425,24 +425,24 @@ Sub extract(cur)
 
     If Not objfs.FileExists(cur(2)) Then download(cur)
 
-    WScript.Echo ":: [Installing] ::  " & cur(0) & " ..."
+    WScript.Echo ":: [Installing] ::  "& cur(0) &" ..."
 
     objws.CurrentDirectory = strDirCache
     Dim exe_file
     Dim target_location
-    exe_file = """" & cur(2) & """"
-    target_location = """" & cur(1) & """"
+    exe_file = """"& cur(2) &""""
+    target_location = """"& cur(1) &""""
     If cur(5) Then
-        objws.Run exe_file & " /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, True
+        objws.Run exe_file &" /quiet InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& target_location, 0, True
     Else
-        objws.Run exe_file & " InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir=" & target_location, 0, True
+        objws.Run exe_file &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& target_location, 0, True
     End If
 
     If objfs.FolderExists(cur(1)) Then
-        objws.Run "pyenv rehash " & cur(0), 0, False
-        WScript.Echo ":: [Info] :: completed! " & cur(0)
+        objws.Run "pyenv rehash "& cur(0), 0, False
+        WScript.Echo ":: [Info] :: completed! "& cur(0)
     Else
-        WScript.Echo ":: [Error] :: couldn't install .. " & cur(0)
+        WScript.Echo ":: [Error] :: couldn't install .. "& cur(0)
     End If
 End Sub
 
@@ -545,20 +545,20 @@ Sub main(arg)
     ElseIf version <> "" Then
         For Each list In listEnv
             If list(0) = version Then
-                cur = Array(
-                    list(0),_
-                    strDirVers &"\"& list(0),_
-                    strDirCache &"\"& list(2),_
-                    list(1) & list(2),_
-                    list(3),_
-                    optQuiet_
+                cur = Array( _
+                    list(0), _
+                    strDirVers &"\"& list(0), _
+                    strDirCache &"\"& list(2), _
+                    list(1) & list(2), _
+                    list(3), _
+                    optQuiet _
                 )
                 If optForce Then clear(cur)
                 extract(cur)
                 Exit Sub
             End If
         Next
-        WScript.Echo "pyenv-install: definition not found: " & version
+        WScript.Echo "pyenv-install: definition not found: "& version
         WScript.Echo
         WScript.Echo "See all available versions with `pyenv install --list'."
     Else

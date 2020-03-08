@@ -434,15 +434,15 @@ Sub CommandRehash(arg)
     For Each file In objfs.GetFolder(strDirBin).Files
         For Each ext In exts
             If LCase(objfs.GetExtensionName(file)) = ext Then
-              Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-              ofile.WriteLine("@echo off")
-              ofile.WriteLine("pyenv exec %~n0 %*")
-              ofile.Close()
-              Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-              ofile.WriteLine("#!/bin/sh")
-              ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
-              ofile.Close()
-              Exit For
+                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
+                ofile.WriteLine("@echo off")
+                ofile.WriteLine("pyenv exec %~n0 %*")
+                ofile.Close()
+                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+                ofile.WriteLine("#!/bin/sh")
+                ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+                ofile.Close()
+                Exit For
             End If
         Next
     Next
