@@ -35,6 +35,7 @@ Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
 Dim strDirShims
+Dim strDBFile
 Dim strVerFile
 strCurrent   = objfs.GetAbsolutePathName(".")
 strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
@@ -43,6 +44,7 @@ strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
 strDirShims  = strPyenvHome & "\shims"
+strDBFile    = strPyenvHome & "\.versions_cache.xml"
 strVerFile   = "\.python-version"
 
 Function GetCurrentVersionGlobal()

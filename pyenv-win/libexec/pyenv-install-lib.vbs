@@ -111,3 +111,133 @@ Sub clear(params)
     If objfs.FileExists(params(IP_InstallFile)) Then _
         objfs.DeleteFile params(IP_InstallFile), True
 End Sub
+
+Dim strDBSchema
+strDBSchema = _
+"<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">"& _
+  "<xs:element name=""versions"">"& _
+    "<xs:complexType>"& _
+      "<xs:sequence>"& _
+        "<xs:element name=""version"" maxOccurs=""unbounded"" minOccurs=""0"">"& _
+          "<xs:complexType>"& _
+            "<xs:sequence>"& _
+              "<xs:element name=""code"" type=""xs:string""/>"& _
+              "<xs:element name=""file"" type=""xs:string""/>"& _
+              "<xs:element name=""URL"" type=""xs:anyURI""/>"& _
+            "</xs:sequence>"& _
+            "<xs:attribute name=""x64"" type=""xs:boolean"" default=""false""/>"& _
+            "<xs:attribute name=""webInstall"" type=""xs:boolean"" default=""false""/>"& _
+            "<xs:attribute name=""msi"" type=""xs:boolean"" default=""true""/>"& _
+          "</xs:complexType>"& _
+        "</xs:element>"& _
+      "</xs:sequence>"& _
+    "</xs:complexType>"& _
+  "</xs:element>"& _
+"</xs:schema>"
+
+Function LoadVersionsXML(xmlPath)
+    Dim dbSchema
+    Dim doc
+    Dim schemaError
+    Set LoadVersionsXML = CreateObject("Scripting.Dictionary")
+    Set dbSchema = CreateObject("Msxml2.DOMDocument.6.0")
+    Set doc = CreateObject("Msxml2.DOMDocument.6.0")
+
+    If Not objfs.FileExists(xmlPath) Then Exit Function
+
+    With dbSchema
+        .validateOnParse = False
+        .resolveExternals = False
+        .loadXML strDBSchema
+    End With
+
+    With doc
+        Set .schemas = CreateObject("Msxml2.XMLSchemaCache.6.0")
+        .schemas.add "", dbSchema
+        .validateOnParse = False
+        .load xmlPath
+        Set schemaError = .validate
+    End With
+
+    With schemaError
+        If .errorCode <> 0 Then
+            WScript.Echo "Validation error in DB cache(0x"& Hex(.errorCode) & _
+            ") on line "& .line &", pos "& .linepos &":"& vbCrLf & .reason
+            WScript.Quit 1
+        End If
+    End With
+
+    Dim versDict
+    Dim version
+    Dim code
+    For Each version In doc.documentElement.childNodes
+        code = version.getElementsByTagName("code")(0).text
+        LoadVersionsXML.Item(code) = Array( _
+            code, _
+            version.getElementsByTagName("file")(0).text, _
+            version.getElementsByTagName("URL")(0).text, _
+            CBool(version.getAttribute("x64")), _
+            CBool(version.getAttribute("webInstall")), _
+            CBool(version.getAttribute("msi")) _
+        )
+    Next
+End Function
+
+Sub AppendElement(doc, parent, tag, text)
+    Dim elem
+    Set elem = doc.createElement(tag)
+    elem.text = text
+    parent.appendChild elem
+End Sub
+
+Sub SaveVersionsXML(xmlPath, versArray)
+    Dim doc
+    Set doc = CreateObject("Msxml2.DOMDocument.6.0")
+    Set doc.documentElement = doc.createElement("versions")
+
+    Dim versRow
+    Dim versElem
+    For Each versRow In versArray
+        Set versElem = doc.createElement("version")
+        doc.documentElement.appendChild versElem
+
+        With versElem
+            .setAttribute "x64",        LCase(CStr(CBool(Len(versRow(SFV_Version)(VRX_x64)))))
+            .setAttribute "webInstall", LCase(CStr(CBool(Len(versRow(SFV_Version)(VRX_Web)))))
+            .setAttribute "msi",        LCase(CStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi"))
+        End With
+        AppendElement doc, versElem, "code", JoinVerString(versRow(SFV_Version), True)
+        AppendElement doc, versElem, "file", versRow(0)
+        AppendElement doc, versElem, "URL", versRow(1)
+    Next
+
+    ' Use SAXXMLReader/MXXMLWriter to "pretty print" the XML data.
+    Dim writer
+    Dim parser
+    Dim outXML
+    Set writer = CreateObject("Msxml2.MXXMLWriter.6.0")
+    Set parser = CreateObject("Msxml2.SAXXMLReader.6.0")
+    Set outXML = CreateObject("ADODB.Stream")
+
+    With outXML
+        .Open
+        .Type = 1
+    End With
+    With writer
+        .encoding = "utf-8"
+        .indent = True
+        .output = outXML
+    End With
+    With parser
+        Set .contentHandler = writer
+        Set .dtdHandler = writer
+        Set .errorHandler = writer
+        .putProperty "http://xml.org/sax/properties/declaration-handler", writer
+        .putProperty "http://xml.org/sax/properties/lexical-handler", writer
+        .parse doc
+    End With
+    With outXML
+        .SaveToFile xmlpath, 2
+        .Close
+    End With
+End Sub

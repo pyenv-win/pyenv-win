@@ -290,36 +290,40 @@ Sub main(arg)
     Next
 
     ' Now remove any duplicate versions that have the web installer (it's prefered)
+    Dim minVers
     Dim fileName, fileNonWeb
-    Dim filePieces
+    Dim versPieces
     Dim installers2
     Set installers2 = CopyDictionary(installers1) ' Use a copy because "For Each" and .Remove don't play nice together.
+    minVers = Array("2", "4", "", "", "", "", "", "")
     For Each fileName In installers1.Keys()
         ' Array([filename], [url], Array([major], [minor], [path], [rel], [rel_num], [x64], [webinstall], [ext]))
-        filePieces = installers1(fileName)(SFV_Version)
-        If Len(filePieces(VRX_Web)) Then
+        versPieces = installers1(fileName)(SFV_Version)
+
+        ' Ignore versions <2.4, Wise Installer's command line is unusable.
+        If SymanticCompare(versPieces, minVers) Then
+            installers2.Remove fileName
+        ElseIf Len(versPieces(VRX_Web)) Then
             fileNonWeb = "python-"& JoinInstallString(Array( _
-                filePieces(VRX_Major), _
-                filePieces(VRX_Minor), _
-                filePieces(VRX_Patch), _
-                filePieces(VRX_Release), _
-                filePieces(VRX_RelNumber), _
-                filePieces(VRX_x64), _
+                versPieces(VRX_Major), _
+                versPieces(VRX_Minor), _
+                versPieces(VRX_Patch), _
+                versPieces(VRX_Release), _
+                versPieces(VRX_RelNumber), _
+                versPieces(VRX_x64), _
                 Empty, _
-                filePieces(VRX_Ext) _
+                versPieces(VRX_Ext) _
             ))
             If installers2.Exists(fileNonWeb) Then _
                 installers2.Remove fileNonWeb
         End If
     Next
 
-    ' Now sort by semantic version
+    ' Now sort by semantic version and save
     Dim installArr
     installArr = installers2.Items
     SymanticQuickSort installArr, LBound(installArr), UBound(installArr)
-    For Each version In installArr
-        WScript.Echo version(0)
-    Next
+    SaveVersionsXML strDBFile, installArr
 
 End Sub
 
