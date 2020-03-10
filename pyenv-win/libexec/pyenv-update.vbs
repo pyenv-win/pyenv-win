@@ -18,30 +18,6 @@ Import "pyenv-install-lib.vbs"
 
 WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
-Dim regexVer
-Dim regexFile
-Const VRX_Major = 0
-Const VRX_Minor = 1
-Const VRX_Patch = 2
-Const VRX_Release = 3
-Const VRX_RelNumber = 4
-Const VRX_x64 = 5
-Const VRX_Web = 6
-Const VRX_Ext = 7
-
-Set regexVer = New RegExp
-Set regexFile = New RegExp
-With regexVer
-    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
-    .Global = True
-    .IgnoreCase = True
-End With
-With regexFile
-    .Pattern = "^python-(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-]amd64)?(-webinstall)?\.(exe|msi)$"
-    .Global = True
-    .IgnoreCase = True
-End With
-
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv update [--ignore]"
     WScript.Echo
@@ -51,31 +27,6 @@ Sub ShowHelp()
     WScript.Echo
     WScript.Quit
 End Sub
-
-Function JoinVerString(pieces)
-    Dim strVer
-    strVer = ""
-    If Len(pieces(VRX_Major)) Then strVer = strVer & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor)) Then strVer = strVer &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch)) Then strVer = strVer &"."& pieces(VRX_Patch)
-    If Len(pieces(VRX_Release)) Then strVer = strVer & pieces(VRX_Release)
-    If Len(pieces(VRX_RelNumber)) Then strVer = strVer & pieces(VRX_RelNumber)
-    JoinVerString = strVer
-End Function
-
-Function JoinInstallString(pieces)
-    Dim strInstall
-    strInstall = ""
-    If Len(pieces(VRX_Major)) Then     strInstall = strInstall & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor)) Then     strInstall = strInstall &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch)) Then     strInstall = strInstall &"."& pieces(VRX_Patch)
-    If Len(pieces(VRX_Release)) Then   strInstall = strInstall & pieces(VRX_Release)
-    If Len(pieces(VRX_RelNumber)) Then strInstall = strInstall & pieces(VRX_RelNumber)
-    If Len(pieces(VRX_x64)) Then       strInstall = strInstall & pieces(VRX_x64)
-    If Len(pieces(VRX_Web)) Then       strInstall = strInstall & pieces(VRX_Web)
-    If Len(pieces(VRX_Ext)) Then       strInstall = strInstall &"."& pieces(VRX_Ext)
-    JoinInstallString = strInstall
-End Function
 
 Sub EnsureBaseURL(ByRef html, ByVal URL)
     Dim head
@@ -129,9 +80,6 @@ Sub UpdateDictionary(dict1, dict2)
     Next
 End Sub
 
-Const SFV_FileName = 0
-Const SFV_URL = 1
-Const SFV_Version = 2
 Function ScanForVersions(URL, optIgnore)
     Dim objHTML
     Set objHTML = CreateObject("htmlfile")
@@ -153,7 +101,7 @@ Function ScanForVersions(URL, optIgnore)
             WScript.Quit 1
         End If
 
-        objHTML.write .responseText 
+        objHTML.write .responseText
     End With
     EnsureBaseURL objHTML, URL
 
@@ -178,32 +126,32 @@ Function SymanticCompare(ver1, ver2)
     Dim comp1, comp2
 
     ' Major
-    comp1 = ver1(0)
-    comp2 = ver2(0)
+    comp1 = ver1(VRX_Major)
+    comp2 = ver2(VRX_Major)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' Minor
-    comp1 = ver1(1)
-    comp2 = ver2(1)
+    comp1 = ver1(VRX_Minor)
+    comp2 = ver2(VRX_Minor)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' Patch
-    comp1 = ver1(2)
-    comp2 = ver2(2)
+    comp1 = ver1(VRX_Patch)
+    comp2 = ver2(VRX_Patch)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' Release
-    comp1 = ver1(3)
-    comp2 = ver2(3)
+    comp1 = ver1(VRX_Release)
+    comp2 = ver2(VRX_Release)
     If Len(comp1) = 0 And Len(comp2) Then
         SymanticCompare = False
         Exit Function
@@ -216,28 +164,28 @@ Function SymanticCompare(ver1, ver2)
     If comp1 <> comp2 Then Exit Function
 
     ' Release Number
-    comp1 = ver1(4)
-    comp2 = ver2(4)
+    comp1 = ver1(VRX_RelNumber)
+    comp2 = ver2(VRX_RelNumber)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' x64
-    comp1 = ver1(5)
-    comp2 = ver2(5)
+    comp1 = ver1(VRX_x64)
+    comp2 = ver2(VRX_x64)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' webinstall
-    comp1 = ver1(6)
-    comp2 = ver2(6)
+    comp1 = ver1(VRX_Web)
+    comp2 = ver2(VRX_Web)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' ext
-    comp1 = ver1(7)
-    comp2 = ver2(7)
+    comp1 = ver1(VRX_Ext)
+    comp2 = ver2(VRX_Ext)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 End Function
@@ -300,25 +248,32 @@ Sub main(arg)
     End If
 
     Dim objHTML
-    Set objHTML = CreateObject("htmlfile")    
+    Set objHTML = CreateObject("htmlfile")
 
     With objweb
-        .open "GET", mirror, False
         On Error Resume Next
-        .send
+        .Open "GET", mirror, False
+        If Err.number <> 0 Then
+            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+            If optIgnore Then Exit Sub
+            WScript.Quit 1
+        End If
+
+        .Send
         If Err.number <> 0 Then
             WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
             If optIgnore Then Exit Sub
             WScript.Quit 1
         End If
         On Error GoTo 0
-        If .status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .status &"): "& .statusText
+
+        If .Status <> 200 Then
+            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
             If optIgnore Then Exit Sub
             WScript.Quit 1
         End If
 
-        objHTML.write .responseText 
+        objHTML.write .responseText
     End With
     EnsureBaseURL objHTML, mirror
 
@@ -340,18 +295,18 @@ Sub main(arg)
     Dim installers2
     Set installers2 = CopyDictionary(installers1) ' Use a copy because "For Each" and .Remove don't play nice together.
     For Each fileName In installers1.Keys()
-        ' Array([url], Array([major], [minor], [path], [rel], [rel_num], [x64], [webinstall], [ext]))
-        filePieces = installers1(fileName)(2)
-        If Len(filePieces(6)) Then
-            fileNonWeb = "python-"& JoinInstallString(Array(_
-                filePieces(0),_
-                filePieces(1),_
-                filePieces(2),_
-                filePieces(3),_
-                filePieces(4),_
-                filePieces(5),_
-                Empty,_
-                filePieces(7)_
+        ' Array([filename], [url], Array([major], [minor], [path], [rel], [rel_num], [x64], [webinstall], [ext]))
+        filePieces = installers1(fileName)(SFV_Version)
+        If Len(filePieces(VRX_Web)) Then
+            fileNonWeb = "python-"& JoinInstallString(Array( _
+                filePieces(VRX_Major), _
+                filePieces(VRX_Minor), _
+                filePieces(VRX_Patch), _
+                filePieces(VRX_Release), _
+                filePieces(VRX_RelNumber), _
+                filePieces(VRX_x64), _
+                Empty, _
+                filePieces(VRX_Ext) _
             ))
             If installers2.Exists(fileNonWeb) Then _
                 installers2.Remove fileNonWeb

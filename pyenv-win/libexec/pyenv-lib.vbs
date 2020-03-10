@@ -6,7 +6,27 @@ Dim objweb
 
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
-Set objweb = CreateObject("MSXML2.XMLHTTP.6.0")
+Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+' Set proxy settings, called on library import for objweb.
+Sub SetProxy()
+    Dim httpProxy
+    Dim proxyArr
+
+    httpProxy = objws.Environment("Process")("http_proxy")
+    If httpProxy <> "" Then
+        If InStr(1, httpProxy, "@") > 0 Then
+            ' The http_proxy environment variable is set with basic authentication
+            ' WinHttp seems to work fine without the credentials, so we should be
+            ' okay with just the hostname/port part
+            proxyArr = Split(httpProxy, "@")
+            objweb.setProxy 2, proxyArr(1)
+        Else
+            objweb.setProxy 2, httpProxy
+        End If
+    End If
+End Sub
+SetProxy
 
 Dim strCurrent
 Dim strPyenvHome
@@ -74,7 +94,7 @@ Function GetCurrentVersion()
     str = GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
     If IsNull(str) Then str = GetCurrentVersionGlobal
-    If IsNull(str) Then 
+    If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
 		WScript.echo "pyenv global 3.7.2"
 		WScript.quit
@@ -96,3 +116,23 @@ Function IsVersion(version)
     re.Pattern = "^[a-zA-Z_0-9-.]+$"
     IsVersion = re.Test(version)
 End Function
+
+Function GetBinDir(ver)
+    Dim str
+    str = strDirVers &"\"& ver &"\"
+    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then
+		WScript.Echo "pyenv specific python requisite didn't meet. Project is using different version of python."
+		WScript.Echo "Install python '"& ver &"' by typing: 'pyenv install "& ver &"'"
+		WScript.Quit
+	End If
+    GetBinDir = str
+End Function
+
+Sub SetGlobalVersion(ver)
+    GetBinDir(ver)
+
+    With objfs.CreateTextFile(strPyenvHome &"\version" , True)
+        .WriteLine(ver)
+        .Close
+    End With
+End Sub

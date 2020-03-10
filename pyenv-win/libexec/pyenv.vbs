@@ -17,17 +17,6 @@ End Sub
 
 Import "pyenv-lib.vbs"
 
-Function GetBinDir(ver)
-    Dim str
-    str = strDirVers & "\" & ver & "\" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then 
-        WScript.Echo "pyenv specific python requisite didn't meet. Project is using different version of python."
-        WScript.Echo "Install python '"&ver&"' by typing: 'pyenv install "&ver&"'"
-        WScript.Quit
-    End If
-    GetBinDir = str
-End Function
-
 Function GetCommandList()
     Dim cmdList
     Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
@@ -377,13 +366,13 @@ Sub CommandExecute(arg)
     Dim str
     Dim dstr
     dstr = GetBinDir(GetCurrentVersion()(0))
-    str = "set PATH=" & dstr & ";%PATH:&=^&%" & vbCrLf
-    If arg.Count > 1 Then  
-      str = str & """" & dstr & "\" & arg(1) & """"
+    str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
+    If arg.Count > 1 Then
+      str = str &""""& dstr &"\"& arg(1) &""""
       Dim idx
       If arg.Count > 2 Then  
-        For idx = 2 To arg.Count - 1 
-          str = str & " """& arg(idx) &""""
+        For idx = 2 To arg.Count - 1
+          str = str &" """& arg(idx) &""""
         Next
       End If
     End If
@@ -395,7 +384,7 @@ Sub CommandGlobal(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         Dim ver
         ver = GetCurrentVersionGlobal()
         If IsNull(ver) Then
@@ -404,11 +393,7 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        GetBinDir(arg(1))
-        Dim ofile
-        Set ofile = objfs.CreateTextFile( strPyenvHome & "\version" , True )
-        ofile.WriteLine(arg(1))
-        ofile.Close()
+        SetGlobalVersion arg(1)
     End If
 End Sub
 
@@ -418,7 +403,7 @@ Sub CommandLocal(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver = GetCurrentVersionLocal(strCurrent)
         If IsNull(ver) Then
             WScript.Echo "no local version configured for this directory"
@@ -451,7 +436,7 @@ Sub CommandShell(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver = GetCurrentVersionShell
         If IsNull(ver) Then
             WScript.Echo "no shell-specific version configured"
@@ -542,7 +527,7 @@ Sub PlugIn(arg)
        WScript.Quit
     End If
 
-    For idx = 1 To arg.Count - 1 
+    For idx = 1 To arg.Count - 1
       str = str & " """& arg(idx) &""""
     Next
 
