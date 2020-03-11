@@ -84,7 +84,8 @@ Function deepExtract(params)
            Right(baseName, 2) = "_d" Or _
            Right(baseName, 4) = "_pdb" Or _
            baseName = "launcher" Or _
-           baseName = "path" _
+           baseName = "path" Or _
+           baseName = "pip" _
         Then
             objfs.DeleteFile file
         End If
@@ -94,21 +95,19 @@ Function deepExtract(params)
     Dim msi
     For Each file In objfs.GetFolder(webCachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
-        If baseName <> "pip" Then
-            deepExtract = objws.Run("msiexec /quiet /a """& file &""" TargetDir="""& installPath & """", 0, True)
-            If deepExtract Then
-                WScript.Echo ":: [Error] :: error installing """& baseName &""" component MSI."
-                Exit Function
-            End If
-
-            ' Delete the duplicate MSI files post-install.
-            msi = installPath &"\"& objfs.GetFileName(file)
-            If objfs.FileExists(msi) Then objfs.DeleteFile msi
+        deepExtract = objws.Run("msiexec /quiet /a """& file &""" TargetDir="""& installPath & """", 0, True)
+        If deepExtract Then
+            WScript.Echo ":: [Error] :: error installing """& baseName &""" component MSI."
+            Exit Function
         End If
+
+        ' Delete the duplicate MSI files post-install.
+        msi = installPath &"\"& objfs.GetFileName(file)
+        If objfs.FileExists(msi) Then objfs.DeleteFile msi
     Next
 
-    ' If pip MSI exists, do it's job for it since if can't do /a installs correctly.
-    If objfs.FileExists(webCachePath &"\pip.msi") Then
+    ' If the ensurepip Lib exists, call it manually since "msiexec /a" installs don't do this.
+    If objfs.FolderExists(installPath &"\Lib\ensurepip") Then
         deepExtract = objws.Run(""""& installPath &"\python"" -E -s -m ensurepip -U --default-pip", 0, True)
         If deepExtract Then
             WScript.Echo ":: [Error] :: error installing pip."
@@ -156,6 +155,12 @@ Sub extract(params)
             For Each file In objfs.GetFolder(installPath).Files
                 If LCase(objfs.GetExtensionName(file)) = "msi" Then objfs.DeleteFile file
             Next
+
+            ' If the ensurepip Lib exists, call it manually since "msiexec /a" installs don't do this.
+            If objfs.FolderExists(installPath &"\Lib\ensurepip") Then
+                exitCode = objws.Run(""""& installPath &"\python"" -E -s -m ensurepip -U --default-pip", 0, True)
+                If exitCode Then WScript.Echo ":: [Error] :: error installing pip."
+            End If
         End If
     ElseIf params(LV_Web) Then
         exitCode = deepExtract(params)
