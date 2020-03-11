@@ -21,12 +21,14 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
     WScript.Echo "       pyenv install [-f] -a|--all"
+    WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
     WScript.Echo "  -l/--list   List all available versions"
+    WScript.Echo "  -a/--all    Installs all known version from the local version DB cache"
+    WScript.Echo "  -c/--clear  Removes downloaded installers from the cache to free space"
     WScript.Echo "  -f/--force  Install even if the version appears to be installed already"
     WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
-    WScript.Echo "  -a/--all    Installs all known version from the local version DB cache."
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -177,6 +179,7 @@ Sub main(arg)
     Dim optList
     Dim optQuiet
     Dim optAll
+    Dim optClear
     Dim installVersions
 
     optForce = False
@@ -196,6 +199,8 @@ Sub main(arg)
             Case "--quiet" optQuiet = True
             Case "-a"      optAll = True
             Case "--all"   optAll = True
+            Case "-c"      optClear = True
+            Case "--clear" optClear = True
             Case Else
                 installVersions.Item(arg(idx)) = Empty
         End Select
@@ -233,6 +238,29 @@ Sub main(arg)
         For Each version In versions.Keys
             WScript.Echo version
         Next
+    ElseIf optClear Then
+        Dim objCache
+        Dim delError
+        delError = 0
+
+        On Error Resume Next
+        For Each objCache In objfs.GetFolder(strDirCache).Files
+            objCache.Delete optForce
+            If Err.Number <> 0 Then
+                WScript.Echo "pyenv: Error ("& Err.Number &") deleting file "& objCache.Name &": "& Err.Description
+                Err.Clear
+                delError = 1
+            End If
+        Next
+        For Each objCache In objfs.GetFolder(strDirCache).SubFolders
+            objCache.Delete optForce
+            If Err.Number <> 0 Then
+                WScript.Echo "pyenv: Error ("& Err.Number &") deleting folder "& objCache.Name &": "& Err.Description
+                Err.Clear
+                delError = 1
+            End If
+        Next
+        WScript.Quit delError
     Else
         Dim versDict
         Dim verDef
