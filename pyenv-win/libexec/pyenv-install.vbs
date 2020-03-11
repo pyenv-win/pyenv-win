@@ -188,15 +188,15 @@ Sub main(arg)
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"          ShowHelp
-            Case "-l"              optList = True
-            Case "--list"          optList = True
-            Case "-f"              optForce = True
-            Case "--force"         optForce = True
-            Case "-q"              optQuiet = True
-            Case "--quiet"         optQuiet = True
-            Case "-a"              optAll = True
-            Case "--all"           optAll = True
+            Case "--help"  ShowHelp
+            Case "-l"      optList = True
+            Case "--list"  optList = True
+            Case "-f"      optForce = True
+            Case "--force" optForce = True
+            Case "-q"      optQuiet = True
+            Case "--quiet" optQuiet = True
+            Case "-a"      optAll = True
+            Case "--all"   optAll = True
             Case Else
                 installVersions.Item(arg(idx)) = Empty
         End Select

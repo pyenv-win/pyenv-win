@@ -80,7 +80,7 @@ Sub UpdateDictionary(dict1, dict2)
     Next
 End Sub
 
-Function ScanForVersions(URL, optIgnore)
+Function ScanForVersions(URL, optIgnore, ByRef pageCount)
     Dim objHTML
     Set objHTML = CreateObject("htmlfile")
     Set ScanForVersions = CreateObject("Scripting.Dictionary")
@@ -102,6 +102,7 @@ Function ScanForVersions(URL, optIgnore)
         End If
 
         objHTML.write .responseText
+        pageCount = pageCount + 1
     End With
     EnsureBaseURL objHTML, URL
 
@@ -248,7 +249,9 @@ Sub main(arg)
     End If
 
     Dim objHTML
+    Dim pageCount
     Set objHTML = CreateObject("htmlfile")
+    pageCount = 0
 
     With objweb
         On Error Resume Next
@@ -274,6 +277,7 @@ Sub main(arg)
         End If
 
         objHTML.write .responseText
+        pageCount = pageCount + 1
     End With
     EnsureBaseURL objHTML, mirror
 
@@ -286,7 +290,7 @@ Sub main(arg)
         version = objfs.GetFileName(link.pathname)
         Set matches = regexVer.Execute(version)
         If matches.Count = 1 Then _
-            UpdateDictionary installers1, ScanForVersions(link.href, optIgnore)
+            UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
     Next
 
     ' Now remove any duplicate versions that have the web installer (it's prefered)
@@ -324,6 +328,7 @@ Sub main(arg)
     installArr = installers2.Items
     SymanticQuickSort installArr, LBound(installArr), UBound(installArr)
     SaveVersionsXML strDBFile, installArr
+    WScript.Echo ":: [Info] ::  Scanned "& pageCount &" pages and found "& installers2.Count &" installers."
 
 End Sub
 

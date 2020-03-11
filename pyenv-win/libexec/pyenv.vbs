@@ -82,13 +82,14 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
-    Dim ofile
-    Set ofile = CreateObject("ADODB.Stream")
-    ofile.CharSet = "utf-8"
-    ofile.Open
-    ofile.WriteText("chcp 65001 > NUL" & vbCrLf)
-    ofile.WriteText(str & vbCrLf)
-    ofile.SaveToFile strPyenvHome & "\exec.bat", 2
+    With CreateObject("ADODB.Stream")
+        .CharSet = "utf-8"
+        .Open
+        .WriteText("chcp 65001 > NUL" & vbCrLf)
+        .WriteText(str & vbCrLf)
+        .SaveToFile strPyenvHome & "\exec.bat", 2
+        .Close
+    End With
 End Sub
 
 Function getCommandOutput(theCommand)
@@ -110,6 +111,7 @@ Sub CommandShims(arg)
      WScript.Echo shims_files
 End Sub
 
+' NOTE: Exists because of its possible reuse from the original Linux pyenv.
 'Function RemoveFromPath(pathToRemove)
 '    Dim path_before
 '    Dim result
@@ -426,9 +428,9 @@ Sub CommandLocal(arg)
         End If
         Dim ofile
         If objfs.FileExists(strCurrent & strVerFile) Then
-          Set ofile = objfs.OpenTextFile ( strCurrent & strVerFile , 2 )
+            Set ofile = objfs.OpenTextFile (strCurrent & strVerFile, 2)
         Else
-          Set ofile = objfs.CreateTextFile( strCurrent & strVerFile , True )
+            Set ofile = objfs.CreateTextFile(strCurrent & strVerFile, True)
         End If
         ofile.WriteLine(ver)
         ofile.Close()
@@ -455,7 +457,7 @@ Sub CommandShell(arg)
         Else
             GetBinDir(ver)
         End If
-        ExecCommand("endlocal"&vbCrLf&"set PYENV_VERSION=" & ver)
+        ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)
     End If
 End Sub
 
@@ -464,11 +466,11 @@ Sub CommandVersion(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
     curVer = GetCurrentVersion
-    WScript.Echo curVer(0) & " (set by " &curVer(1)&")"
+    WScript.Echo curVer(0) &" (set by "& curVer(1) &")"
 End Sub
 
 Sub CommandVersionName(arg)
@@ -476,7 +478,7 @@ Sub CommandVersionName(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     WScript.Echo GetCurrentVersion()(0)
 End Sub
@@ -492,24 +494,24 @@ Sub CommandVersions(arg)
         If arg(1) = "--bare" Then isBare = True
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
     curVer = GetCurrentVersionNoError
     If IsNull(curVer) Then
-        curVer = Array("","")
+        curVer = Array("", "")
     End If
 
     Dim dir
     Dim ver
     For Each dir In objfs.GetFolder(strDirVers).subfolders
-        ver = objfs.GetFileName( dir )
+        ver = objfs.GetFileName(dir)
         If isBare Then
             WScript.Echo ver
         ElseIf ver = curVer(0) Then
-            WScript.Echo "* " & ver & " (set by " &curVer(1)&")"
+            WScript.Echo "* "& ver &" (set by "& curVer(1) &")"
         Else
-            WScript.Echo "  " & ver
+            WScript.Echo "  "& ver
         End If
     Next
 End Sub
@@ -522,18 +524,18 @@ Sub PlugIn(arg)
     Dim fname
     Dim idx
     Dim str
-    fname = strDirLibs & "\pyenv-" & arg(0)
-    If objfs.FileExists( fname & ".bat" ) Then
-        str = """" & fname & ".bat"""
-    ElseIf objfs.FileExists( fname & ".vbs" ) Then
-        str = "cscript //nologo """ & fname & ".vbs"""
+    fname = strDirLibs &"\pyenv-"& arg(0)
+    If objfs.FileExists(fname &".bat" ) Then
+        str = """"& fname &".bat"""
+    ElseIf objfs.FileExists(fname &".vbs" ) Then
+        str = "cscript //nologo """& fname &".vbs"""
     Else
-       WScript.Echo "pyenv: no such command `"&arg(0)&"'"
+       WScript.Echo "pyenv: no such command `"& arg(0) &"'"
        WScript.Quit
     End If
 
     For idx = 1 To arg.Count - 1
-      str = str & " """& arg(idx) &""""
+      str = str &" """& arg(idx) &""""
     Next
 
     ExecCommand(str)
