@@ -19,8 +19,8 @@ Import "libs\pyenv-install-lib.vbs"
 WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
-    WScript.Echo "Usage: pyenv install [-f|-s] <version>"
-    WScript.Echo "       pyenv install [-f|-s] -a|--all"
+    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
+    WScript.Echo "       pyenv install [-f] -a|--all"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
     WScript.Echo "  -l/--list   List all available versions"

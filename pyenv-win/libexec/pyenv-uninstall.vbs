@@ -16,7 +16,7 @@ End Sub
 Import "libs\pyenv-lib.vbs"
 
 Sub ShowHelp()
-    WScript.Echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"
+    WScript.Echo "Usage: pyenv uninstall [-f|--force] <version> [<version> ...]"
     WScript.Echo "       pyenv uninstall [-f|--force] [-a|--all]"
     WScript.Echo ""
     WScript.Echo "   -f/--force  Attempt to remove the specified version without prompting"
@@ -35,38 +35,41 @@ Sub main(arg)
 
     Dim idx
     Dim optForce
-    Dim version
     Dim optAll
+    Dim uninstallVersions
 
     optForce = False
     optAll = False
-    version = ""
+    Set uninstallVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-           Case "--help"  ShowHelp
-           Case "-f"      optForce = True
-           Case "--force" optForce = True
-           Case "-a"      optAll = True
-           Case "--all"   optAll = True
-           Case Else
-               version = arg(idx)
-               Exit For
+            Case "--help"  ShowHelp
+            Case "-f"      optForce = True
+            Case "--force" optForce = True
+            Case "-a"      optAll = True
+            Case "--all"   optAll = True
+            Case Else
+                If Not IsVersion(arg(idx)) Then
+                    WScript.Echo "pyenv: Unrecognized python version: "& arg(idx)
+                    WScript.Quit 1
+                End If
+                uninstallVersions.Item(arg(idx)) = Empty
         End Select
     Next
 
-    Dim uninstallPath
+    If objfs.GetFolder(strDirVers).SubFolders.Count = 0 Then
+        WScript.Echo "pyenv: No valid versions of python installed."
+        WScript.Quit
+    End If
+
     Dim folder
     Dim confirm
-    uninstallPath = strDirVers &"\"& version
+    Dim delError
+    delError = 0
 
     On Error Resume Next
     If optAll Then
-        If objfs.GetFolder(strDirVers).SubFolders.Count = 0 Then
-            WScript.Echo "pyenv: No versions of python installed."
-            WScript.Quit
-        End If
-
         ' Confirm "uninstall all", if not forced.
         If optForce Then
             confirm = "y"
@@ -81,27 +84,39 @@ Sub main(arg)
 
         If confirm = "y" Then
             For Each folder In objfs.GetFolder(strDirVers).SubFolders
-                WScript.StdOut.Write "pyenv: Uninstalling version """& folder.Name &"""... "
-                folder.Delete optForce
-                If Err.Number <> 0 Then
-                    WScript.StdOut.WriteLine "Error ("& Err.Number &"): "& Err.Description
-                    Err.Clear
-                Else
-                    WScript.StdOut.WriteLine "Done."
+                If IsVersion(folder.Name) Then
+                    WScript.StdOut.Write "pyenv: Uninstalling version """& folder.Name &"""... "
+                    folder.Delete optForce
+                    If Err.Number <> 0 Then
+                        WScript.StdOut.WriteLine "Error ("& Err.Number &"): "& Err.Description
+                        Err.Clear
+                        delError = 1
+                    Else
+                        WScript.StdOut.WriteLine "Done."
+                    End If
                 End If
             Next
         End If
-    ElseIf IsVersion(version) And objfs.FolderExists(uninstallPath) Then
-        objfs.DeleteFolder params(uninstallPath), optForce
-        If Err.Number <> 0 Then
-            WScript.Echo "pyenv: Error ("& Err.Number &") uninstalling version "& folder.Name &": "& Err.Description
-        Else
-            WScript.Echo "pyenv: Successfully uninstalled "& folder.Name
-        End If
+    ElseIf uninstallVersions.Count > 0 Then
+        Dim uninstallPath
+        For Each folder In uninstallVersions.Keys
+            uninstallPath = strDirVers &"\"& folder
+            If IsVersion(folder) And objfs.FolderExists(uninstallPath) Then
+                objfs.DeleteFolder uninstallPath, optForce
+                If Err.Number <> 0 Then
+                    WScript.Echo "pyenv: Error ("& Err.Number &") uninstalling version "& folder.Name &": "& Err.Description
+                    Err.Clear
+                    delError = 1
+                Else
+                    WScript.Echo "pyenv: Successfully uninstalled "& folder
+                End If
+            End If
+        Next
     Else
-      WScript.Echo "pyenv: version '"& version &"' not installed"
+        WScript.Echo "pyenv: version '"& version &"' not installed"
     End If
 
+    WScript.Quit delError
 End Sub
 
 main(WScript.Arguments)
