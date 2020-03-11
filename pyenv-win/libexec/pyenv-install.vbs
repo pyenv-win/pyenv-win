@@ -164,7 +164,6 @@ Sub extract(params)
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
         SetGlobalVersion params(LV_Code)
-        'objws.Run "pyenv rehash", 0, True
     Else
         WScript.Echo ":: [Error] :: couldn't install .. "& params(LV_Code)
     End If
@@ -263,7 +262,7 @@ Sub main(arg)
             If optForce Then clear(installParams)
             extract(installParams)
         Next
-        'TODO: Call rehash subroutine here.
+        Rehash
     End If
 End Sub
 
