@@ -13,10 +13,7 @@ Sub Import(importFile)
     libFile.Close
 End Sub
 
-Import "pyenv-lib.vbs"
-Import "pyenv-install-lib.vbs"
-
-WScript.Echo ":: [Info] ::  Mirror: "& mirror
+Import "libs\pyenv-lib.vbs"
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv uninstall [-f|--force|--msi] <version>"

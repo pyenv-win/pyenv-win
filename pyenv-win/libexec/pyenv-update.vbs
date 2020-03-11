@@ -13,8 +13,8 @@ Sub Import(importFile)
     libFile.Close
 End Sub
 
-Import "pyenv-lib.vbs"
-Import "pyenv-install-lib.vbs"
+Import "libs\pyenv-lib.vbs"
+Import "libs\pyenv-install-lib.vbs"
 
 WScript.Echo ":: [Info] ::  Mirror: " & mirror
 

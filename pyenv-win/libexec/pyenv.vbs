@@ -15,39 +15,63 @@ Sub Import(importFile)
     libFile.Close
 End Sub
 
-Import "pyenv-lib.vbs"
+Import "libs\pyenv-lib.vbs"
+
+Function GetExtensions(addPy)
+    Dim exts
+    exts = ";"& objws.Environment("Process")("PATHEXT") &";"
+    Set GetExtensions = CreateObject("System.Collections.ArrayList")
+
+    If addPy Then
+        If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
+        If InStr(1, exts, ";.PYW;", 1) = 0 Then exts = exts &".PYW;"
+    End If    
+    exts = Mid(exts, 2, Len(exts)-2)
+
+    Do While InStr(1, exts, ";;", 1) <> 0
+        exts = Replace(exts, ";;", ";")
+    Loop
+
+    Dim ext
+    For Each ext In Split(exts, ";")
+        GetExtensions.Add ext
+    Next
+End Function
+
+Function GetExtensionsNoPeriod(addPy)
+    Dim exts
+    Dim i
+    Set exts = GetExtensions(addPy)
+    For i = 0 To exts.Count - 1
+        If Left(exts(i), 1) = "." Then
+            exts(i) = LCase(Mid(exts(i), 2))
+        Else
+            exts(i) = LCase(exts(i))
+        End If
+    Next
+    Set GetExtensionsNoPeriod = exts
+End Function
 
 Function GetCommandList()
     Dim cmdList
     Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
 
-    Dim re
-    Set re = new regexp
-    re.Pattern = "\\pyenv-([a-zA-Z_0-9-]+)\.(bat|vbs)$"
+    Dim fileRegex
+    Dim exts
+    Set fileRegex = new RegExp
+    Set exts = GetExtensionsNoPeriod(False)
+    fileRegex.Pattern = "pyenv-([a-zA-Z_0-9-]+)\."
 
     Dim file
-    Dim mts
+    Dim matches
     For Each file In objfs.GetFolder(strDirLibs).Files
-        Set mts = re.Execute(file)
-        If mts.Count > 0 Then
-             cmdList.Add mts(0).submatches(0), file
+        Set matches = fileRegex.Execute(objfs.GetFileName(file))
+        If matches.Count > 0 And exts.Contains(objfs.GetExtensionName(file)) Then
+             cmdList.Add matches(0).SubMatches(0), file
         End If
     Next
 
     Set GetCommandList = cmdList
-End Function
-
-Function PyExtensions()
-    Dim exts
-    exts = ";"& objws.Environment("Process")("PATHEXT") &";"
-
-    If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
-    If InStr(1, exts, ";.PYW;", 1) = 0 Then exts = exts &".PYW;"
-    exts = Mid(exts, 2, Len(exts)-2)
-    Do While InStr(1, exts, ";;", 1) <> 0
-        exts = Replace(exts, ";;", ";")
-    Loop
-    PyExtensions = Split(exts, ";")
 End Function
 
 Sub PrintHelp(cmd, exitCode)
@@ -122,7 +146,7 @@ Sub CommandWhich(arg)
     If version = "" Then version = GetCurrentVersion()(0)
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = PyExtensions()
+    Set exts = GetExtensions(True)
 
     If Not objfs.FolderExists(strDirVers &"\"& version) Then
         WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
@@ -193,7 +217,7 @@ Sub CommandWhence(arg)
     If program = "" Then PrintHelp "pyenv-whence", 1
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = PyExtensions()
+    Set exts = GetExtensions(True)
     foundAny = 1
 
     For Each dir In objfs.GetFolder(strDirVers).subfolders
@@ -293,17 +317,6 @@ Sub CommandHelp(arg)
     End If
 End Sub
 
-Sub ReformatExtensions(ByRef exts)
-    Dim i
-    For i = LBound(exts) To UBound(exts)
-        If Left(exts(i), 1) = "." Then
-            exts(i) = LCase(Mid(exts(i), 2))
-        Else
-            exts(i) = LCase(exts(i))
-        End If
-    Next
-End Sub
-
 Sub CommandRehash(arg)
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
@@ -317,43 +330,35 @@ Sub CommandRehash(arg)
     Next
 
     Dim strDirBin
-    Dim ext
     Dim exts
     strDirBin = GetBinDir(GetCurrentVersion()(0))
-    exts = PyExtensions
-    ReformatExtensions exts
+    Set exts = GetExtensionsNoPeriod(True)
 
     For Each file In objfs.GetFolder(strDirBin).Files
-        For Each ext In exts
-            If LCase(objfs.GetExtensionName(file)) = ext Then
-                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-                ofile.WriteLine("@echo off")
-                ofile.WriteLine("pyenv exec %~n0 %*")
-                ofile.Close()
-                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-                ofile.WriteLine("#!/bin/sh")
-                ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
-                ofile.Close()
-                Exit For
-            End If
-        Next
+        If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
+            ofile.WriteLine("@echo off")
+            ofile.WriteLine("pyenv exec %~n0 %*")
+            ofile.Close()
+            Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+            ofile.WriteLine("#!/bin/sh")
+            ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
+            ofile.Close()
+        End If
     Next
 
     If objfs.FolderExists(strDirBin & "\Scripts") Then
         For Each file In objfs.GetFolder(strDirBin & "\Scripts").Files
-            For Each ext In exts
-                If LCase(objfs.GetExtensionName(file)) = ext Then
-                    Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-                    ofile.WriteLine("@echo off")
-                    ofile.WriteLine("pyenv exec Scripts/%~n0 %*")
-                    ofile.Close()
-                    Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-                    ofile.WriteLine("#!/bin/sh")
-                    ofile.WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
-                    ofile.Close()
-                    Exit For
-                End If
-            Next
+            If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
+                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
+                ofile.WriteLine("@echo off")
+                ofile.WriteLine("pyenv exec Scripts/%~n0 %*")
+                ofile.Close()
+                Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
+                ofile.WriteLine("#!/bin/sh")
+                ofile.WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
+                ofile.Close()
+            End If
         Next
     End If
 End Sub
