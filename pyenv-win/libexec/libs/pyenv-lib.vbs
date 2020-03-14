@@ -121,7 +121,7 @@ End Function
 
 Function GetBinDir(ver)
     Dim str
-    str = strDirVers &"\"& ver &"\"
+    str = strDirVers &"\"& ver
     If Not(IsVersion(ver) And objfs.FolderExists(str)) Then
 		WScript.Echo "pyenv specific python requisite didn't meet. Project is using different version of python."
 		WScript.Echo "Install python '"& ver &"' by typing: 'pyenv install "& ver &"'"
@@ -147,7 +147,7 @@ Function GetExtensions(addPy)
     If addPy Then
         If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
         If InStr(1, exts, ";.PYW;", 1) = 0 Then exts = exts &".PYW;"
-    End If    
+    End If
     exts = Mid(exts, 2, Len(exts)-2)
 
     Do While InStr(1, exts, ";;", 1) <> 0
