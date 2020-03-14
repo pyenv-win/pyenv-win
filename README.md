@@ -40,16 +40,19 @@ I found a similar system for [rbenv-win][3] for ruby developers. This project wa
 ## pyenv-win commands
 
 ```yml
-   commands    List all available pyenv commands
-   local       Set or show the local application-specific Python version
-   global      Set or show the global Python version
-   shell       Set or show the shell-specific Python version
-   install     Install a Python version using python-build
-   uninstall   Uninstall a specific Python version
-   rehash      Rehash pyenv shims (run this after installing executables)
-   version     Show the current Python version and its origin
-   versions    List all Python versions available to pyenv
-   exec        Runs an executable by first preparing PATH so that the selected Python
+   commands     List all available pyenv commands
+   local        Set or show the local application-specific Python version
+   global       Set or show the global Python version
+   shell        Set or show the shell-specific Python version
+   install      Install a Python version using python-build
+   uninstall    Uninstall a specific Python version
+   rehash       Rehash pyenv shims (run this after installing executables)
+   version      Show the current Python version and its origin
+   version-name Show the current Python version
+   versions     List all Python versions available to pyenv
+   exec         Runs an executable by first preparing PATH so that the selected Python
+   which        Display the full path to an executable
+   whence       List all Python versions that contain the given executable
 ```
 
 ## Installation
