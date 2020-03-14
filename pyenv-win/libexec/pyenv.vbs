@@ -47,14 +47,27 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
-    With CreateObject("ADODB.Stream")
+    Dim utfStream
+    Dim outStream
+    Set utfStream = CreateObject("ADODB.Stream")
+    Set outStream = CreateObject("ADODB.Stream")
+    With utfStream
         .CharSet = "utf-8"
+        .Mode = 3 ' adModeReadWrite
         .Open
-        .WriteText("chcp 65001 > NUL" & vbCrLf)
+        .WriteText("chcp 1250 > NUL" & vbCrLf)
         .WriteText(str & vbCrLf)
+        .Position = 3
+    End With
+    With outStream
+        .Type = 1 ' adTypeBinary
+        .Mode = 3 ' adModeReadWrite
+        .Open
+        utfStream.CopyTo outStream
         .SaveToFile strPyenvHome & "\exec.bat", 2
         .Close
     End With
+    utfStream.Close
 End Sub
 
 Function getCommandOutput(theCommand)
@@ -302,13 +315,13 @@ Sub CommandExecute(arg)
     dstr = GetBinDir(GetCurrentVersion()(0))
     str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
     If arg.Count > 1 Then
-      str = str &""""& dstr &"\"& arg(1) &""""
-      Dim idx
-      If arg.Count > 2 Then  
-        For idx = 2 To arg.Count - 1
-          str = str &" """& arg(idx) &""""
-        Next
-      End If
+        str = str &""""& dstr &"\"& arg(1) &""""
+        Dim idx
+        If arg.Count > 2 Then
+            For idx = 2 To arg.Count - 1
+                str = str &" """& arg(idx) &""""
+            Next
+        End If
     End If
     ExecCommand(str)
 End Sub
