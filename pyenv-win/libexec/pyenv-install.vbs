@@ -207,7 +207,7 @@ Sub main(arg)
             Case "-c"      optClear = True
             Case "--clear" optClear = True
             Case Else
-                installVersions.Item(arg(idx)) = Empty
+                installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
     Next
 
@@ -221,28 +221,11 @@ Sub main(arg)
         WScript.Quit 1
     End If
 
-    If Not optAll Then
-        If installVersions.Count = 0 Then
-            Dim ary
-            ary = GetCurrentVersionNoError()
-            If Not IsNull(ary) Then installVersions.Item(ary(0)) = Empty
-        End If
-
-        ' Pre-check if all versions to install exist.
-        For Each version In installVersions.Keys
-            If Not versions.Exists(version) Then
-                WScript.Echo "pyenv-install: definition not found: "& version
-                WScript.Echo
-                WScript.Echo "See all available versions with `pyenv install --list'."
-                WScript.Quit 1
-            End If
-        Next
-    End If
-
     If optList Then
         For Each version In versions.Keys
             WScript.Echo version
         Next
+        Exit Sub
     ElseIf optClear Then
         Dim objCache
         Dim delError
@@ -266,20 +249,45 @@ Sub main(arg)
             End If
         Next
         WScript.Quit delError
+    End If
+
+    If optAll Then
+        ' Add all versions, but only 32-bit versions for 32-bit platforms.
+        installVersions.RemoveAll
+        For Each version In versions.Keys
+            version = Check32Bit(version)
+            If versions.Exists(version) Then _
+                installVersions(version) = Empty
+        Next
     Else
-        Dim versDict
-        Dim verDef
-        Dim installParams
-
-        If optAll Then
-            Set versDict = versions
-        Else
-            Set versDict = installVersions
+        If installVersions.Count = 0 Then
+            Dim ary
+            ary = GetCurrentVersionNoError()
+            If Not IsNull(ary) Then
+                installVersions.Item(ary(0)) = Empty
+            Else
+                ShowHelp
+            End If    
         End If
+    End If
 
-        If versDict.Count = 0 Then ShowHelp
+    ' Pre-check if all versions to install exist.
+    For Each version In installVersions.Keys
+        If Not versions.Exists(version) Then
+            WScript.Echo "pyenv-install: definition not found: "& version
+            WScript.Echo
+            WScript.Echo "See all available versions with `pyenv install --list'."
+            WScript.Quit 1
+        End If
+    Next
 
-        For Each version In versDict.Keys
+    Dim verDef
+    Dim installParams
+    Dim installed
+    Set installed = CreateObject("Scripting.Dictionary")
+
+    For Each version In installVersions.Keys
+        If Not installed.Exists(version) Then
             verDef = versions(version)
             installParams = Array( _
                 verDef(LV_Code), _
@@ -294,9 +302,10 @@ Sub main(arg)
             )
             If optForce Then clear(installParams)
             extract(installParams)
-        Next
-        Rehash
-    End If
+            installed(version) = Empty
+        End If
+    Next
+    Rehash
 End Sub
 
 main(WScript.Arguments)

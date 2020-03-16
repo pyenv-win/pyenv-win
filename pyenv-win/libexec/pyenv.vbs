@@ -331,8 +331,8 @@ Sub CommandGlobal(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
+    Dim ver
     If arg.Count < 2 Then
-        Dim ver
         ver = GetCurrentVersionGlobal()
         If IsNull(ver) Then
             WScript.Echo "no global version configured"
@@ -340,7 +340,8 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        SetGlobalVersion arg(1)
+        ver = Check32Bit(arg(1))
+        SetGlobalVersion ver
     End If
 End Sub
 
@@ -358,14 +359,15 @@ Sub CommandLocal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
             objfs.DeleteFile strCurrent & strVerFile, True
             Exit Sub
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
+
         Dim ofile
         If objfs.FileExists(strCurrent & strVerFile) Then
             Set ofile = objfs.OpenTextFile(strCurrent & strVerFile, 2)
@@ -391,10 +393,10 @@ Sub CommandShell(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
         ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)

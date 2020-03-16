@@ -231,3 +231,18 @@ Sub Rehash()
         Next
     End If
 End Sub
+
+' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
+Function Is32Bit()
+    Dim arch
+    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
+    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+    Is32Bit = (UCase(arch) = "X86")
+End Function
+
+' If on a 32bit computer, default to -win32 versions.
+Function Check32Bit(version)
+    If Is32Bit And Right(LCase(version), 6) <> "-win32" Then _
+        version = version & "-win32"
+    Check32Bit = version
+End Function

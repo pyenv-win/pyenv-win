@@ -68,7 +68,6 @@ Sub main(arg)
     Dim delError
     delError = 0
 
-    On Error Resume Next
     If optAll Then
         ' Confirm "uninstall all", if not forced.
         If optForce Then
@@ -78,29 +77,35 @@ Sub main(arg)
             Do While confirm <> "n" And confirm <> "y"
                 WScript.StdOut.Write "pyenv: Confirm uninstall all? (Y/N): "
                 confirm = LCase(Left(Trim(WScript.StdIn.ReadLine), 1))
-                If Len(confirm) = 0 Then WScript.Quit
+                If Len(confirm) = 0 Then Exit Sub
             Loop
         End If
+        If confirm <> "y" Then Exit Sub
 
-        If confirm = "y" Then
-            For Each folder In objfs.GetFolder(strDirVers).SubFolders
-                If IsVersion(folder.Name) Then
-                    WScript.StdOut.Write "pyenv: Uninstalling version """& folder.Name &"""... "
-                    folder.Delete optForce
-                    If Err.Number <> 0 Then
-                        WScript.StdOut.WriteLine "Error ("& Err.Number &"): "& Err.Description
-                        Err.Clear
-                        delError = 1
-                    Else
-                        WScript.StdOut.WriteLine "Done."
-                    End If
-                End If
-            Next
-            If Not CBool(delError) Then Rehash
+        uninstallVersions.RemoveAll
+        For Each folder In objfs.GetFolder(strDirVers).SubFolders
+            If IsVersion(folder.Name) Then _
+                uninstallVersions(folder.Name) = Empty
+        Next
+    End If
+
+    If uninstallVersions.Count = 1 Then
+        folder = Check32Bit(uninstallVersions.Keys()(0))
+        If Not objfs.FolderExists(strDirVers &"\"& folder) Then
+            WScript.Echo "pyenv: version '"& folder &"' not installed"
+            Exit Sub
         End If
-    ElseIf uninstallVersions.Count > 0 Then
-        Dim uninstallPath
-        For Each folder In uninstallVersions.Keys
+    End If
+
+    Dim uninstalled
+    Dim uninstallPath
+    Set uninstalled = CreateObject("Scripting.Dictionary")
+
+    On Error Resume Next
+    For Each folder In uninstallVersions.Keys
+        folder = Check32Bit(folder)
+
+        If Not uninstalled.Exists(folder) Then
             uninstallPath = strDirVers &"\"& folder
             If IsVersion(folder) And objfs.FolderExists(uninstallPath) Then
                 objfs.DeleteFolder uninstallPath, optForce
@@ -110,13 +115,12 @@ Sub main(arg)
                     delError = 1
                 Else
                     WScript.Echo "pyenv: Successfully uninstalled "& folder
+                    uninstalled(folder) = Empty
                 End If
             End If
-        Next
-        If Not CBool(delError) Then Rehash
-    Else
-        WScript.Echo "pyenv: version '"& version &"' not installed"
-    End If
+        End If
+    Next
+    If Not CBool(delError) Then Rehash
 
     WScript.Quit delError
 End Sub
