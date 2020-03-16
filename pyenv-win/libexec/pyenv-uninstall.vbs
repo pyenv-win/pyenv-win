@@ -96,6 +96,7 @@ Sub main(arg)
                     End If
                 End If
             Next
+            If Not CBool(delError) Then Rehash
         End If
     ElseIf uninstallVersions.Count > 0 Then
         Dim uninstallPath
@@ -112,6 +113,7 @@ Sub main(arg)
                 End If
             End If
         Next
+        If Not CBool(delError) Then Rehash
     Else
         WScript.Echo "pyenv: version '"& version &"' not installed"
     End If
