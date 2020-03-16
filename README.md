@@ -31,7 +31,7 @@ Contributors and Interested people can join us @ [Slack](https://join.slack.com/
 
 I got inspired from the pyenv [issue][4] for Windows support. Personally, I use Mac and Linux with beautiful [pyenv][1], but some companies still use Windows for development. This library is to help Windows users manage multiple python versions.
 
-I found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some command aren't implemented, but it's good enough for basic use.
+I found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some commands aren't implemented, but it's good enough for basic use.
 
 ## pyenv
 
@@ -44,9 +44,10 @@ I found a similar system for [rbenv-win][3] for ruby developers. This project wa
    local        Set or show the local application-specific Python version
    global       Set or show the global Python version
    shell        Set or show the shell-specific Python version
-   install      Install a Python version using python-build
-   uninstall    Uninstall a specific Python version
-   rehash       Rehash pyenv shims (run this after installing executables)
+   install      Install 1 or more versions of Python 
+   uninstall    Uninstall 1 or more versions of Python
+   update       Update the cached version DB
+   rehash       Rehash pyenv shims (run this after switching Python versions)
    version      Show the current Python version and its origin
    version-name Show the current Python version
    versions     List all Python versions available to pyenv
@@ -62,14 +63,14 @@ I found a similar system for [rbenv-win][3] for ruby developers. This project wa
 Get pyenv-win via one of the following methods:
 
 - **With pip** (to support existing python users)
-   - Powershell or Git Bash: `pip install pyenv-win --target ~/.pyenv`
-   - cmd.exe: `pip install pyenv-win --target %USERPROFILE%/.pyenv`
+   - Powershell or Git Bash: `pip install pyenv-win --target $HOME\.pyenv`
+   - cmd.exe: `pip install pyenv-win --target %USERPROFILE%\.pyenv`
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
-   2. Extract to `~/.pyenv/pyenv-win`
+   2. Extract to `%USERPROFILE%\.pyenv\pyenv-win`
 - **With Git**
    - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git ~/.pyenv`
-   - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%/.pyenv`
+   - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv`
 - **With [Chocolatey](https://chocolatey.org/packages/pyenv-win)**
    - `choco install pyenv-win` (this also installs all the environment variables)
 
@@ -96,17 +97,19 @@ Get pyenv-win via one of the following methods:
 
 ## Usage
 
+- Update the list of discoverable Python versions: `pyenv update`
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
 - To install a python version:  `pyenv install 3.5.2`
-   - _Note: Older versions of python use an MSI file. You'll need to click through the wizard during installation. There's no need to change any options in it._
+   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it._
+   - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
 - To set a python version as the global version: `pyenv global 3.5.2`
    - This is the version of python that will be used by default if a local version (see below) isn't set.
-   - _Note: The version must first be installed_
+   - _Note: The version must first be installed._
 - To set a python version as the local version: `pyenv local 3.5.2`.
    - The version given will be used whenever `python` is called from within this folder. This is different than a virtual env, which needs to be explicitly activated.
-   - _Note: The version must first be installed_
-- After (un)installing any python version, you must run `pyenv rehash` to update pyenv with the new python version.
-   - _Note: This must be run outside of the `.pyenv` folder_
+   - _Note: The version must first be installed._
+- After (un)installing any libraries using pip or modifying the files in a version's folder, you must run `pyenv rehash` to update pyenv with new shims for the python and libraries' executables.
+   - _Note: This must be run outside of the `.pyenv` folder._
 - To uninstall a python version: `pyenv uninstall 3.5.2`
 - To view which python you are using and its path: `pyenv version`
 - To view all the python versions installed on this system: `pyenv versions`
@@ -117,15 +120,16 @@ Get pyenv-win via one of the following methods:
    - Add pyenv-win installed path to `easy_install.pth` file which is located in site-package. Now pyenv-win is recognised by pip
    - Get updates via pip `pip install --upgrade pyenv-win`
 - If installed via Git
-   - Go to the `%USERPROFILE%/.pyenv/pyenv-win` (which is your installed path) and run `git pull`
+   - Go to the `%USERPROFILE%\.pyenv\pyenv-win` (which is your installed path) and run `git pull`
 - If installed via zip
    - Download the latest zip and extract it
-   - Go to `%USERPROFILE%/.pyenv/pyenv-win/` and replace the folders `libexec` and `bin` with the new ones you just downloaded
+   - Go to `%USERPROFILE%\.pyenv\pyenv-win` and replace the folders `libexec` and `bin` with the new ones you just downloaded
 
 ## FAQ
 
 - **Question:** Does pyenv for windows support python2?
-   - **Answer:** Yes, We support python2 from version 2.0.1. We support it from 2.0.1 until python.org officially removes it.
+   - **Answer:** Yes, We support python2 from version 2.4+ until python.org officially removes it.
+   - Versions below 2.4 use outdated Wise installers and have issues installing multiple patch versions, unlike Windows MSI and the new Python3 installers that support "extraction" installations.
 
 - **Question:** Does pyenv for windows support python3?
    - **Answer:** Yes, we support python3 from version 3.0. We support it from 3.0 until python.org officially removes it.
@@ -134,15 +138,35 @@ Get pyenv-win via one of the following methods:
    - **Answer:** You can ignore it. It's calling `pyenv rehash` command before creating the bat file in few devices.
 
 - **Question:** System is stuck while uninstalling the python version, what to do?
-   - **Answer:** It's based on the system policies in some computers, recommend to uninstall in these computers by going to the path `%USERPROFILE%/.pyenv/pyenv-win/install_cache/`. I believe you know manual uninstallation. Please remove the `site-package` and `scripts` while uninstalling (mandatory). Double check the python version folder doesn't exist in the path `%USERPROFILE%/.pyenv/pyenv-win/versions/` if exist please do remove it (mandatory).
+   - **Answer:** Navigate to the location you installed pyenv, opening its 'versions' folder (usually `%USERPROFILE%\.pyenv\pyenv-win\versions`), and delete the folder of the version you want removed.
 
 - **Question:** I installed pyenv-win using pip. How can I uninstall it?
    - **Answer:** Follow the pip instructions in [How to get updates](#how-to-get-updates) and then run `pip uninstall pyenv-win`
 
 - **Question:** pyenv-win not recognised, but I have set the ENV PATH?
-   - **Answer:** According to windows added the path in User or System variable, For User variale you need to logout and login to reflect the path. For System variavle it's not required.
+   - **Answer:** According to Windows when adding the path under the User or System variables, for the User variable you need to logout and login again to reflect the changes. For System variable it's not required.
 
+## Change Log
 
+### New in 1.3.0
+- Version naming conventions have now changed from using 64-bit suffixes when specifying a version to (un)install. Now all you need to use is the version number to install your platform's specifc bit version.
+   - **\*WARNING\*: This change is backwards incompatible with v1.2.5 so please uninstall all versions of python prior to upgrading pyenv to this version.**
+   - Ex. `pyenv install 2.7.17` will install as 64-bit on x64 and 32-bit on x86. (64-bit can still use `2.7.17-win32` to install the 32-bit version)
+   - `pyenv global/local/shell` also now recognize your platform and select the appropirate bit version. (64-bit users will need to specify `[version]-win32` to use the 32-bit versions now)
+- Added support for true unobtrusive, local installs.
+  - **\*WARNING\*: This change is backwards incompatible with v1.2.5 so please uninstall all versions of python prior to upgrading pyenv to this version.**
+  - No install/uninstall records are written to the registry or Start Menu anymore (no "Programs and Features" records).
+  - When installing a patch version of python (ex. 3.6.1) installing another patch version (ex. 3.6.2) won't reuse the same folder and overwrite the previously installed minor version. They're now kept separate.
+  - Uninstalls are now a simple folder deletion. (Can be done manually by the user safely now or `pyenv uninstall`)
+- Added support for (un)installing multiple versions of python in a single command or all DB versions via the `-a/--all` switch.
+   - When using `--all` on x64 computers you can use `--32only` or `--64only` to install only 32-bit or only 64-bit version s of python. (Does nothing on 32-bit computers, and better filters may be in the works later on)
+- `pyenv global/rehash` is called automatically after (un)installing a new Python version. (last version specified, if installing multiple)
+- Pyenv now uses a cached DB of versions scraped straight from the Python mirror site and can be updated manually by a user using `pyenv update`. Users no longer have to wait for pyenv's source repo to be updated to use a new version of Python when it releases, and can also use the new alpha/beta python releases.
+- `pyenv install` now has a `-c/--clear` to empty cached installers in the `%PYENV%\install_cache` folder.
+- `pyenv rehash` now acknowledges %PATHEXT% (plus PY and PYW) when creating shims instead of just for exe, bat, cmd and py files so more executables are available from `\Scripts` and libraries installed using pip.
+- Shims created using `pyenv rehash` no longer call `pyenv exec`, but instead call python directly to prevent issues with other programs executing the shims.
+- Shims now use cp1250 as the default code page since Python2 will [never actually support cp65001](https://bugs.python.org/issue6058#msg120712). cp1250 has better support for upper ANSI characters (ex. "Pokémon"), but still isn't full UTF-8 compatible.
+- **Note: Support for Python versions below 2.4 have been dropped since their installers don't install "cleanly" like versions from 2.4 onward and they're predominently out of use/support in most envrionments now.**
 
 ## How to contribute
 
