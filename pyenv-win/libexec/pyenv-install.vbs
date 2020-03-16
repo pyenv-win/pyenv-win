@@ -20,7 +20,7 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
-    WScript.Echo "       pyenv install [-f] -a|--all"
+    WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
@@ -29,6 +29,8 @@ Sub ShowHelp()
     WScript.Echo "  -c/--clear  Removes downloaded installers from the cache to free space"
     WScript.Echo "  -f/--force  Install even if the version appears to be installed already"
     WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only    Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only    Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -184,6 +186,8 @@ Sub main(arg)
     Dim optList
     Dim optQuiet
     Dim optAll
+    Dim opt32
+    Dim opt64
     Dim optClear
     Dim installVersions
 
@@ -191,25 +195,37 @@ Sub main(arg)
     optList = False
     optQuiet = False
     optAll = False
+    opt32 = False
+    opt64 = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"  ShowHelp
-            Case "-l"      optList = True
-            Case "--list"  optList = True
-            Case "-f"      optForce = True
-            Case "--force" optForce = True
-            Case "-q"      optQuiet = True
-            Case "--quiet" optQuiet = True
-            Case "-a"      optAll = True
-            Case "--all"   optAll = True
-            Case "-c"      optClear = True
-            Case "--clear" optClear = True
+            Case "--help"   ShowHelp
+            Case "-l"       optList = True
+            Case "--list"   optList = True
+            Case "-f"       optForce = True
+            Case "--force"  optForce = True
+            Case "-q"       optQuiet = True
+            Case "--quiet"  optQuiet = True
+            Case "-a"       optAll = True
+            Case "--all"    optAll = True
+            Case "-c"       optClear = True
+            Case "--clear"  optClear = True
+            Case "--32only" opt32 = True
+            Case "--64only" opt64 = True
             Case Else
                 installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
     Next
+    If Is32Bit Then
+        opt32 = False
+        opt64 = False
+    End If    
+    If opt32 And opt64 Then
+        WScript.Echo "pyenv-install: only --32only or --64only may be specified, not both."
+        WScript.Quit 1
+    End If
 
     Dim versions
     Dim version
@@ -253,11 +269,21 @@ Sub main(arg)
 
     If optAll Then
         ' Add all versions, but only 32-bit versions for 32-bit platforms.
+        ' --32only/--64only is disabled on 32-bit platforms.
         installVersions.RemoveAll
         For Each version In versions.Keys
             version = Check32Bit(version)
-            If versions.Exists(version) Then _
-                installVersions(version) = Empty
+            If versions.Exists(version) Then
+                If opt64 Then
+                    If versions(version)(LV_x64) Then _
+                        installVersions(version) = Empty
+                ElseIf opt32 Then
+                    If Not versions(version)(LV_x64) Then _
+                        installVersions(version) = Empty
+                Else
+                    installVersions(version) = Empty
+                End If
+            End If
         Next
     Else
         If installVersions.Count = 0 Then
