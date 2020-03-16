@@ -53,10 +53,10 @@ Function GetCurrentVersionGlobal()
     Dim fname
     Dim objFile
     fname = strPyenvHome & "\version"
-    If objfs.FileExists( fname ) Then
+    If objfs.FileExists(fname) Then
         Set objFile = objfs.OpenTextFile(fname)
         If objFile.AtEndOfStream <> True Then
-           GetCurrentVersionGlobal = Array(objFile.ReadLine,fname)
+           GetCurrentVersionGlobal = Array(objFile.ReadLine, fname)
         End If
         objFile.Close
     End If
@@ -69,15 +69,15 @@ Function GetCurrentVersionLocal(path)
     Dim objFile
     Do While path <> ""
         fname = path & strVerFile
-        If objfs.FileExists( fname ) Then
+        If objfs.FileExists(fname) Then
             Set objFile = objfs.OpenTextFile(fname)
             If objFile.AtEndOfStream <> True Then
-               GetCurrentVersionLocal = Array(objFile.ReadLine,fname)
+               GetCurrentVersionLocal = Array(objFile.ReadLine, fname)
             End If
             objFile.Close
             Exit Function
         End If
-        path = objfs.getParentFolderName(path)
+        path = objfs.GetParentFolderName(path)
     Loop
 End Function
 
@@ -85,10 +85,9 @@ Function GetCurrentVersionShell()
     GetCurrentVersionShell = Null
 
     Dim str
-    str = objws.ExpandEnvironmentStrings("%PYENV_VERSION%")
-    If str <> "%PYENV_VERSION%" Then
-        GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
-    End If
+    str = objws.Environment("Process")("PYENV_VERSION")
+    If str <> "" Then _
+        GetCurrentVersionShell = Array(str, "%PYENV_VERSION%")
 End Function
 
 Function GetCurrentVersion()
@@ -201,10 +200,16 @@ Sub Rehash()
         file.Delete True
     Next
 
+    Dim version
     Dim winBinDir, nixBinDir
     Dim exts
     Dim baseName
-    winBinDir = GetBinDir(GetCurrentVersion()(0))
+    version = GetCurrentVersionNoError()
+    If IsNull(version) Then Exit Sub
+
+    winBinDir = strDirVers &"\"& version(0)
+    If Not objfs.FolderExists(winBinDir) Then Exit Sub
+
     nixBinDir = "/"& Replace(Replace(winBinDir, ":", ""), "\", "/")
     Set exts = GetExtensionsNoPeriod(True)
 
