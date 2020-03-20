@@ -1,5 +1,6 @@
 @echo off
 setlocal
+set KNOWN_VER=1.3.0
 
 if "%1" == "--help" (
 echo Usage: pyenv --version
@@ -16,14 +17,13 @@ EXIT /B
 )
 
 IF "%PYENV%" == "" (
-    set version="1.2.4"
+    set version=%KNOWN_VER%
     echo PYENV variable is not set, recommended to set the variable.
+) ELSE IF EXIST %PYENV%\version (
+    set version=<%PYENV%\version
+    IF "%version%" == "" set version=%KNOWN_VER%
 ) ELSE (
-    set version=<%PYENV%/../.version
-    IF %version% == "" (
-        set version="1.2.4"
-        echo PYENV variable is not set, recommended to set the variable.
-    )
+    set version=%KNOWN_VER%
 )
 echo pyenv %version%
 
