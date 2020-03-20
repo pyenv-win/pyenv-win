@@ -19,7 +19,7 @@ Import "libs\pyenv-lib.vbs"
 
 Function GetCommandList()
     Dim cmdList
-    Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
+    Set cmdList = CreateObject("Scripting.Dictionary")
 
     Dim fileRegex
     Dim exts
@@ -31,7 +31,7 @@ Function GetCommandList()
     Dim matches
     For Each file In objfs.GetFolder(strDirLibs).Files
         Set matches = fileRegex.Execute(objfs.GetFileName(file))
-        If matches.Count > 0 And exts.Contains(objfs.GetExtensionName(file)) Then
+        If matches.Count > 0 And exts.Exists(objfs.GetExtensionName(file)) Then
              cmdList.Add matches(0).SubMatches(0), file
         End If
     Next
@@ -145,7 +145,7 @@ Sub CommandWhich(arg)
         WScript.Quit 0
     End If
 
-    For Each ext In exts
+    For Each ext In exts.Keys
         If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
             WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
             WScript.Quit 0
@@ -158,7 +158,7 @@ Sub CommandWhich(arg)
             WScript.Quit 0
         End If
 
-        For Each ext In exts
+        For Each ext In exts.Keys
             If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
                 WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
                 WScript.Quit 0
@@ -221,7 +221,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\" & program & ext) Then
                     found = True
                     foundAny = 0
@@ -248,7 +248,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
                     foundAny = 0
                     If isPath Then
