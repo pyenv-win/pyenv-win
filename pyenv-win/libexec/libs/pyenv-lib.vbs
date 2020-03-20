@@ -141,7 +141,7 @@ End Sub
 Function GetExtensions(addPy)
     Dim exts
     exts = ";"& objws.Environment("Process")("PATHEXT") &";"
-    Set GetExtensions = CreateObject("System.Collections.ArrayList")
+    Set GetExtensions = CreateObject("Scripting.Dictionary")
 
     If addPy Then
         If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
@@ -155,22 +155,20 @@ Function GetExtensions(addPy)
 
     Dim ext
     For Each ext In Split(exts, ";")
-        GetExtensions.Add ext
+        GetExtensions.Item(ext) = Empty
     Next
 End Function
 
 Function GetExtensionsNoPeriod(addPy)
-    Dim exts
-    Dim i
-    Set exts = GetExtensions(addPy)
-    For i = 0 To exts.Count - 1
-        If Left(exts(i), 1) = "." Then
-            exts(i) = LCase(Mid(exts(i), 2))
+    Dim key
+    Set GetExtensionsNoPeriod = GetExtensions(addPy)
+    For Each key In GetExtensionsNoPeriod.Keys
+        If Left(key, 1) = "." Then
+            GetExtensionsNoPeriod.Key(key) = LCase(Mid(key, 2))
         Else
-            exts(i) = LCase(exts(i))
+            GetExtensionsNoPeriod.Key(key) = LCase(key)
         End If
     Next
-    Set GetExtensionsNoPeriod = exts
 End Function
 
 Sub WriteWinScript(baseName, strDirBin)
@@ -214,7 +212,7 @@ Sub Rehash()
     Set exts = GetExtensionsNoPeriod(True)
 
     For Each file In objfs.GetFolder(winBinDir).Files
-        If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
+        If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
             baseName = objfs.GetBaseName(file)
             WriteWinScript baseName, winBinDir
             WriteLinuxScript baseName, nixBinDir
@@ -223,7 +221,7 @@ Sub Rehash()
 
     If objfs.FolderExists(winBinDir & "\Scripts") Then
         For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
-            If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
+            If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
                 WriteWinScript baseName, winBinDir
                 WriteLinuxScript baseName, nixBinDir

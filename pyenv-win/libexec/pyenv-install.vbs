@@ -36,21 +36,23 @@ Sub ShowHelp()
 End Sub
 
 Sub EnsureFolder(path)
-    Dim stack
+    Dim stack()
     Dim folder
-    Set stack = CreateObject("System.Collections.ArrayList")
-    stack.Add path
+    ReDim stack(0)
+    stack(0) = path
+
     On Error Resume Next
-    Do While stack.Count
-        folder = stack(stack.Count-1)
+    Do While UBound(stack) > -1
+        folder = stack(UBound(stack))
         If objfs.FolderExists(folder) Then
-            stack.RemoveAt stack.Count-1
+            ReDim Preserve stack(UBound(stack)-1)
         ElseIf Not objfs.FolderExists(objfs.GetParentFolderName(folder)) Then
-            stack.Add objfs.GetParentFolderName(folder)
+            ReDim Preserve stack(UBound(stack)+1)
+            stack(UBound(stack)) = objfs.GetParentFolderName(folder)
         Else
             objfs.CreateFolder folder
             If Err.number <> 0 Then Exit Sub
-            stack.RemoveAt stack.Count-1
+            ReDim Preserve stack(UBound(stack)-1)
         End If
     Loop
 End Sub
