@@ -174,6 +174,7 @@ End Function
 Sub WriteWinScript(baseName, strDirBin)
     With objfs.CreateTextFile(strDirShims &"\"& baseName &".bat")
         .WriteLine("@echo off")
+        .WriteLine("setlocal")
         .WriteLine("chcp 1250 > NUL")
         .WriteLine("set ""PATH="& strDirBin &"\Scripts;"& strDirBin &";%PATH%""")
         .WriteLine(baseName &" %*")
