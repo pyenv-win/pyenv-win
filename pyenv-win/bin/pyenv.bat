@@ -16,7 +16,7 @@ rem be used by the program passed to 'exec', should it use python itself
 rem use pyenv.vbs to aid resolving absolute path (as 'bindir') to 'current' version
 rem and then prepend it to PATH
 for /f %%i in ('%pyenv% version') do call :normalizepath "%~dp0..\versions\%%i" bindir
-set "path=%bindir%;%path%"
+set "path=%bindir%;%bindir%\Scripts;%path%"
 
 rem pyenv's shim for 'pip' (pip.bat) calls "pyenv exec Scripts/pip"
 rem but its shim for 'python' calls 'pyenv exec python'.
