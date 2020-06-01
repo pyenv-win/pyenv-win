@@ -44,6 +44,8 @@ WScript.echo ":: [Info] ::  Mirror: " & mirror
 
 Dim listEnv
 listEnv = Array(_
+    Array("3.8.3", mirror&"/3.8.3/", "python-3.8.3.exe", "i386"),_
+    Array("3.8.3-amd64", mirror&"/3.8.3/", "python-3.8.3-amd64.exe", "x64"),_
     Array("3.8.2", mirror&"/3.8.2/", "python-3.8.2.exe", "i386"),_
     Array("3.8.2-amd64", mirror&"/3.8.2/", "python-3.8.2-amd64.exe", "x64"),_
     Array("3.8.1", mirror&"/3.8.1/", "python-3.8.1.exe", "i386"),_
@@ -409,8 +411,8 @@ Function DownloadFile(strUrl,strFile)
 End Function
 
 Sub clear(cur)
-    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True 
-    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True 
+    If objfs.FolderExists(cur(1)) Then objfs.DeleteFolder cur(1),True
+    If objfs.FileExists(cur(2)) Then objfs.DeleteFile   cur(2),True
 End Sub
 
 Sub download(cur)
@@ -435,7 +437,7 @@ Sub extract(cur)
     WScript.echo ":: [Path] :: " & exe_file
     objws.Run exe_file & " /uninstall ", 0, true
 
-    If objfs.FileExists(cur(1)) Then 
+    If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
 
@@ -443,7 +445,7 @@ Sub extract(cur)
         WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
         WScript.echo ":: [Error] :: Couldn't able to uninstall"
-    End If  
+    End If
 End Sub
 
 Sub extract_msi(cur)
@@ -457,10 +459,10 @@ Sub extract_msi(cur)
     objws.CurrentDirectory = strDirCache
     objws.Run "msiexec /x " & cur(2), 1, true
 
-    If objfs.FileExists(cur(1)) Then 
+    If objfs.FileExists(cur(1)) Then
         objfs.DeleteFolder cur(1) , True
     End If
-    
+
     If Not objfs.FileExists(cur(1)) Then
         WScript.echo ":: [Info] :: completed! " & cur(0)
     Else
