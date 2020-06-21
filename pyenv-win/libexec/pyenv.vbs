@@ -130,9 +130,12 @@ End Function
 
 Sub ExecCommand(str)
     Dim ofile
-    Set ofile = objfs.CreateTextFile(strPyenvHome & "\exec.bat" , True )
-    ofile.WriteLine(str)
-    ofile.Close()
+    Set ofile = CreateObject("ADODB.Stream")
+    ofile.CharSet = "utf-8"
+    ofile.Open
+    ofile.WriteText("chcp 65001 > NUL" & vbCrLf)
+    ofile.WriteText(str & vbCrLf)
+    ofile.SaveToFile strPyenvHome & "\exec.bat", 2
 End Sub
 
 Function getCommandOutput(theCommand)
