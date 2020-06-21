@@ -1,142 +1,42 @@
 Option Explicit
 
-Dim objws
-Dim objfs
 Dim objCmdExec
-Set objws = WScript.CreateObject("WScript.Shell")
-Set objfs = CreateObject("Scripting.FileSystemObject")
 
-Dim strCurrent
-Dim strPyenvHome
-Dim strPyenvParent
-Dim strDirCache
-Dim strDirVers
-Dim strDirLibs
-Dim strDirShims
-Dim strVerFile
-strCurrent   = objfs.GetAbsolutePathName(".")
-strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strPyenvParent = objfs.getParentFolderName(strPyenvHome)
-strDirCache  = strPyenvHome & "\install_cache"
-strDirVers   = strPyenvHome & "\versions"
-strDirLibs   = strPyenvHome & "\libexec"
-strDirShims  = strPyenvHome & "\shims"
-strVerFile   = "\.python-version"
-
-Function IsVersion(version)
-    Dim re
-    Set re = new regexp
-    re.Pattern = "^[a-zA-Z_0-9-.]+$"
-    IsVersion = re.Test(version)
-End Function
-
-Function GetCurrentVersionGlobal()
-    GetCurrentVersionGlobal = Null
-
-    Dim fname
-    Dim objFile
-    fname = strPyenvHome & "\version"
-    If objfs.FileExists( fname ) Then
-        Set objFile = objfs.OpenTextFile(fname)
-        If objFile.AtEndOfStream <> True Then
-           GetCurrentVersionGlobal = Array(objFile.ReadLine,fname)
-        End If
-        objFile.Close
+Sub Import(importFile)
+    Dim fso, libFile
+    On Error Resume Next
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set libFile = fso.OpenTextFile(fso.getParentFolderName(WScript.ScriptFullName) &"\"& importFile, 1)
+    ExecuteGlobal libFile.ReadAll
+    If Err.number <> 0 Then
+        WScript.Echo "Error importing library """& importFile &"""("& Err.Number &"): "& Err.Description
+        WScript.Quit 1
     End If
-End Function
+    libFile.Close
+End Sub
 
-Function GetCurrentVersionLocal(path)
-    GetCurrentVersionLocal = Null
-
-    Dim fname
-    Dim objFile
-    Do While path <> ""
-        fname = path & strVerFile
-        If objfs.FileExists( fname ) Then
-            Set objFile = objfs.OpenTextFile(fname)
-            If objFile.AtEndOfStream <> True Then
-               GetCurrentVersionLocal = Array(objFile.ReadLine,fname)
-            End If
-            objFile.Close
-            Exit Function
-        End If
-        path = objfs.getParentFolderName(path)
-    Loop
-End Function
-
-Function GetCurrentVersionShell()
-    GetCurrentVersionShell = Null
-
-    Dim str
-    str = objws.Environment("Process")("PYENV_VERSION")
-    If str <> "" Then
-        GetCurrentVersionShell = Array(str,"%PYENV_VERSION%")
-    End If
-End Function
-
-Function GetCurrentVersion()
-    Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
-    If IsNull(str) Then 
-        WScript.Echo "No global python version has been set yet. Please set the global version by typing:"
-        WScript.Echo "pyenv global 3.7.2"
-        WScript.Quit
-    End If
-    GetCurrentVersion = str
-End Function
-
-Function GetCurrentVersionNoError()
-    Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
-    GetCurrentVersionNoError = str
-End Function
-
-Function GetBinDir(ver)
-    Dim str
-    str = strDirVers & "\" & ver & "\" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then 
-        WScript.Echo "pyenv specific python requisite didn't meet. Project is using different version of python."
-        WScript.Echo "Install python '"&ver&"' by typing: 'pyenv install "&ver&"'"
-        WScript.Quit
-    End If
-    GetBinDir = str
-End Function
+Import "libs\pyenv-lib.vbs"
 
 Function GetCommandList()
     Dim cmdList
     Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
 
-    Dim re
-    Set re = new regexp
-    re.Pattern = "\\pyenv-([a-zA-Z_0-9-]+)\.(bat|vbs)$"
+    Dim fileRegex
+    Dim exts
+    Set fileRegex = new RegExp
+    Set exts = GetExtensionsNoPeriod(False)
+    fileRegex.Pattern = "pyenv-([a-zA-Z_0-9-]+)\."
 
     Dim file
-    Dim mts
+    Dim matches
     For Each file In objfs.GetFolder(strDirLibs).Files
-        Set mts = re.Execute(file)
-        If mts.Count > 0 Then
-             cmdList.Add mts(0).submatches(0), file
+        Set matches = fileRegex.Execute(objfs.GetFileName(file))
+        If matches.Count > 0 And exts.Contains(objfs.GetExtensionName(file)) Then
+             cmdList.Add matches(0).SubMatches(0), file
         End If
     Next
 
     Set GetCommandList = cmdList
-End Function
-
-Function PyExtensions()
-    Dim exts
-    exts = ";"& objws.Environment("Process")("PATHEXT") &";"
-
-    If InStr(1, exts, ";.PY;", 1) = 0 Then exts = exts &".PY;"
-    If InStr(1, exts, ";.PYW;", 1) = 0 Then exts = exts &".PYW;"
-    exts = Mid(exts, 2, Len(exts)-2)
-    Do While InStr(1, exts, ";;", 1) <> 0
-        exts = Replace(exts, ";;", ";")
-    Loop
-    PyExtensions = Split(exts, ";")
 End Function
 
 Sub PrintHelp(cmd, exitCode)
@@ -147,13 +47,14 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
-    Dim ofile
-    Set ofile = CreateObject("ADODB.Stream")
-    ofile.CharSet = "utf-8"
-    ofile.Open
-    ofile.WriteText("chcp 65001 > NUL" & vbCrLf)
-    ofile.WriteText(str & vbCrLf)
-    ofile.SaveToFile strPyenvHome & "\exec.bat", 2
+    With CreateObject("ADODB.Stream")
+        .CharSet = "utf-8"
+        .Open
+        .WriteText("chcp 65001 > NUL" & vbCrLf)
+        .WriteText(str & vbCrLf)
+        .SaveToFile strPyenvHome & "\exec.bat", 2
+        .Close
+    End With
 End Sub
 
 Function getCommandOutput(theCommand)
@@ -175,6 +76,7 @@ Sub CommandShims(arg)
      WScript.Echo shims_files
 End Sub
 
+' NOTE: Exists because of its possible reuse from the original Linux pyenv.
 'Function RemoveFromPath(pathToRemove)
 '    Dim path_before
 '    Dim result
@@ -211,7 +113,7 @@ Sub CommandWhich(arg)
     If version = "" Then version = GetCurrentVersion()(0)
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = PyExtensions()
+    Set exts = GetExtensions(True)
 
     If Not objfs.FolderExists(strDirVers &"\"& version) Then
         WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
@@ -282,7 +184,7 @@ Sub CommandWhence(arg)
     If program = "" Then PrintHelp "pyenv-whence", 1
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
-    exts = PyExtensions()
+    Set exts = GetExtensions(True)
     foundAny = 1
 
     For Each dir In objfs.GetFolder(strDirVers).subfolders
@@ -355,7 +257,8 @@ Sub ShowHelp()
      WScript.Echo "   shell        Set or show the shell-specific Python version"
      WScript.Echo "   install      Install a Python version using python-build"
      WScript.Echo "   uninstall    Uninstall a specific Python version"
-     WScript.Echo "   rehash       Rehash pyenv shims (run this after installing executables)"
+     WScript.Echo "   update       Update the cached version DB"
+     WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
      WScript.Echo "   version      Show the current Python version and its origin"
      WScript.Echo "   version-name Show the current Python version"
      WScript.Echo "   versions     List all Python versions available to pyenv"
@@ -381,69 +284,12 @@ Sub CommandHelp(arg)
     End If
 End Sub
 
-Sub ReformatExtensions(ByRef exts)
-    Dim i
-    For i = LBound(exts) To UBound(exts)
-        If Left(exts(i), 1) = "." Then
-            exts(i) = LCase(Mid(exts(i), 2))
-        Else
-            exts(i) = LCase(exts(i))
-        End If
-    Next
-End Sub
-
 Sub CommandRehash(arg)
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
     End If
 
-    Dim ofile
-    Dim file
-    If Not objfs.FolderExists( strDirShims ) Then objfs.CreateFolder(strDirShims)
-    For Each file In objfs.GetFolder(strDirShims).Files
-        objfs.DeleteFile file, True
-    Next
-
-    Dim strDirBin
-    Dim ext
-    Dim exts
-    strDirBin = GetBinDir(GetCurrentVersion()(0))
-    exts = PyExtensions
-    ReformatExtensions exts
-
-    For Each file In objfs.GetFolder(strDirBin).Files
-        For Each ext In exts
-            If LCase(objfs.GetExtensionName(file)) = ext Then
-              Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-              ofile.WriteLine("@echo off")
-              ofile.WriteLine("pyenv exec %~n0 %*")
-              ofile.Close()
-              Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-              ofile.WriteLine("#!/bin/sh")
-              ofile.WriteLine("pyenv exec $(basename ""$0"") $*")
-              ofile.Close()
-              Exit For
-            End If
-        Next
-    Next
-
-    If objfs.FolderExists(strDirBin & "\Scripts") Then
-        For Each file In objfs.GetFolder(strDirBin & "\Scripts").Files
-            For Each ext In exts
-                If LCase(objfs.GetExtensionName(file)) = ext Then
-                    Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) & ".bat" )
-                    ofile.WriteLine("@echo off")
-                    ofile.WriteLine("pyenv exec Scripts/%~n0 %*")
-                    ofile.Close()
-                    Set ofile = objfs.CreateTextFile(strDirShims & "\" & objfs.GetBaseName( file ) )
-                    ofile.WriteLine("#!/bin/sh")
-                    ofile.WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
-                    ofile.Close()
-                    Exit For
-                End If
-            Next
-        Next
-    End If
+    Rehash
 End Sub
 
 Sub CommandExecute(arg)
@@ -454,13 +300,13 @@ Sub CommandExecute(arg)
     Dim str
     Dim dstr
     dstr = GetBinDir(GetCurrentVersion()(0))
-    str = "set PATH=" & dstr & ";%PATH:&=^&%" & vbCrLf
-    If arg.Count > 1 Then  
-      str = str & """" & dstr & "\" & arg(1) & """"
+    str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
+    If arg.Count > 1 Then
+      str = str &""""& dstr &"\"& arg(1) &""""
       Dim idx
       If arg.Count > 2 Then  
-        For idx = 2 To arg.Count - 1 
-          str = str & " """& arg(idx) &""""
+        For idx = 2 To arg.Count - 1
+          str = str &" """& arg(idx) &""""
         Next
       End If
     End If
@@ -472,7 +318,7 @@ Sub CommandGlobal(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         Dim ver
         ver = GetCurrentVersionGlobal()
         If IsNull(ver) Then
@@ -481,11 +327,7 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        GetBinDir(arg(1))
-        Dim ofile
-        Set ofile = objfs.CreateTextFile( strPyenvHome & "\version" , True )
-        ofile.WriteLine(arg(1))
-        ofile.Close()
+        SetGlobalVersion arg(1)
     End If
 End Sub
 
@@ -495,7 +337,7 @@ Sub CommandLocal(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver = GetCurrentVersionLocal(strCurrent)
         If IsNull(ver) Then
             WScript.Echo "no local version configured for this directory"
@@ -513,9 +355,9 @@ Sub CommandLocal(arg)
         End If
         Dim ofile
         If objfs.FileExists(strCurrent & strVerFile) Then
-          Set ofile = objfs.OpenTextFile ( strCurrent & strVerFile , 2 )
+            Set ofile = objfs.OpenTextFile (strCurrent & strVerFile, 2)
         Else
-          Set ofile = objfs.CreateTextFile( strCurrent & strVerFile , True )
+            Set ofile = objfs.CreateTextFile(strCurrent & strVerFile, True)
         End If
         ofile.WriteLine(ver)
         ofile.Close()
@@ -528,7 +370,7 @@ Sub CommandShell(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver = GetCurrentVersionShell
         If IsNull(ver) Then
             WScript.Echo "no shell-specific version configured"
@@ -542,7 +384,7 @@ Sub CommandShell(arg)
         Else
             GetBinDir(ver)
         End If
-        ExecCommand("endlocal"&vbCrLf&"set PYENV_VERSION=" & ver)
+        ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)
     End If
 End Sub
 
@@ -551,11 +393,11 @@ Sub CommandVersion(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
     curVer = GetCurrentVersion
-    WScript.Echo curVer(0) & " (set by " &curVer(1)&")"
+    WScript.Echo curVer(0) &" (set by "& curVer(1) &")"
 End Sub
 
 Sub CommandVersionName(arg)
@@ -563,7 +405,7 @@ Sub CommandVersionName(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     WScript.Echo GetCurrentVersion()(0)
 End Sub
@@ -579,24 +421,24 @@ Sub CommandVersions(arg)
         If arg(1) = "--bare" Then isBare = True
     End If
 
-    If Not objfs.FolderExists( strDirVers ) Then objfs.CreateFolder(strDirVers)
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
     curVer = GetCurrentVersionNoError
     If IsNull(curVer) Then
-        curVer = Array("","")
+        curVer = Array("", "")
     End If
 
     Dim dir
     Dim ver
     For Each dir In objfs.GetFolder(strDirVers).subfolders
-        ver = objfs.GetFileName( dir )
+        ver = objfs.GetFileName(dir)
         If isBare Then
             WScript.Echo ver
         ElseIf ver = curVer(0) Then
-            WScript.Echo "* " & ver & " (set by " &curVer(1)&")"
+            WScript.Echo "* "& ver &" (set by "& curVer(1) &")"
         Else
-            WScript.Echo "  " & ver
+            WScript.Echo "  "& ver
         End If
     Next
 End Sub
@@ -609,18 +451,18 @@ Sub PlugIn(arg)
     Dim fname
     Dim idx
     Dim str
-    fname = strDirLibs & "\pyenv-" & arg(0)
-    If objfs.FileExists( fname & ".bat" ) Then
-        str = """" & fname & ".bat"""
-    ElseIf objfs.FileExists( fname & ".vbs" ) Then
-        str = "cscript //nologo """ & fname & ".vbs"""
+    fname = strDirLibs &"\pyenv-"& arg(0)
+    If objfs.FileExists(fname &".bat" ) Then
+        str = """"& fname &".bat"""
+    ElseIf objfs.FileExists(fname &".vbs" ) Then
+        str = "cscript //nologo """& fname &".vbs"""
     Else
-       WScript.Echo "pyenv: no such command `"&arg(0)&"'"
+       WScript.Echo "pyenv: no such command `"& arg(0) &"'"
        WScript.Quit
     End If
 
-    For idx = 1 To arg.Count - 1 
-      str = str & " """& arg(idx) &""""
+    For idx = 1 To arg.Count - 1
+      str = str &" """& arg(idx) &""""
     Next
 
     ExecCommand(str)
