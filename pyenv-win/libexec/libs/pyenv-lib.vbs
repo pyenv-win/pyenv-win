@@ -174,6 +174,25 @@ Function GetExtensionsNoPeriod(addPy)
     Set GetExtensionsNoPeriod = exts
 End Function
 
+Sub WriteWinScript(baseName, strDirBin)
+    With objfs.CreateTextFile(strDirShims &"\"& baseName &".bat")
+        .WriteLine("@echo off")
+        .WriteLine("chcp 1250 > NUL")
+        .WriteLine("set ""PATH="& strDirBin &"\Scripts;"& strDirBin &";%PATH%""")
+        .WriteLine(baseName &" %*")
+        .Close
+    End With
+End Sub
+
+Sub WriteLinuxScript(baseName, strDirBin)
+    With objfs.CreateTextFile(strDirShims &"\"& baseName)
+        .WriteLine("#!/bin/sh")
+        .WriteLine("export PATH="& strDirBin &"/Scripts:"& strDirBin &":$PATH")
+        .WriteLine(baseName &" $*")
+        .Close
+    End With
+End Sub
+
 Sub Rehash()
     Dim file
 
@@ -182,39 +201,27 @@ Sub Rehash()
         file.Delete True
     Next
 
-    Dim strDirBin
+    Dim winBinDir, nixBinDir
     Dim exts
-    strDirBin = GetBinDir(GetCurrentVersion()(0))
+    Dim baseName
+    winBinDir = GetBinDir(GetCurrentVersion()(0))
+    nixBinDir = "/"& Replace(Replace(winBinDir, ":", ""), "\", "/")
     Set exts = GetExtensionsNoPeriod(True)
 
-    For Each file In objfs.GetFolder(strDirBin).Files
+    For Each file In objfs.GetFolder(winBinDir).Files
         If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
-            With objfs.CreateTextFile(strDirShims &"\"& objfs.GetBaseName(file) &".bat")
-                .WriteLine("@echo off")
-                .WriteLine("pyenv exec %~n0 %*")
-                .Close
-            End With
-            With objfs.CreateTextFile(strDirShims &"\"& objfs.GetBaseName(file))
-                .WriteLine("#!/bin/sh")
-                .WriteLine("pyenv exec $(basename ""$0"") $*")
-                .Close
-            End With
+            baseName = objfs.GetBaseName(file)
+            WriteWinScript baseName, winBinDir
+            WriteLinuxScript baseName, nixBinDir
         End If
     Next
 
-    If objfs.FolderExists(strDirBin & "\Scripts") Then
-        For Each file In objfs.GetFolder(strDirBin & "\Scripts").Files
+    If objfs.FolderExists(winBinDir & "\Scripts") Then
+        For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
             If exts.Contains(LCase(objfs.GetExtensionName(file))) Then
-                With objfs.CreateTextFile(strDirShims &"\"& objfs.GetBaseName(file) & ".bat")
-                    .WriteLine("@echo off")
-                    .WriteLine("pyenv exec Scripts/%~n0 %*")
-                    .Close
-                End With
-                With objfs.CreateTextFile(strDirShims &"\"& objfs.GetBaseName(file))
-                    .WriteLine("#!/bin/sh")
-                    .WriteLine("pyenv exec Scripts/$(basename ""$0"") $*")
-                    .Close
-                End With
+                baseName = objfs.GetBaseName(file)
+                WriteWinScript baseName, winBinDir
+                WriteLinuxScript baseName, nixBinDir
             End If
         Next
     End If
