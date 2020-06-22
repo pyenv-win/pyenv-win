@@ -15,16 +15,6 @@ echo.
 EXIT /B
 )
 
-IF "%PYENV%" == "" (
-    set version="1.2.4"
-    echo PYENV variable is not set, recommended to set the variable.
-) ELSE (
-    set version=<%PYENV%/../.version
-    IF %version% == "" (
-        set version="1.2.4"
-        echo PYENV variable is not set, recommended to set the variable.
-    )
-)
-echo pyenv %version%
+echo pyenv 1.2.5
 
 :: done..!
