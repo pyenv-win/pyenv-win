@@ -20,7 +20,7 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
-    WScript.Echo "       pyenv install [-f] -a|--all"
+    WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
@@ -29,26 +29,30 @@ Sub ShowHelp()
     WScript.Echo "  -c/--clear  Removes downloaded installers from the cache to free space"
     WScript.Echo "  -f/--force  Install even if the version appears to be installed already"
     WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only    Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only    Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo ""
     WScript.Quit
 End Sub
 
 Sub EnsureFolder(path)
-    Dim stack
+    Dim stack()
     Dim folder
-    Set stack = CreateObject("System.Collections.ArrayList")
-    stack.Add path
+    ReDim stack(0)
+    stack(0) = path
+
     On Error Resume Next
-    Do While stack.Count
-        folder = stack(stack.Count-1)
+    Do While UBound(stack) > -1
+        folder = stack(UBound(stack))
         If objfs.FolderExists(folder) Then
-            stack.RemoveAt stack.Count-1
+            ReDim Preserve stack(UBound(stack)-1)
         ElseIf Not objfs.FolderExists(objfs.GetParentFolderName(folder)) Then
-            stack.Add objfs.GetParentFolderName(folder)
+            ReDim Preserve stack(UBound(stack)+1)
+            stack(UBound(stack)) = objfs.GetParentFolderName(folder)
         Else
             objfs.CreateFolder folder
             If Err.number <> 0 Then Exit Sub
-            stack.RemoveAt stack.Count-1
+            ReDim Preserve stack(UBound(stack)-1)
         End If
     Loop
 End Sub
@@ -184,6 +188,8 @@ Sub main(arg)
     Dim optList
     Dim optQuiet
     Dim optAll
+    Dim opt32
+    Dim opt64
     Dim optClear
     Dim installVersions
 
@@ -191,25 +197,37 @@ Sub main(arg)
     optList = False
     optQuiet = False
     optAll = False
+    opt32 = False
+    opt64 = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"  ShowHelp
-            Case "-l"      optList = True
-            Case "--list"  optList = True
-            Case "-f"      optForce = True
-            Case "--force" optForce = True
-            Case "-q"      optQuiet = True
-            Case "--quiet" optQuiet = True
-            Case "-a"      optAll = True
-            Case "--all"   optAll = True
-            Case "-c"      optClear = True
-            Case "--clear" optClear = True
+            Case "--help"   ShowHelp
+            Case "-l"       optList = True
+            Case "--list"   optList = True
+            Case "-f"       optForce = True
+            Case "--force"  optForce = True
+            Case "-q"       optQuiet = True
+            Case "--quiet"  optQuiet = True
+            Case "-a"       optAll = True
+            Case "--all"    optAll = True
+            Case "-c"       optClear = True
+            Case "--clear"  optClear = True
+            Case "--32only" opt32 = True
+            Case "--64only" opt64 = True
             Case Else
-                installVersions.Item(arg(idx)) = Empty
+                installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
     Next
+    If Is32Bit Then
+        opt32 = False
+        opt64 = False
+    End If    
+    If opt32 And opt64 Then
+        WScript.Echo "pyenv-install: only --32only or --64only may be specified, not both."
+        WScript.Quit 1
+    End If
 
     Dim versions
     Dim version
@@ -221,28 +239,11 @@ Sub main(arg)
         WScript.Quit 1
     End If
 
-    If Not optAll Then
-        If installVersions.Count = 0 Then
-            Dim ary
-            ary = GetCurrentVersionNoError()
-            If Not IsNull(ary) Then installVersions.Item(ary(0)) = Empty
-        End If
-
-        ' Pre-check if all versions to install exist.
-        For Each version In installVersions.Keys
-            If Not versions.Exists(version) Then
-                WScript.Echo "pyenv-install: definition not found: "& version
-                WScript.Echo
-                WScript.Echo "See all available versions with `pyenv install --list'."
-                WScript.Quit 1
-            End If
-        Next
-    End If
-
     If optList Then
         For Each version In versions.Keys
             WScript.Echo version
         Next
+        Exit Sub
     ElseIf optClear Then
         Dim objCache
         Dim delError
@@ -266,20 +267,55 @@ Sub main(arg)
             End If
         Next
         WScript.Quit delError
+    End If
+
+    If optAll Then
+        ' Add all versions, but only 32-bit versions for 32-bit platforms.
+        ' --32only/--64only is disabled on 32-bit platforms.
+        installVersions.RemoveAll
+        For Each version In versions.Keys
+            version = Check32Bit(version)
+            If versions.Exists(version) Then
+                If opt64 Then
+                    If versions(version)(LV_x64) Then _
+                        installVersions(version) = Empty
+                ElseIf opt32 Then
+                    If Not versions(version)(LV_x64) Then _
+                        installVersions(version) = Empty
+                Else
+                    installVersions(version) = Empty
+                End If
+            End If
+        Next
     Else
-        Dim versDict
-        Dim verDef
-        Dim installParams
-
-        If optAll Then
-            Set versDict = versions
-        Else
-            Set versDict = installVersions
+        If installVersions.Count = 0 Then
+            Dim ary
+            ary = GetCurrentVersionNoError()
+            If Not IsNull(ary) Then
+                installVersions.Item(ary(0)) = Empty
+            Else
+                ShowHelp
+            End If    
         End If
+    End If
 
-        If versDict.Count = 0 Then ShowHelp
+    ' Pre-check if all versions to install exist.
+    For Each version In installVersions.Keys
+        If Not versions.Exists(version) Then
+            WScript.Echo "pyenv-install: definition not found: "& version
+            WScript.Echo
+            WScript.Echo "See all available versions with `pyenv install --list'."
+            WScript.Quit 1
+        End If
+    Next
 
-        For Each version In versDict.Keys
+    Dim verDef
+    Dim installParams
+    Dim installed
+    Set installed = CreateObject("Scripting.Dictionary")
+
+    For Each version In installVersions.Keys
+        If Not installed.Exists(version) Then
             verDef = versions(version)
             installParams = Array( _
                 verDef(LV_Code), _
@@ -294,9 +330,10 @@ Sub main(arg)
             )
             If optForce Then clear(installParams)
             extract(installParams)
-        Next
-        Rehash
-    End If
+            installed(version) = Empty
+        End If
+    Next
+    Rehash
 End Sub
 
 main(WScript.Arguments)

@@ -19,7 +19,7 @@ Import "libs\pyenv-lib.vbs"
 
 Function GetCommandList()
     Dim cmdList
-    Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
+    Set cmdList = CreateObject("Scripting.Dictionary")
 
     Dim fileRegex
     Dim exts
@@ -31,7 +31,7 @@ Function GetCommandList()
     Dim matches
     For Each file In objfs.GetFolder(strDirLibs).Files
         Set matches = fileRegex.Execute(objfs.GetFileName(file))
-        If matches.Count > 0 And exts.Contains(objfs.GetExtensionName(file)) Then
+        If matches.Count > 0 And exts.Exists(objfs.GetExtensionName(file)) Then
              cmdList.Add matches(0).SubMatches(0), file
         End If
     Next
@@ -87,11 +87,11 @@ Sub CommandShims(arg)
      If arg.Count < 2 Then
      ' WScript.Echo join(arg.ToArray(), ", ")
      ' if --short passed then remove /s from cmd
-        shims_files = getCommandOutput("cmd /c dir "&strDirShims&"/s /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &"/s /b")
      ElseIf arg(1) = "--short" Then
-        shims_files = getCommandOutput("cmd /c dir "&strDirShims&" /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &" /b")
      Else
-        shims_files = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-shims.bat --help")
+        shims_files = getCommandOutput("cmd /c "& strDirLibs &"\pyenv-shims.bat --help")
      End IF
      WScript.Echo shims_files
 End Sub
@@ -145,7 +145,7 @@ Sub CommandWhich(arg)
         WScript.Quit 0
     End If
 
-    For Each ext In exts
+    For Each ext In exts.Keys
         If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
             WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
             WScript.Quit 0
@@ -158,7 +158,7 @@ Sub CommandWhich(arg)
             WScript.Quit 0
         End If
 
-        For Each ext In exts
+        For Each ext In exts.Keys
             If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
                 WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
                 WScript.Quit 0
@@ -221,7 +221,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\" & program & ext) Then
                     found = True
                     foundAny = 0
@@ -248,7 +248,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
                     foundAny = 0
                     If isPath Then
@@ -356,8 +356,8 @@ Sub CommandGlobal(arg)
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
+    Dim ver
     If arg.Count < 2 Then
-        Dim ver
         ver = GetCurrentVersionGlobal()
         If IsNull(ver) Then
             WScript.Echo "no global version configured"
@@ -365,7 +365,8 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        SetGlobalVersion arg(1)
+        ver = Check32Bit(arg(1))
+        SetGlobalVersion ver
     End If
 End Sub
 
@@ -383,17 +384,18 @@ Sub CommandLocal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
             objfs.DeleteFile strCurrent & strVerFile, True
             Exit Sub
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
+
         Dim ofile
         If objfs.FileExists(strCurrent & strVerFile) Then
-            Set ofile = objfs.OpenTextFile (strCurrent & strVerFile, 2)
+            Set ofile = objfs.OpenTextFile(strCurrent & strVerFile, 2)
         Else
             Set ofile = objfs.CreateTextFile(strCurrent & strVerFile, True)
         End If
@@ -416,10 +418,10 @@ Sub CommandShell(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
         ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)

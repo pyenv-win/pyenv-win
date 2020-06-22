@@ -47,31 +47,26 @@ With regexFile
     .IgnoreCase = True
 End With
 
-Function JoinVerString(pieces, x64)
-    Dim strVer
-    strVer = ""
-    If Len(pieces(VRX_Major)) Then strVer = strVer & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor)) Then strVer = strVer &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch)) Then strVer = strVer &"."& pieces(VRX_Patch)
-    If Len(pieces(VRX_Release)) Then strVer = strVer & pieces(VRX_Release)
-    If Len(pieces(VRX_RelNumber)) Then strVer = strVer & pieces(VRX_RelNumber)
-    If x64 Then _
-        If Len(pieces(VRX_x64)) Then strVer = strVer & pieces(VRX_x64)
-    JoinVerString = strVer
+Function JoinWin32String(pieces)
+    JoinWin32String = ""
+    If Len(pieces(VRX_Major))     Then JoinWin32String = JoinWin32String & pieces(VRX_Major)
+    If Len(pieces(VRX_Minor))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Minor)
+    If Len(pieces(VRX_Patch))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Release))   Then JoinWin32String = JoinWin32String & pieces(VRX_Release)
+    If Len(pieces(VRX_RelNumber)) Then JoinWin32String = JoinWin32String & pieces(VRX_RelNumber)
+    If Len(pieces(VRX_x64)) = 0   Then JoinWin32String = JoinWin32String & "-win32"
 End Function
 
 Function JoinInstallString(pieces)
-    Dim strInstall
-    strInstall = ""
-    If Len(pieces(VRX_Major)) Then     strInstall = strInstall & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor)) Then     strInstall = strInstall &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch)) Then     strInstall = strInstall &"."& pieces(VRX_Patch)
-    If Len(pieces(VRX_Release)) Then   strInstall = strInstall & pieces(VRX_Release)
-    If Len(pieces(VRX_RelNumber)) Then strInstall = strInstall & pieces(VRX_RelNumber)
-    If Len(pieces(VRX_x64)) Then       strInstall = strInstall & pieces(VRX_x64)
-    If Len(pieces(VRX_Web)) Then       strInstall = strInstall & pieces(VRX_Web)
-    If Len(pieces(VRX_Ext)) Then       strInstall = strInstall &"."& pieces(VRX_Ext)
-    JoinInstallString = strInstall
+    JoinInstallString = ""
+    If Len(pieces(VRX_Major))     Then JoinInstallString = JoinInstallString & pieces(VRX_Major)
+    If Len(pieces(VRX_Minor))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Minor)
+    If Len(pieces(VRX_Patch))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Release))   Then JoinInstallString = JoinInstallString & pieces(VRX_Release)
+    If Len(pieces(VRX_RelNumber)) Then JoinInstallString = JoinInstallString & pieces(VRX_RelNumber)
+    If Len(pieces(VRX_x64))       Then JoinInstallString = JoinInstallString & pieces(VRX_x64)
+    If Len(pieces(VRX_Web))       Then JoinInstallString = JoinInstallString & pieces(VRX_Web)
+    If Len(pieces(VRX_Ext))       Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Ext)
 End Function
 
 Function DownloadFile(strUrl, strFile)
@@ -206,7 +201,7 @@ Sub SaveVersionsXML(xmlPath, versArray)
             .setAttribute "webInstall", LCase(CStr(CBool(Len(versRow(SFV_Version)(VRX_Web)))))
             .setAttribute "msi",        LCase(CStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi"))
         End With
-        AppendElement doc, versElem, "code", JoinVerString(versRow(SFV_Version), True)
+        AppendElement doc, versElem, "code", JoinWin32String(versRow(SFV_Version))
         AppendElement doc, versElem, "file", versRow(0)
         AppendElement doc, versElem, "URL", versRow(1)
     Next
