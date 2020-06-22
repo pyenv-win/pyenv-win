@@ -39,6 +39,13 @@ Function GetCommandList()
     Set GetCommandList = cmdList
 End Function
 
+Sub PrintVersion(cmd, exitCode)
+    Dim help
+    help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat")
+    WScript.Echo help
+    WScript.Quit exitCode
+End Sub
+
 Sub PrintHelp(cmd, exitCode)
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
@@ -283,6 +290,24 @@ Sub ShowHelp()
      WScript.Echo "For full documentation, see: https://github.com/pyenv-win/pyenv-win#readme"
 End Sub
 
+Sub CommandScriptVersion(arg)
+    If arg.Count >= 2 Then
+        If arg(1) = "--help" Then PrintHelp "pyenv---version", 0
+    End If
+
+    If arg.Count = 1 Then
+        Dim list
+        Set list = GetCommandList
+        If list.Exists(arg(0)) Then
+            PrintVersion "pyenv---version", 0
+        Else
+             WScript.Echo "unknown pyenv command '"& arg(0) &"'"
+        End If
+    Else
+        ShowHelp
+    End If
+End Sub
+
 Sub CommandHelp(arg)
     If arg.Count > 1 Then
         Dim list
@@ -505,6 +530,7 @@ Sub main(arg)
         ShowHelp
     Else
         Select Case arg(0)
+           Case "--version"    CommandScriptVersion(arg)
            Case "exec"         CommandExecute(arg)
            Case "rehash"       CommandRehash(arg)
            Case "global"       CommandGlobal(arg)
