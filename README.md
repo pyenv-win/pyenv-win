@@ -3,8 +3,11 @@
 [pyenv][1] is a great tool. I ported it to Windows. Some commands aren't implemented, but it's good enough for basic use.
 
 For existing python users, we support installation via pip: [follow instructions](#installation)  
-Contributors and Interested people can join us @ [Slack](https://join.slack.com/t/pyenvforwindows/shared_invite/enQtODQ0NTQwMjEzOTA4LWE1YjMwMGI3YTAwYjg0MGQzNjg1ZjJiYTMzMTJkNWM4NTY5OTY4YmU3ZjhjMTc3MGJhMDY1MmJkMjFmY2ViNTI)
+Contributors and Interested people can join us @[Slack](https://join.slack.com/t/pyenv/shared_invite/zt-f9ydwgyt-Fp8tehxqeCQi5mi77RxpGw) We need your help on motivating us and your thoughts, they help us a lot.
 
+**Note:** We do keep in sync to [pyenv][1] versions. We are planning to move the default version as 64-bit from 32-bit, and 32-bit will be followed by `<version>-Win32`. We are trying our best to keep the existing master (i.e. default 32-bit) as separate active train for existing users. So please don't be shocked when the master changes to 64-bit by default. Hope you understand, we will keep posting when they are active and how to use default 32-bit train as well.
+   
+   
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
