@@ -76,8 +76,9 @@ Get pyenv-win via one of the following methods:
 ### Finish the installation
 
    1. If you installed using Chocolatey, you can skip to step 3.
-      Otherwise, add a new *System* variable in ENVIRONMENT with name:  
-      `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win`
+      Otherwise, add a new *System* variable and *User* variable in ENVIRONMENT with name:  
+      `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win`  
+      _Note: A couple of system versions were acting weird, so it's safe to add the %PYENV% in both the locations..!_
    2. Now add the following paths to your *System* ENVIRONMENT PATH variable in order to access the pyenv command (don't forget to separate with semicolons):  
       - `%PYENV%\bin`
       - `%PYENV%\shims`
