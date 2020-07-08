@@ -144,7 +144,7 @@ Get pyenv-win via one of the following methods:
    - **Answer:** Follow the pip instructions in [How to get updates](#how-to-get-updates) and then run `pip uninstall pyenv-win`
 
 - **Question:** pyenv-win not recognised, but I have set the ENV PATH?
-   - **Answer:** According to windows added the path in User or System variable, For User variale you need to logout and login to reflect the path. For System variavle it's not required.
+   - **Answer:** According to windows added the path in User or System variable, For User variable you need to logout and login to reflect the path. For System variable it's not required.
 
 
 
