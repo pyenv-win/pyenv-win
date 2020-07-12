@@ -1,25 +1,18 @@
-language: python
-sudo: false
-matrix:
-  include:
-    - os: windows
-      language: sh
-      before_install:
-        - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
-        - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
-        - pyenv --version
-        - cd $HOME/.pyenv
-        - git checkout -b v1.2.5 origin/v1.2.5
-        - pyenv install -q < .python-version
-        - pyenv rehash
-        - pyenv local < .python-version
-        - pyenv versions
-        - python --version
-        - pip install -r requirements_dev.txt
-        
+language: shell
+os: windows
+before_install:
+  - export PYENV="$TRAVIS_BUILD_DIR/pyenv-win"
+  - export PATH="$PYENV/bin:$PYENV/shims:$PATH"
+install:
+    - pyenv --version
+    - pyenv update
+    - pyenv install -q < $PYENV/../.python-version
+    - pyenv local < $PYENV/../.python-version
+    - pyenv versions
+    - python --version
+    - pip install -r requirements_dev.txt
+    - pyenv rehash
 script:
   - "PYTHONPATH=. python -m pytest -v -s tests"
-
 after_success:
   - coveralls
-
