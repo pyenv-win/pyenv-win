@@ -15,6 +15,6 @@ echo.
 EXIT /B
 )
 
-echo pyenv 1.2.5
+echo pyenv 1.3.0
 
 :: done..!

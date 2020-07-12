@@ -1,6 +1,6 @@
 @echo off
 setlocal
-chcp 65001 >nul
+chcp 1250 >nul
 
 IF EXIST "%~dp0"..\exec.bat (
    del /F /Q "%~dp0"..\exec.bat >nul
