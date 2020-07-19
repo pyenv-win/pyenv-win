@@ -277,6 +277,7 @@ Sub CommandWhence(arg)
 End Sub
 
 Sub ShowHelp()
+     WScript.echo "kkotair: pyenv.vbs show help..!"
      WScript.Echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
      WScript.Echo "Usage: pyenv <command> [<args>]"
      WScript.Echo ""
@@ -302,6 +303,7 @@ Sub ShowHelp()
 End Sub
 
 Sub CommandScriptVersion(arg)
+    WScript.echo "kkotair: pyenv.vbs command script version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv---version", 0
     End If
@@ -320,6 +322,7 @@ Sub CommandScriptVersion(arg)
 End Sub
 
 Sub CommandHelp(arg)
+    WScript.echo "kkotair: pyenv.vbs command help..!"
     If arg.Count > 1 Then
         Dim list
         Set list = GetCommandList
@@ -334,6 +337,7 @@ Sub CommandHelp(arg)
 End Sub
 
 Sub CommandRehash(arg)
+    WScript.echo "kkotair: pyenv.vbs command rehash..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
     End If
@@ -342,6 +346,7 @@ Sub CommandRehash(arg)
 End Sub
 
 Sub CommandExecute(arg)
+    WScript.echo "kkotair: pyenv.vbs command exec..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-exec", 0
     End If
@@ -363,6 +368,7 @@ Sub CommandExecute(arg)
 End Sub
 
 Sub CommandGlobal(arg)
+    WScript.echo "kkotair: pyenv.vbs command global..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
@@ -382,6 +388,7 @@ Sub CommandGlobal(arg)
 End Sub
 
 Sub CommandLocal(arg)
+    WScript.echo "kkotair: pyenv.vbs command local..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-local", 0
     End If
@@ -416,6 +423,7 @@ Sub CommandLocal(arg)
 End Sub
 
 Sub CommandShell(arg)
+    WScript.echo "kkotair: pyenv.vbs command shell..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-shell", 0
     End If
@@ -440,6 +448,7 @@ Sub CommandShell(arg)
 End Sub
 
 Sub CommandVersion(arg)
+    WScript.echo "kkotair: pyenv.vbs command version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
@@ -452,6 +461,7 @@ Sub CommandVersion(arg)
 End Sub
 
 Sub CommandVersionName(arg)
+    WScript.echo "kkotair: pyenv.vbs command version-name..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
     End If
@@ -462,6 +472,7 @@ Sub CommandVersionName(arg)
 End Sub
 
 Sub CommandVersions(arg)
+    WScript.echo "kkotair: pyenv.vbs command versions..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
     End If
@@ -495,6 +506,7 @@ Sub CommandVersions(arg)
 End Sub
 
 Sub PlugIn(arg)
+    WScript.echo "kkotair: pyenv.vbs plugin..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-"& arg(0), 0
     End If
@@ -520,6 +532,7 @@ Sub PlugIn(arg)
 End Sub
 
 Sub CommandCommands(arg)
+    WScript.echo "kkotair: pyenv.vbs command commands..!"
     Dim cname
 
     If arg.Count >= 2 Then
@@ -537,6 +550,7 @@ End Sub
 
 
 Sub main(arg)
+    WScript.echo "kkotair: pyenv.vbs main..!"
     If arg.Count = 0 Then
         ShowHelp
     Else
