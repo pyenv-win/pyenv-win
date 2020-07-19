@@ -4,6 +4,7 @@ Dim objfs
 Dim objws
 Dim objweb
 
+WScript.echo "kkotair: I am yet pyenv-lib.vbs..!"
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")

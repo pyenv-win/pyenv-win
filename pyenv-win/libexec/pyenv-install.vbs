@@ -31,6 +31,7 @@ Sub ShowHelp()
     WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
     WScript.Echo "  --32only    Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --64only    Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --help      Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -182,6 +183,8 @@ End Sub
 
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp
+    WScript.Echo "kkotari: calling select with "
+    WScript.Echo arg
 
     Dim idx
     Dim optForce
