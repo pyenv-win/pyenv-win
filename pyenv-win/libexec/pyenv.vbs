@@ -2,6 +2,8 @@ Option Explicit
 
 Dim objCmdExec
 
+WScript.echo "kkotair: pyenv.vbs..!"
+WScript.echo "kkotair: pyenv.vbs Defining Import..!"
 Sub Import(importFile)
     Dim fso, libFile
     On Error Resume Next
@@ -16,8 +18,10 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+WScript.echo "kkotair: pyenv.vbs Import called..!"
 
 Function GetCommandList()
+    WScript.echo "kkotair: pyenv.vbs get command list..!"
     Dim cmdList
     Set cmdList = CreateObject("Scripting.Dictionary")
 
@@ -40,6 +44,7 @@ Function GetCommandList()
 End Function
 
 Sub PrintVersion(cmd, exitCode)
+    WScript.echo "kkotair: pyenv.vbs print version..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat")
     WScript.Echo help
@@ -47,6 +52,7 @@ Sub PrintVersion(cmd, exitCode)
 End Sub
 
 Sub PrintHelp(cmd, exitCode)
+    WScript.echo "kkotair: pyenv.vbs print help..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
     WScript.Echo help
@@ -54,6 +60,7 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
+    WScript.echo "kkotair: pyenv.vbs exec command..!"
     Dim utfStream
     Dim outStream
     Set utfStream = CreateObject("ADODB.Stream")
@@ -78,11 +85,13 @@ Sub ExecCommand(str)
 End Sub
 
 Function getCommandOutput(theCommand)
+    WScript.echo "kkotair: pyenv.vbs get command output..!"
     Set objCmdExec = objws.exec(thecommand)
     getCommandOutput = objCmdExec.StdOut.ReadAll
 end Function
 
 Sub CommandShims(arg)
+    WScript.echo "kkotair: pyenv.vbs command shims..!"
      Dim shims_files
      If arg.Count < 2 Then
      ' WScript.Echo join(arg.ToArray(), ", ")
@@ -114,6 +123,7 @@ End Sub
 'End Function
 
 Sub CommandWhich(arg)
+    WScript.echo "kkotair: pyenv.vbs command which..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-which", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then
@@ -178,6 +188,7 @@ Sub CommandWhich(arg)
 End Sub
 
 Sub CommandWhence(arg)
+    WScript.echo "kkotair: pyenv.vbs command whence..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-whence", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then

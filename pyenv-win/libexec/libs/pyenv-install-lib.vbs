@@ -47,6 +47,7 @@ With regexFile
     .IgnoreCase = True
 End With
 
+' Adding -win32 as a post fix for x86 Arch
 Function JoinWin32String(pieces)
     JoinWin32String = ""
     If Len(pieces(VRX_Major))     Then JoinWin32String = JoinWin32String & pieces(VRX_Major)
@@ -57,6 +58,7 @@ Function JoinWin32String(pieces)
     If Len(pieces(VRX_x64)) = 0   Then JoinWin32String = JoinWin32String & "-win32"
 End Function
 
+' For x64 Arch
 Function JoinInstallString(pieces)
     JoinInstallString = ""
     If Len(pieces(VRX_Major))     Then JoinInstallString = JoinInstallString & pieces(VRX_Major)
@@ -69,6 +71,7 @@ Function JoinInstallString(pieces)
     If Len(pieces(VRX_Ext))       Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Ext)
 End Function
 
+' Download exe file
 Function DownloadFile(strUrl, strFile)
     On Error Resume Next
 
@@ -107,6 +110,7 @@ Sub clear(params)
         objfs.DeleteFile params(IP_InstallFile), True
 End Sub
 
+' pyenv python versions DB scheme
 Dim strDBSchema
 strDBSchema = _
 "<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">"& _
@@ -130,6 +134,7 @@ strDBSchema = _
   "</xs:element>"& _
 "</xs:schema>"
 
+' Load versions xml to pyenv
 Function LoadVersionsXML(xmlPath)
     Dim dbSchema
     Dim doc
@@ -178,6 +183,7 @@ Function LoadVersionsXML(xmlPath)
     Next
 End Function
 
+' Append xml element
 Sub AppendElement(doc, parent, tag, text)
     Dim elem
     Set elem = doc.createElement(tag)
@@ -185,6 +191,7 @@ Sub AppendElement(doc, parent, tag, text)
     parent.appendChild elem
 End Sub
 
+' Append new version to DB
 Sub SaveVersionsXML(xmlPath, versArray)
     Dim doc
     Set doc = CreateObject("Msxml2.DOMDocument.6.0")
