@@ -9,3 +9,7 @@ call cscript //nologo "%~dp0"..\libexec\pyenv.vbs %*
 IF EXIST "%~dp0"..\exec.bat (
    "%~dp0"..\exec.bat
 )
+
+IF NOT "%1"=="rehash" (
+   pyenv rehash
+)
