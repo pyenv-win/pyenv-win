@@ -507,9 +507,6 @@ End Sub
 
 Sub PlugIn(arg)
     WScript.echo "kkotair: pyenv.vbs plugin..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-"& arg(0), 0
-    End If
 
     Dim fname
     Dim idx

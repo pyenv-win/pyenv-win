@@ -183,8 +183,7 @@ End Sub
 
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp
-    WScript.Echo "kkotari: calling select with "
-    WScript.Echo arg
+    WScript.Echo "kkotari: pyenv-install.vbs main"
 
     Dim idx
     Dim optForce
