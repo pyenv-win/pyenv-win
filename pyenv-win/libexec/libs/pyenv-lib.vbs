@@ -191,8 +191,7 @@ Sub WriteWinScript(baseName, strDirBin)
         .WriteLine("@echo off")
         .WriteLine("setlocal")
         .WriteLine("chcp 1250 > NUL")
-        .WriteLine("set ""PATH="& strDirBin &"\Scripts;"& strDirBin &";%PATH%""")
-        .WriteLine(baseName &" %*")
+        .WriteLine("pyenv exec "&strDirBin&"%~n0 %*")
         .Close
     End With
 End Sub
@@ -202,8 +201,7 @@ Sub WriteLinuxScript(baseName, strDirBin)
     WScript.echo "kkotair: pyenv-lib.vbs write linux script..!"
     With objfs.CreateTextFile(strDirShims &"\"& baseName)
         .WriteLine("#!/bin/sh")
-        .WriteLine("export PATH="& strDirBin &"/Scripts:"& strDirBin &":$PATH")
-        .WriteLine(baseName &" $*")
+        .WriteLine("pyenv exec "&strDirBin&"$(basename '$0') $*")
         .Close
     End With
 End Sub
@@ -232,19 +230,21 @@ Sub Rehash()
     Set exts = GetExtensionsNoPeriod(True)
 
     For Each file In objfs.GetFolder(winBinDir).Files
+        WScript.echo "kkotair: pyenv-lib.vbs rehash for winBinDir"
         If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
             baseName = objfs.GetBaseName(file)
-            WriteWinScript baseName, winBinDir
-            WriteLinuxScript baseName, nixBinDir
+            WriteWinScript baseName, ""
+            WriteLinuxScript baseName, ""
         End If
     Next
 
     If objfs.FolderExists(winBinDir & "\Scripts") Then
         For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
+            WScript.echo "kkotair: pyenv-lib.vbs rehash for winBinDir\Scripts"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName, winBinDir
-                WriteLinuxScript baseName, nixBinDir
+                WriteWinScript baseName, "Scripts/"
+                WriteLinuxScript baseName, "Scripts/"
             End If
         Next
     End If

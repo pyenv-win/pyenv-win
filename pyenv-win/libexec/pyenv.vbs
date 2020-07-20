@@ -71,6 +71,8 @@ Sub ExecCommand(str)
         .Open
         .WriteText("chcp 1250 > NUL" & vbCrLf)
         .WriteText(str & vbCrLf)
+        '.WriteText("chcp 1250 > NUL")
+        '.WriteText("pyenv exec %~n0 %*")
         .Position = 3
     End With
     With outStream
@@ -357,6 +359,7 @@ Sub CommandExecute(arg)
     str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
     If arg.Count > 1 Then
         str = str &""""& dstr &"\"& arg(1) &""""
+
         Dim idx
         If arg.Count > 2 Then
             For idx = 2 To arg.Count - 1
