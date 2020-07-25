@@ -61,9 +61,6 @@ End Sub
 
 Sub ExecCommand(str)
     WScript.echo "kkotair: pyenv.vbs exec command..!"
-    WScript.echo str
-    WScript.echo vbCrLf
-    WScript.echo strPyenvHome
     Dim utfStream
     Dim outStream
     Set utfStream = CreateObject("ADODB.Stream")
@@ -357,15 +354,23 @@ Sub CommandExecute(arg)
     Dim str
     Dim dstr
     dstr = GetBinDir(GetCurrentVersion()(0))
+    WScript.echo "====="
+    WScript.echo dstr
     str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
+    WScript.echo "====="
+    WScript.echo str
+    WScript.echo "====="
     If arg.Count > 1 Then
         str = str &""""& dstr &"\"& arg(1) &""""
-
+        WScript.echo str
+        WScript.echo "=====if start"
         Dim idx
         If arg.Count > 2 Then
             For idx = 2 To arg.Count - 1
                 str = str &" """& arg(idx) &""""
             Next
+            WScript.echo str
+            WScript.echo "==== if end"
         End If
     End If
     ExecCommand(str)
