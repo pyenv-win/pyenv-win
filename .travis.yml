@@ -9,6 +9,9 @@ install:
     - pyenv install -q < $PYENV/../.python-version
     - pyenv local < $PYENV/../.python-version
     - pyenv versions
+    - dir $PYENV/shims
+    - Type $PYENV/shims/python.bat
+    - Type $PYENV/shims/python
     - python --version
     - pip install -r requirements_dev.txt
     - pyenv rehash
