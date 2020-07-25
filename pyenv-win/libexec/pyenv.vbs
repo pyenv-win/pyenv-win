@@ -362,6 +362,7 @@ Sub CommandExecute(arg)
     WScript.echo "====="
     If arg.Count > 1 Then
         str = str &""""& dstr &"\"& arg(1) &""""
+        WScript.echo arg(1)
         WScript.echo str
         WScript.echo "=====if start"
         Dim idx
