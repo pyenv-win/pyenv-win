@@ -61,6 +61,9 @@ End Sub
 
 Sub ExecCommand(str)
     WScript.echo "kkotair: pyenv.vbs exec command..!"
+    WScript.echo str
+    WScript.echo vbCrLf
+    WScript.echo strPyenvHome
     Dim utfStream
     Dim outStream
     Set utfStream = CreateObject("ADODB.Stream")
@@ -71,8 +74,6 @@ Sub ExecCommand(str)
         .Open
         .WriteText("chcp 1250 > NUL" & vbCrLf)
         .WriteText(str & vbCrLf)
-        '.WriteText("chcp 1250 > NUL")
-        '.WriteText("pyenv exec %~n0 %*")
         .Position = 3
     End With
     With outStream
