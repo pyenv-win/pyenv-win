@@ -189,7 +189,6 @@ End Sub
 Sub main(arg)
     WScript.echo "kkotari: pyenv-install.vbs Main..!"
     If arg.Count = 0 Then ShowHelp
-    WScript.Echo "kkotari: pyenv-install.vbs main"
 
     Dim idx
     Dim optForce

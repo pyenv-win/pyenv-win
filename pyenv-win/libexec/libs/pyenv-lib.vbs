@@ -4,14 +4,14 @@ Dim objfs
 Dim objws
 Dim objweb
 
-WScript.echo "kkotari: pyenv-lib.vbs..!"
+' WScript.echo "kkotari: pyenv-lib.vbs..!"
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
 
 ' Set proxy settings, called on library import for objweb.
 Sub SetProxy()
-    WScript.echo "kkotari: pyenv-lib.vbs proxy..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs proxy..!"
     Dim httpProxy
     Dim proxyArr
 
@@ -186,7 +186,7 @@ End Function
 
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName, strDirBin)
-    WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
     With objfs.CreateTextFile(strDirShims &"\"& baseName &".bat")
         .WriteLine("@echo off")
         .WriteLine("setlocal")
@@ -198,7 +198,7 @@ End Sub
 
 ' pyenv - bin - linux
 Sub WriteLinuxScript(baseName, strDirBin)
-    WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
     With objfs.CreateTextFile(strDirShims &"\"& baseName)
         .WriteLine("#!/bin/sh")
         .WriteLine("pyenv exec "&strDirBin&"$(basename $0) $*")
@@ -230,7 +230,7 @@ Sub Rehash()
     Set exts = GetExtensionsNoPeriod(True)
 
     For Each file In objfs.GetFolder(winBinDir).Files
-        WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
+        ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
         If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
             baseName = objfs.GetBaseName(file)
             WriteWinScript baseName, ""
@@ -240,7 +240,7 @@ Sub Rehash()
 
     If objfs.FolderExists(winBinDir & "\Scripts") Then
         For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
-            WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+            ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
                 WriteWinScript baseName, "Scripts/"
@@ -252,7 +252,7 @@ End Sub
 
 ' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()
-    WScript.echo "kkotari: pyenv-lib.vbs is32bit..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs is32bit..!"
     Dim arch
     arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
     If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
@@ -261,7 +261,7 @@ End Function
 
 ' If on a 32bit computer, default to -win32 versions.
 Function Check32Bit(version)
-    WScript.echo "kkotari: pyenv-lib.vbs check32bit..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs check32bit..!"
     If Is32Bit And Right(LCase(version), 6) <> "-win32" Then _
         version = version & "-win32"
     Check32Bit = version
