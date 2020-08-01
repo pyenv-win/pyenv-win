@@ -19,6 +19,7 @@ Import "libs\pyenv-install-lib.vbs"
 WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
+    ' WScript.echo "kkotari: pyenv-install.vbs..!"
     WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
     WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
@@ -31,11 +32,13 @@ Sub ShowHelp()
     WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
     WScript.Echo "  --32only    Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --64only    Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --help      Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
 End Sub
 
 Sub EnsureFolder(path)
+    ' WScript.echo "kkotari: pyenv-install.vbs EnsureFolder..!"
     Dim stack()
     Dim folder
     ReDim stack(0)
@@ -58,6 +61,7 @@ Sub EnsureFolder(path)
 End Sub
 
 Sub download(params)
+    ' WScript.echo "kkotari: pyenv-install.vbs download..!"
     WScript.Echo ":: [Downloading] ::  " & params(LV_Code) & " ..."
     WScript.Echo ":: [Downloading] ::  From " & params(LV_URL)
     WScript.Echo ":: [Downloading] ::  To   " & params(IP_InstallFile)
@@ -65,6 +69,7 @@ Sub download(params)
 End Sub
 
 Function deepExtract(params)
+    ' WScript.echo "kkotari: pyenv-install.vbs deepExtract..!"
     Dim webCachePath
     Dim installPath
     webCachePath = strDirCache &"\"& params(LV_Code) &"-webinstall"
@@ -121,6 +126,7 @@ Function deepExtract(params)
 End Function
 
 Sub extract(params)
+    ' WScript.echo "kkotari: pyenv-install.vbs Extract..!"
     Dim installFile
     Dim installFileFolder
     Dim installPath
@@ -174,13 +180,14 @@ Sub extract(params)
 
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
-        SetGlobalVersion params(LV_Code)
+        ' SetGlobalVersion params(LV_Code)
     Else
         WScript.Echo ":: [Error] :: couldn't install .. "& params(LV_Code)
     End If
 End Sub
 
 Sub main(arg)
+    ' WScript.echo "kkotari: pyenv-install.vbs Main..!"
     If arg.Count = 0 Then ShowHelp
 
     Dim idx

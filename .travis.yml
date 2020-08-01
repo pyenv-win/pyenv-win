@@ -7,7 +7,7 @@ install:
     - pyenv --version
     - pyenv update
     - pyenv install -q < $PYENV/../.python-version
-    - pyenv local < $PYENV/../.python-version
+    - pyenv global < $PYENV/../.python-version
     - pyenv versions
     - python --version
     - pip install -r requirements_dev.txt

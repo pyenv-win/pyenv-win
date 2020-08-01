@@ -2,6 +2,8 @@ Option Explicit
 
 Dim objCmdExec
 
+' WScript.echo "kkotari: pyenv.vbs..!"
+' WScript.echo "kkotari: pyenv.vbs Defining Import..!"
 Sub Import(importFile)
     Dim fso, libFile
     On Error Resume Next
@@ -16,8 +18,10 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+' WScript.echo "kkotari: pyenv.vbs Import called..!"
 
 Function GetCommandList()
+    ' WScript.echo "kkotari: pyenv.vbs get command list..!"
     Dim cmdList
     Set cmdList = CreateObject("Scripting.Dictionary")
 
@@ -40,6 +44,7 @@ Function GetCommandList()
 End Function
 
 Sub PrintVersion(cmd, exitCode)
+    ' WScript.echo "kkotari: pyenv.vbs print version..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat")
     WScript.Echo help
@@ -47,6 +52,7 @@ Sub PrintVersion(cmd, exitCode)
 End Sub
 
 Sub PrintHelp(cmd, exitCode)
+    ' WScript.echo "kkotari: pyenv.vbs print help..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
     WScript.Echo help
@@ -54,6 +60,7 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
+    ' WScript.echo "kkotari: pyenv.vbs exec command..!"
     Dim utfStream
     Dim outStream
     Set utfStream = CreateObject("ADODB.Stream")
@@ -78,11 +85,13 @@ Sub ExecCommand(str)
 End Sub
 
 Function getCommandOutput(theCommand)
+    ' WScript.echo "kkotari: pyenv.vbs get command output..!"
     Set objCmdExec = objws.exec(thecommand)
     getCommandOutput = objCmdExec.StdOut.ReadAll
 end Function
 
 Sub CommandShims(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command shims..!"
      Dim shims_files
      If arg.Count < 2 Then
      ' WScript.Echo join(arg.ToArray(), ", ")
@@ -114,6 +123,7 @@ End Sub
 'End Function
 
 Sub CommandWhich(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command which..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-which", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then
@@ -178,6 +188,7 @@ Sub CommandWhich(arg)
 End Sub
 
 Sub CommandWhence(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command whence..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-whence", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then
@@ -266,6 +277,7 @@ Sub CommandWhence(arg)
 End Sub
 
 Sub ShowHelp()
+    '  WScript.echo "kkotari: pyenv.vbs show help..!"
      WScript.Echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
      WScript.Echo "Usage: pyenv <command> [<args>]"
      WScript.Echo ""
@@ -279,8 +291,8 @@ Sub ShowHelp()
      WScript.Echo "   uninstall    Uninstall a specific Python version"
      WScript.Echo "   update       Update the cached version DB"
      WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
+     WScript.Echo "   vname        Show the current Python version"
      WScript.Echo "   version      Show the current Python version and its origin"
-     WScript.Echo "   version-name Show the current Python version"
      WScript.Echo "   versions     List all Python versions available to pyenv"
      WScript.Echo "   exec         Runs an executable by first preparing PATH so that the selected Python"
      WScript.Echo "   which        Display the full path to an executable"
@@ -291,6 +303,7 @@ Sub ShowHelp()
 End Sub
 
 Sub CommandScriptVersion(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command script version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv---version", 0
     End If
@@ -309,6 +322,7 @@ Sub CommandScriptVersion(arg)
 End Sub
 
 Sub CommandHelp(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command help..!"
     If arg.Count > 1 Then
         Dim list
         Set list = GetCommandList
@@ -323,6 +337,7 @@ Sub CommandHelp(arg)
 End Sub
 
 Sub CommandRehash(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command rehash..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
     End If
@@ -331,6 +346,7 @@ Sub CommandRehash(arg)
 End Sub
 
 Sub CommandExecute(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command exec..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-exec", 0
     End If
@@ -352,6 +368,7 @@ Sub CommandExecute(arg)
 End Sub
 
 Sub CommandGlobal(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command global..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
@@ -371,6 +388,7 @@ Sub CommandGlobal(arg)
 End Sub
 
 Sub CommandLocal(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command local..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-local", 0
     End If
@@ -405,6 +423,7 @@ Sub CommandLocal(arg)
 End Sub
 
 Sub CommandShell(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command shell..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-shell", 0
     End If
@@ -429,6 +448,7 @@ Sub CommandShell(arg)
 End Sub
 
 Sub CommandVersion(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
@@ -441,8 +461,9 @@ Sub CommandVersion(arg)
 End Sub
 
 Sub CommandVersionName(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command version-name..!"
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
+        If arg(1) = "--help" Then PrintHelp "pyenv-vname", 0
     End If
 
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
@@ -451,6 +472,7 @@ Sub CommandVersionName(arg)
 End Sub
 
 Sub CommandVersions(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command versions..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
     End If
@@ -484,9 +506,7 @@ Sub CommandVersions(arg)
 End Sub
 
 Sub PlugIn(arg)
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-"& arg(0), 0
-    End If
+    ' WScript.echo "kkotari: pyenv.vbs plugin..!"
 
     Dim fname
     Dim idx
@@ -509,6 +529,7 @@ Sub PlugIn(arg)
 End Sub
 
 Sub CommandCommands(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command commands..!"
     Dim cname
 
     If arg.Count >= 2 Then
@@ -526,6 +547,8 @@ End Sub
 
 
 Sub main(arg)
+    ' WScript.echo "kkotari: pyenv.vbs main..!"
+    ' WScript.echo "kkotari: "&arg(0)
     If arg.Count = 0 Then
         ShowHelp
     Else
@@ -537,7 +560,7 @@ Sub main(arg)
            Case "local"        CommandLocal(arg)
            Case "shell"        CommandShell(arg)
            Case "version"      CommandVersion(arg)
-           Case "version-name" CommandVersionName(arg)
+           Case "vname"        CommandVersionName(arg)
            Case "versions"     CommandVersions(arg)
            Case "commands"     CommandCommands(arg)
            Case "shims"        CommandShims(arg)
