@@ -5,7 +5,7 @@ if "%1" == "--help" (
 echo Usage: pyenv version
 echo.
 echo Shows the currently selected Python version and how it was selected.
-echo To obtain only the version string, use `pyenv version-name'.
+echo To obtain only the version string, use `pyenv vname'.
 EXIT /B
 )
 

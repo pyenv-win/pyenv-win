@@ -50,7 +50,7 @@ End With
 
 ' Adding -win32 as a post fix for x86 Arch
 Function JoinWin32String(pieces)
-    WScript.echo "kkotari: pyenv-install-lib.vbs JoinWin32String..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinWin32String..!"
     JoinWin32String = ""
     If Len(pieces(VRX_Major))     Then JoinWin32String = JoinWin32String & pieces(VRX_Major)
     If Len(pieces(VRX_Minor))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Minor)
@@ -62,7 +62,7 @@ End Function
 
 ' For x64 Arch
 Function JoinInstallString(pieces)
-    WScript.echo "kkotari: pyenv-install-lib.vbs JoinInstallString..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinInstallString..!"
     JoinInstallString = ""
     If Len(pieces(VRX_Major))     Then JoinInstallString = JoinInstallString & pieces(VRX_Major)
     If Len(pieces(VRX_Minor))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Minor)
@@ -76,7 +76,7 @@ End Function
 
 ' Download exe file
 Function DownloadFile(strUrl, strFile)
-    WScript.echo "kkotari: pyenv-install-lib.vbs DownloadFile..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs DownloadFile..!"
     On Error Resume Next
 
     objweb.Open "GET", strUrl, False
@@ -107,7 +107,7 @@ Function DownloadFile(strUrl, strFile)
 End Function
 
 Sub clear(params)
-    WScript.echo "kkotari: pyenv-install-lib.vbs clear..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs clear..!"
     If objfs.FolderExists(params(IP_InstallPath)) Then _
         objfs.DeleteFolder params(IP_InstallPath), True
 
@@ -117,7 +117,7 @@ End Sub
 
 ' pyenv python versions DB scheme
 Dim strDBSchema
-WScript.echo "kkotari: pyenv-install-lib.vbs DBSchema..!"
+' WScript.echo "kkotari: pyenv-install-lib.vbs DBSchema..!"
 strDBSchema = _
 "<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">"& _
   "<xs:element name=""versions"">"& _
@@ -142,7 +142,7 @@ strDBSchema = _
 
 ' Load versions xml to pyenv
 Function LoadVersionsXML(xmlPath)
-    WScript.echo "kkotari: pyenv-install-lib.vbs LoadVersionsXML..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs LoadVersionsXML..!"
     Dim dbSchema
     Dim doc
     Dim schemaError
@@ -192,7 +192,7 @@ End Function
 
 ' Append xml element
 Sub AppendElement(doc, parent, tag, text)
-    WScript.echo "kkotari: pyenv-install-lib.vbs AppendElement..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs AppendElement..!"
     Dim elem
     Set elem = doc.createElement(tag)
     elem.text = text
@@ -201,7 +201,7 @@ End Sub
 
 ' Append new version to DB
 Sub SaveVersionsXML(xmlPath, versArray)
-    WScript.echo "kkotari: pyenv-install-lib.vbs SaveVersionsXML..!"
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs SaveVersionsXML..!"
     Dim doc
     Set doc = CreateObject("Msxml2.DOMDocument.6.0")
     Set doc.documentElement = doc.createElement("versions")
