@@ -506,7 +506,7 @@ Sub CommandVersions(arg)
 End Sub
 
 Sub PlugIn(arg)
-    WScript.echo "kkotari: pyenv.vbs plugin..!"
+    ' WScript.echo "kkotari: pyenv.vbs plugin..!"
 
     Dim fname
     Dim idx
@@ -547,8 +547,8 @@ End Sub
 
 
 Sub main(arg)
-    WScript.echo "kkotari: pyenv.vbs main..!"
-    WScript.echo "kkotari: "&arg(0)
+    ' WScript.echo "kkotari: pyenv.vbs main..!"
+    ' WScript.echo "kkotari: "&arg(0)
     If arg.Count = 0 Then
         ShowHelp
     Else

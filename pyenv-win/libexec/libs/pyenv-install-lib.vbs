@@ -1,7 +1,7 @@
 Option Explicit
 
 ' Make sure to Import "pyenv-lib.vbs" before this file in a command. (for objfs/objweb variables)
-WScript.echo "kkotari: pyenv-install-lib.vbs..!"
+' WScript.echo "kkotari: pyenv-install-lib.vbs..!"
 
 Dim mirror
 mirror = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")

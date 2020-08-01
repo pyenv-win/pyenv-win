@@ -50,7 +50,7 @@ strDBFile    = strPyenvHome & "\.versions_cache.xml"
 strVerFile   = "\.python-version"
 
 Function GetCurrentVersionGlobal()
-    WScript.echo "kkotari: pyenv-lib.vbs get current version global..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version global..!"
     GetCurrentVersionGlobal = Null
 
     Dim fname
@@ -66,7 +66,7 @@ Function GetCurrentVersionGlobal()
 End Function
 
 Function GetCurrentVersionLocal(path)
-    WScript.echo "kkotari: pyenv-lib.vbs get current version local..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version local..!"
     GetCurrentVersionLocal = Null
 
     Dim fname
@@ -86,7 +86,7 @@ Function GetCurrentVersionLocal(path)
 End Function
 
 Function GetCurrentVersionShell()
-    WScript.echo "kkotari: pyenv-lib.vbs get current version shell..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version shell..!"
     GetCurrentVersionShell = Null
 
     Dim str
@@ -96,7 +96,7 @@ Function GetCurrentVersionShell()
 End Function
 
 Function GetCurrentVersion()
-    WScript.echo "kkotari: pyenv-lib.vbs get current version..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version..!"
     Dim str
     str = GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
@@ -110,7 +110,7 @@ Function GetCurrentVersion()
 End Function
 
 Function GetCurrentVersionNoError()
-    WScript.echo "kkotari: pyenv-lib.vbs get current version no error..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version no error..!"
     Dim str
     str = GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
@@ -119,7 +119,7 @@ Function GetCurrentVersionNoError()
 End Function
 
 Function IsVersion(version)
-    WScript.echo "kkotari: pyenv-lib.vbs is version..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs is version..!"
     Dim re
     Set re = new regexp
     re.Pattern = "^[a-zA-Z_0-9-.]+$"
@@ -127,7 +127,7 @@ Function IsVersion(version)
 End Function
 
 Function GetBinDir(ver)
-    WScript.echo "kkotari: pyenv-lib.vbs get bin dir..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get bin dir..!"
     Dim str
     str = strDirVers &"\"& ver
     If Not(IsVersion(ver) And objfs.FolderExists(str)) Then
@@ -140,7 +140,7 @@ End Function
 
 ' pyenv set global python version 
 Sub SetGlobalVersion(ver)
-    WScript.echo "kkotari: pyenv-lib.vbs set global version..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs set global version..!"
     GetBinDir(ver)
 
     With objfs.CreateTextFile(strPyenvHome &"\version" , True)
@@ -150,7 +150,7 @@ Sub SetGlobalVersion(ver)
 End Sub
 
 Function GetExtensions(addPy)
-    WScript.echo "kkotari: pyenv-lib.vbs get extensions..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get extensions..!"
     Dim exts
     exts = ";"& objws.Environment("Process")("PATHEXT") &";"
     Set GetExtensions = CreateObject("Scripting.Dictionary")
@@ -172,7 +172,7 @@ Function GetExtensions(addPy)
 End Function
 
 Function GetExtensionsNoPeriod(addPy)
-    WScript.echo "kkotari: pyenv-lib.vbs get extension no period..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs get extension no period..!"
     Dim key
     Set GetExtensionsNoPeriod = GetExtensions(addPy)
     For Each key In GetExtensionsNoPeriod.Keys
@@ -208,7 +208,7 @@ End Sub
 
 ' pyenv rehash
 Sub Rehash()
-    WScript.echo "kkotari: pyenv-lib.vbs pyenv rehash..!"
+    ' WScript.echo "kkotari: pyenv-lib.vbs pyenv rehash..!"
     Dim file
 
     If Not objfs.FolderExists(strDirShims) Then objfs.CreateFolder(strDirShims)
