@@ -30,7 +30,7 @@ To keep in sync to [pyenv][1] linux/mac we changed the default version to 64bit 
 
 Both the tracks supports installation of 64bit and 32bit python versions, the change in these tracks are python naming as shown below. 
 
-64bit-train or master i.e. _2.x.x_
+64bit-train or master i.e. _2.64.x_
 
 ```
 > pyenv install -l 
@@ -46,7 +46,7 @@ Both the tracks supports installation of 64bit and 32bit python versions, the ch
 ....
 ```
 
-32bit-train i.e. _2.x.x-32bit_
+32bit-train i.e. _2.32.x_
 ```
 >pyenv install -l 
 ....
@@ -140,11 +140,11 @@ Get pyenv-win via one of the following methods:
 - **With Git**  
   - change directory to `%USERPROFILE%\.pyenv` via `cd`
   - run following command `git checkout -b 32bit-train origin/32bit-train`
-  - now run `pyenv --version` you need to see 2.x.x-32bit
+  - now run `pyenv --version` you need to see 2.32.x
 
 - **With pip**  
-  - Powershell or Git Bash: `pip install pyenv-win==2.x.x-32bit --target $HOME\.pyenv`
-   - cmd.exe: `pip install pyenv-win==2.x.x-32bit --target %USERPROFILE%\.pyenv`
+  - Powershell or Git Bash: `pip install pyenv-win==2.32.x --target $HOME\.pyenv`
+   - cmd.exe: `pip install pyenv-win==2.32.x --target %USERPROFILE%\.pyenv`
 
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/32bit-train.zip)
@@ -208,7 +208,7 @@ Now follow [finish the installation](#finish-the-installation) which are above
 
 ## Change Log
 
-### New in 2.0.0
+### New in 2.64.1
 - Version naming conventions have now changed from using 64-bit suffixes when specifying a version to (un)install. Now all you need to use is the version number to install your platform's specifc bit version.
    - **\*WARNING\*: This change is backwards incompatible with v1.2.5 or less so please install [32bit-train](#32bit-train-support) which is backward compatible or uninstall all versions of python prior to upgrading pyenv to this version.**
    - Ex. `pyenv install 2.7.17` will install as 64-bit on x64 and 32-bit on x86. (64-bit can still use `2.7.17-win32` to install the 32-bit version)
