@@ -581,6 +581,26 @@
 		<URL>https://www.python.org/ftp/python/2.7.17/python-2.7.17.amd64.msi</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="true">
+		<code>2.7.18rc1-win32</code>
+		<file>python-2.7.18rc1.msi</file>
+		<URL>https://www.python.org/ftp/python/2.7.18/python-2.7.18rc1.msi</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="true">
+		<code>2.7.18rc1</code>
+		<file>python-2.7.18rc1.amd64.msi</file>
+		<URL>https://www.python.org/ftp/python/2.7.18/python-2.7.18rc1.amd64.msi</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="true">
+		<code>2.7.18-win32</code>
+		<file>python-2.7.18.msi</file>
+		<URL>https://www.python.org/ftp/python/2.7.18/python-2.7.18.msi</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="true">
+		<code>2.7.18</code>
+		<file>python-2.7.18.amd64.msi</file>
+		<URL>https://www.python.org/ftp/python/2.7.18/python-2.7.18.amd64.msi</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="true">
 		<code>3.0a1-win32</code>
 		<file>python-3.0a1.msi</file>
 		<URL>https://www.python.org/ftp/python/3.0/python-3.0a1.msi</URL>
@@ -1906,6 +1926,26 @@
 		<URL>https://www.python.org/ftp/python/3.7.7/python-3.7.7-amd64-webinstall.exe</URL>
 	</version>
 	<version x64="false" webInstall="true" msi="false">
+		<code>3.7.8rc1-win32</code>
+		<file>python-3.7.8rc1-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.7.8/python-3.7.8rc1-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.7.8rc1</code>
+		<file>python-3.7.8rc1-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.7.8/python-3.7.8rc1-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.7.8-win32</code>
+		<file>python-3.7.8-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.7.8/python-3.7.8-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.7.8</code>
+		<file>python-3.7.8-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.7.8/python-3.7.8-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.8.0a1-win32</code>
 		<file>python-3.8.0a1-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.8.0/python-3.8.0a1-webinstall.exe</URL>
@@ -2056,6 +2096,56 @@
 		<URL>https://www.python.org/ftp/python/3.8.2/python-3.8.2-amd64-webinstall.exe</URL>
 	</version>
 	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.3rc1-win32</code>
+		<file>python-3.8.3rc1-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.3/python-3.8.3rc1-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.3rc1</code>
+		<file>python-3.8.3rc1-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.3/python-3.8.3rc1-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.3-win32</code>
+		<file>python-3.8.3-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.3/python-3.8.3-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.3</code>
+		<file>python-3.8.3-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.4rc1-win32</code>
+		<file>python-3.8.4rc1-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.4/python-3.8.4rc1-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.4rc1</code>
+		<file>python-3.8.4rc1-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.4/python-3.8.4rc1-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.4-win32</code>
+		<file>python-3.8.4-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.4/python-3.8.4-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.4</code>
+		<file>python-3.8.4-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.4/python-3.8.4-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.5-win32</code>
+		<file>python-3.8.5-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.5/python-3.8.5-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.5</code>
+		<file>python-3.8.5-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.5/python-3.8.5-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.9.0a1-win32</code>
 		<file>python-3.9.0a1-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a1-webinstall.exe</URL>
@@ -2094,5 +2184,75 @@
 		<code>3.9.0a4</code>
 		<file>python-3.9.0a4-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a4-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0a5-win32</code>
+		<file>python-3.9.0a5-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a5-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0a5</code>
+		<file>python-3.9.0a5-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a5-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0a6-win32</code>
+		<file>python-3.9.0a6-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a6-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0a6</code>
+		<file>python-3.9.0a6-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a6-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0b1-win32</code>
+		<file>python-3.9.0b1-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b1-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0b1</code>
+		<file>python-3.9.0b1-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b1-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0b2-win32</code>
+		<file>python-3.9.0b2-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b2-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0b2</code>
+		<file>python-3.9.0b2-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b2-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0b3-win32</code>
+		<file>python-3.9.0b3-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b3-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0b3</code>
+		<file>python-3.9.0b3-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b3-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0b4-win32</code>
+		<file>python-3.9.0b4-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b4-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0b4</code>
+		<file>python-3.9.0b4-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b4-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
+		<code>3.9.0b5-win32</code>
+		<file>python-3.9.0b5-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b5-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.9.0b5</code>
+		<file>python-3.9.0b5-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0b5-amd64-webinstall.exe</URL>
 	</version>
 </versions>
