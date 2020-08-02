@@ -2,6 +2,8 @@ Option Explicit
 
 Dim objCmdExec
 
+' WScript.echo "kkotari: pyenv.vbs..!"
+' WScript.echo "kkotari: pyenv.vbs Defining Import..!"
 Sub Import(importFile)
     Dim fso, libFile
     On Error Resume Next
@@ -16,10 +18,12 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+' WScript.echo "kkotari: pyenv.vbs Import called..!"
 
 Function GetCommandList()
+    ' WScript.echo "kkotari: pyenv.vbs get command list..!"
     Dim cmdList
-    Set cmdList = CreateObject("Scripting.Dictionary")'"System.Collections.SortedList"
+    Set cmdList = CreateObject("Scripting.Dictionary")
 
     Dim fileRegex
     Dim exts
@@ -31,7 +35,7 @@ Function GetCommandList()
     Dim matches
     For Each file In objfs.GetFolder(strDirLibs).Files
         Set matches = fileRegex.Execute(objfs.GetFileName(file))
-        If matches.Count > 0 And exts.Contains(objfs.GetExtensionName(file)) Then
+        If matches.Count > 0 And exts.Exists(objfs.GetExtensionName(file)) Then
              cmdList.Add matches(0).SubMatches(0), file
         End If
     Next
@@ -40,6 +44,7 @@ Function GetCommandList()
 End Function
 
 Sub PrintVersion(cmd, exitCode)
+    ' WScript.echo "kkotari: pyenv.vbs print version..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat")
     WScript.Echo help
@@ -47,6 +52,7 @@ Sub PrintVersion(cmd, exitCode)
 End Sub
 
 Sub PrintHelp(cmd, exitCode)
+    ' WScript.echo "kkotari: pyenv.vbs print help..!"
     Dim help
     help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
     WScript.Echo help
@@ -54,6 +60,7 @@ Sub PrintHelp(cmd, exitCode)
 End Sub
 
 Sub ExecCommand(str)
+    ' WScript.echo "kkotari: pyenv.vbs exec command..!"
     Dim utfStream
     Dim outStream
     Set utfStream = CreateObject("ADODB.Stream")
@@ -78,20 +85,22 @@ Sub ExecCommand(str)
 End Sub
 
 Function getCommandOutput(theCommand)
+    ' WScript.echo "kkotari: pyenv.vbs get command output..!"
     Set objCmdExec = objws.exec(thecommand)
     getCommandOutput = objCmdExec.StdOut.ReadAll
 end Function
 
 Sub CommandShims(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command shims..!"
      Dim shims_files
      If arg.Count < 2 Then
      ' WScript.Echo join(arg.ToArray(), ", ")
      ' if --short passed then remove /s from cmd
-        shims_files = getCommandOutput("cmd /c dir "&strDirShims&"/s /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &"/s /b")
      ElseIf arg(1) = "--short" Then
-        shims_files = getCommandOutput("cmd /c dir "&strDirShims&" /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &" /b")
      Else
-        shims_files = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-shims.bat --help")
+        shims_files = getCommandOutput("cmd /c "& strDirLibs &"\pyenv-shims.bat --help")
      End IF
      WScript.Echo shims_files
 End Sub
@@ -114,6 +123,7 @@ End Sub
 'End Function
 
 Sub CommandWhich(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command which..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-which", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then
@@ -145,7 +155,7 @@ Sub CommandWhich(arg)
         WScript.Quit 0
     End If
 
-    For Each ext In exts
+    For Each ext In exts.Keys
         If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
             WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
             WScript.Quit 0
@@ -158,7 +168,7 @@ Sub CommandWhich(arg)
             WScript.Quit 0
         End If
 
-        For Each ext In exts
+        For Each ext In exts.Keys
             If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
                 WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
                 WScript.Quit 0
@@ -178,6 +188,7 @@ Sub CommandWhich(arg)
 End Sub
 
 Sub CommandWhence(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command whence..!"
     If arg.Count < 2 Then
         PrintHelp "pyenv-whence", 1
     ElseIf arg(1) = "--help" Or arg(1) = "" Then
@@ -221,7 +232,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\" & program & ext) Then
                     found = True
                     foundAny = 0
@@ -248,7 +259,7 @@ Sub CommandWhence(arg)
         End If
 
         If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            For Each ext In exts
+            For Each ext In exts.Keys
                 If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
                     foundAny = 0
                     If isPath Then
@@ -266,6 +277,7 @@ Sub CommandWhence(arg)
 End Sub
 
 Sub ShowHelp()
+    '  WScript.echo "kkotari: pyenv.vbs show help..!"
      WScript.Echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
      WScript.Echo "Usage: pyenv <command> [<args>]"
      WScript.Echo ""
@@ -279,8 +291,8 @@ Sub ShowHelp()
      WScript.Echo "   uninstall    Uninstall a specific Python version"
      WScript.Echo "   update       Update the cached version DB"
      WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
+     WScript.Echo "   vname        Show the current Python version"
      WScript.Echo "   version      Show the current Python version and its origin"
-     WScript.Echo "   version-name Show the current Python version"
      WScript.Echo "   versions     List all Python versions available to pyenv"
      WScript.Echo "   exec         Runs an executable by first preparing PATH so that the selected Python"
      WScript.Echo "   which        Display the full path to an executable"
@@ -291,6 +303,7 @@ Sub ShowHelp()
 End Sub
 
 Sub CommandScriptVersion(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command script version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv---version", 0
     End If
@@ -309,6 +322,7 @@ Sub CommandScriptVersion(arg)
 End Sub
 
 Sub CommandHelp(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command help..!"
     If arg.Count > 1 Then
         Dim list
         Set list = GetCommandList
@@ -323,6 +337,7 @@ Sub CommandHelp(arg)
 End Sub
 
 Sub CommandRehash(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command rehash..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
     End If
@@ -331,6 +346,7 @@ Sub CommandRehash(arg)
 End Sub
 
 Sub CommandExecute(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command exec..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-exec", 0
     End If
@@ -352,12 +368,13 @@ Sub CommandExecute(arg)
 End Sub
 
 Sub CommandGlobal(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command global..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
     End If
 
+    Dim ver
     If arg.Count < 2 Then
-        Dim ver
         ver = GetCurrentVersionGlobal()
         If IsNull(ver) Then
             WScript.Echo "no global version configured"
@@ -365,11 +382,13 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        SetGlobalVersion arg(1)
+        ver = Check32Bit(arg(1))
+        SetGlobalVersion ver
     End If
 End Sub
 
 Sub CommandLocal(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command local..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-local", 0
     End If
@@ -383,17 +402,18 @@ Sub CommandLocal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
             objfs.DeleteFile strCurrent & strVerFile, True
             Exit Sub
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
+
         Dim ofile
         If objfs.FileExists(strCurrent & strVerFile) Then
-            Set ofile = objfs.OpenTextFile (strCurrent & strVerFile, 2)
+            Set ofile = objfs.OpenTextFile(strCurrent & strVerFile, 2)
         Else
             Set ofile = objfs.CreateTextFile(strCurrent & strVerFile, True)
         End If
@@ -403,6 +423,7 @@ Sub CommandLocal(arg)
 End Sub
 
 Sub CommandShell(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command shell..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-shell", 0
     End If
@@ -416,10 +437,10 @@ Sub CommandShell(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = arg(1)
-        If ver = "--unset" Then
+        If arg(1) = "--unset" Then
             ver = ""
         Else
+            ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
         ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)
@@ -427,6 +448,7 @@ Sub CommandShell(arg)
 End Sub
 
 Sub CommandVersion(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command version..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
     End If
@@ -439,8 +461,9 @@ Sub CommandVersion(arg)
 End Sub
 
 Sub CommandVersionName(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command version-name..!"
     If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
+        If arg(1) = "--help" Then PrintHelp "pyenv-vname", 0
     End If
 
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
@@ -449,6 +472,7 @@ Sub CommandVersionName(arg)
 End Sub
 
 Sub CommandVersions(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command versions..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
     End If
@@ -482,9 +506,7 @@ Sub CommandVersions(arg)
 End Sub
 
 Sub PlugIn(arg)
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-"& arg(0), 0
-    End If
+    ' WScript.echo "kkotari: pyenv.vbs plugin..!"
 
     Dim fname
     Dim idx
@@ -507,6 +529,7 @@ Sub PlugIn(arg)
 End Sub
 
 Sub CommandCommands(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command commands..!"
     Dim cname
 
     If arg.Count >= 2 Then
@@ -524,6 +547,8 @@ End Sub
 
 
 Sub main(arg)
+    ' WScript.echo "kkotari: pyenv.vbs main..!"
+    ' WScript.echo "kkotari: "&arg(0)
     If arg.Count = 0 Then
         ShowHelp
     Else
@@ -535,7 +560,7 @@ Sub main(arg)
            Case "local"        CommandLocal(arg)
            Case "shell"        CommandShell(arg)
            Case "version"      CommandVersion(arg)
-           Case "version-name" CommandVersionName(arg)
+           Case "vname"        CommandVersionName(arg)
            Case "versions"     CommandVersions(arg)
            Case "commands"     CommandCommands(arg)
            Case "shims"        CommandShims(arg)
