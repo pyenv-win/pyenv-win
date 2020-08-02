@@ -1,12 +1,10 @@
 # pyenv for Windows
 
-[pyenv][1] is a great tool. I ported it to Windows. Some commands aren't implemented, but it's good enough for basic use.
+[pyenv][1] is a great tool. We have ported it to Windows. We need your thoughts to improve this library and your feedback helps to grow.
 
 For existing python users, we support installation via pip: [follow instructions](#installation)  
-Contributors and Interested people can join us @[Slack](https://join.slack.com/t/pyenv/shared_invite/zt-f9ydwgyt-Fp8tehxqeCQi5mi77RxpGw) We need your help on motivating us and your thoughts, they help us a lot.
+Contributors and Interested people can join us @[Slack](https://join.slack.com/t/pyenv/shared_invite/zt-f9ydwgyt-Fp8tehxqeCQi5mi77RxpGw) We need your help on motivating us, they help us a lot.
 
-**Note:** We do keep in sync to [pyenv][1] versions. We are planning to move the default version as 64-bit from 32-bit, and 32-bit will be followed by `<version>-Win32`. We are trying our best to keep the existing master (i.e. default 32-bit) as separate active train for existing users. So please don't be shocked when the master changes to 64-bit by default. Hope you understand, we will keep posting when they are active and how to use default 32-bit train as well.
-   
    
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
@@ -26,13 +24,50 @@ Contributors and Interested people can join us @[Slack](https://join.slack.com/t
 - [License and Copyright](#license-and-copyright)
 - [Author and Thanks](#author-and-thanks)
 
+**Important Announcements**
+
+To keep in sync to [pyenv][1] linux/mac we changed the default version to 64bit Architecture as a main track. To support older version of pyenv-win i.e. 32bit Architecture as a seperate track.
+
+Both the tracks supports installation of 64bit and 32bit python versions, the change in these tracks are python naming as shown below. 
+
+64bit-train or master i.e. _2.x.x_
+
+```
+> pyenv install -l 
+....
+3.8.0-win32
+3.8.0
+3.8.1rc1-win32
+3.8.1rc1
+3.8.1-win32
+3.8.1
+3.8.2-win32
+3.8.2
+....
+```
+
+32bit-train i.e. _2.x.x-32bit_
+```
+>pyenv install -l 
+....
+3.8.0
+3.8.0-amd64
+3.8.1rc1
+3.8.1rc1-amd64
+3.8.1
+3.8.1-amd64
+3.8.2
+3.8.2-amd64
+....
+```
+
 ## Introduction
 
 [pyenv][1] for python is a great tool but, like [rbenv][2] for ruby developers, it doesn't support Windows directly. After a bit of research and feedback from python developers, I discovered they wanted a similiar feature for Windows systems.
 
 I got inspired from the pyenv [issue][4] for Windows support. Personally, I use Mac and Linux with beautiful [pyenv][1], but some companies still use Windows for development. This library is to help Windows users manage multiple python versions.
 
-I found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. Some commands aren't implemented, but it's good enough for basic use.
+I found a similar system for [rbenv-win][3] for ruby developers. This project was forked from [rbenv-win][3] and modified for [pyenv][1]. [pyenv-win][5] is getting mature every day thanks for the contributors and supports.
 
 ## pyenv
 
@@ -71,6 +106,7 @@ Get pyenv-win via one of the following methods:
    2. Extract to 
     - Powershell or Git Bash: `~/.pyenv/pyenv-win`
     - cmd.exe: `%USERPROFILE%\.pyenv\pyenv-win`
+   3. Ensure you see `bin` folder under `pyenv-win`
 - **With Git**
    - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git ~/.pyenv`
    - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv`
@@ -89,7 +125,7 @@ Get pyenv-win via one of the following methods:
       
       This can be done through GUI or command line:
       - __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
-      - _Be careful! People who use Windows newer than May 2019 Update must put these items above `%USERPROFILE%\AppData\Local\Microsoft\WindowsApps`; See [this article](https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/)._
+      - _Be careful! People who use Windows newer than May 2019 Update must put these items **above** `%USERPROFILE%\AppData\Local\Microsoft\WindowsApps`; See [this article](https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/)._
       - Powershell: `[System.Environment]::SetEnvironmentVariable('path', "$env:HOME\.pyenv\pyenv-win\bin;$env:HOME\.pyenv\pyenv-win\shims;" + $env:Path, [System.EnvironmentVariableTarget]::User)`
    
    3. Verify the installation was successful by opening a new terminal and running `pyenv --version`
@@ -99,12 +135,32 @@ Get pyenv-win via one of the following methods:
 
    Installation is done. Hurray!
 
+## 32bit-train Support
+
+- **With Git**  
+  - change directory to `%USERPROFILE%\.pyenv` via `cd`
+  - run following command `git checkout -b 32bit-train origin/32bit-train`
+  - now run `pyenv --version` you need to see 2.x.x-32bit
+
+- **With pip**  
+  - Powershell or Git Bash: `pip install pyenv-win==2.x.x-32bit --target $HOME\.pyenv`
+   - cmd.exe: `pip install pyenv-win==2.x.x-32bit --target %USERPROFILE%\.pyenv`
+
+- **With zip file**
+   1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/32bit-train.zip)
+   2. Extract to 
+    - Powershell or Git Bash: `~/.pyenv/pyenv-win`
+    - cmd.exe: `%USERPROFILE%\.pyenv\pyenv-win`
+   3. Ensure you see `bin` folder under `pyenv-win`
+
+Now follow [finish the installation](#finish-the-installation) which are above
+
 ## Usage
 
 - Update the list of discoverable Python versions: `pyenv update`
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
 - To install a python version:  `pyenv install 3.5.2`
-   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it._
+   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quite installation_
    - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
 - To set a python version as the global version: `pyenv global 3.5.2`
    - This is the version of python that will be used by default if a local version (see below) isn't set.
@@ -152,13 +208,13 @@ Get pyenv-win via one of the following methods:
 
 ## Change Log
 
-### New in 1.3.0
+### New in 2.0.0
 - Version naming conventions have now changed from using 64-bit suffixes when specifying a version to (un)install. Now all you need to use is the version number to install your platform's specifc bit version.
-   - **\*WARNING\*: This change is backwards incompatible with v1.2.5 so please uninstall all versions of python prior to upgrading pyenv to this version.**
+   - **\*WARNING\*: This change is backwards incompatible with v1.2.5 or less so please install [32bit-train](#32bit-train-support) which is backward compatible or uninstall all versions of python prior to upgrading pyenv to this version.**
    - Ex. `pyenv install 2.7.17` will install as 64-bit on x64 and 32-bit on x86. (64-bit can still use `2.7.17-win32` to install the 32-bit version)
    - `pyenv global/local/shell` also now recognize your platform and select the appropirate bit version. (64-bit users will need to specify `[version]-win32` to use the 32-bit versions now)
 - Added support for true unobtrusive, local installs.
-  - **\*WARNING\*: This change is backwards incompatible with v1.2.5 so please uninstall all versions of python prior to upgrading pyenv to this version.**
+  - **\*WARNING\*: This change is backwards incompatible with v1.2.5 or less so please install [32bit-train](#32bit-train-support) which is backward compatible or uninstall all versions of python prior to upgrading pyenv to this version.**
   - No install/uninstall records are written to the registry or Start Menu anymore (no "Programs and Features" records).
   - When installing a patch version of python (ex. 3.6.1) installing another patch version (ex. 3.6.2) won't reuse the same folder and overwrite the previously installed minor version. They're now kept separate.
   - Uninstalls are now a simple folder deletion. (Can be done manually by the user safely now or `pyenv uninstall`)
@@ -194,9 +250,11 @@ Get pyenv-win via one of the following methods:
 
 ## Author and Thanks
 
-pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)
+pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)  
+Thanks for all Contributors and Supports for patience for the latest major release.
 
 [1]: https://github.com/pyenv/pyenv
 [2]: https://github.com/rbenv/rbenv
 [3]: https://github.com/nak1114/rbenv-win
 [4]: https://github.com/pyenv/pyenv/issues/62
+[5]: https://github.com/pyenv-win/pyenv-win
