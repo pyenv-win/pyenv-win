@@ -49,7 +49,7 @@ setup(
             'libexec/*', 
             'libexec/libs/*', 
             '../.version', 
-            '../.versions_cache.xml'
+            '.versions_cache.xml'
         ]
     },
 )
