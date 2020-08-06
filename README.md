@@ -115,23 +115,30 @@ Get pyenv-win via one of the following methods:
 
 ### Finish the installation
 
-   1. If you installed using Chocolatey, you can skip to step 3.
-      Otherwise, add a new *System* variable and *User* variable in ENVIRONMENT with name:  
-      `PYENV` value: `%USERPROFILE%\.pyenv\pyenv-win`  
-      _Note: A couple of system versions were acting weird, so it's safe to add the %PYENV% in both the locations..!_
-   2. Now add the following paths to your *System* ENVIRONMENT PATH variable in order to access the pyenv command (don't forget to separate with semicolons):  
-      - `%PYENV%\bin`
-      - `%PYENV%\shims`
+**NOTE:** If you are running Windows 10 1905 or newer, you made need to disable the built-in Python launcher via Start > "Manage App Execution Aliases" and disabling the "App Installer" aliases for Python
+
+   If you installed using Chocolatey, you can skip to step 3.
+
+   1. Add PYENV to your Environment Variables
+         1. Using either PowerShell or Windows Terminal run
+         ```
+         [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+         ```
+
+   2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows Terminal:
       
-      This can be done through GUI or command line:
-      - __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
-      - _Be careful! People who use Windows newer than May 2019 Update must put these items **above** `%USERPROFILE%\AppData\Local\Microsoft\WindowsApps`; See [this article](https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/)._
-      - Powershell: `[System.Environment]::SetEnvironmentVariable('path', "$env:HOME\.pyenv\pyenv-win\bin;$env:HOME\.pyenv\pyenv-win\shims;" + $env:Path, [System.EnvironmentVariableTarget]::User)`
+      ```
+      [System.Environment]::SetEnvironmentVariable('path', $HOME + "\.pyenv\pyenv-win\bin;" + $HOME + "\.pyenv\pyenv-win\shims;" + $env:Path,"User")
+      ```
    
-   3. Verify the installation was successful by opening a new terminal and running `pyenv --version`
+   3. Close and reopen your terminal app and run `pyenv --version`
+      1. If the return value is the installed version of `pyenv`, then contonue to Step 4
+      2. If you receive a command not found error, ensure the environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
+
    4. Now run the `pyenv rehash` from home directory
       - You should see the [current pyenv version](https://github.com/pyenv-win/pyenv-win/blob/master/setup.py). If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
    5. Run `pyenv` to see list of commands it supports. [More info...](#usage)
+
 
    Installation is done. Hurray!
 
