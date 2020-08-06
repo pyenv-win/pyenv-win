@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set KNOWN_VER=2.32.1
+set KNOWN_VER=2.32.2
 
 if "%1" == "--help" (
 echo Usage: pyenv --version
