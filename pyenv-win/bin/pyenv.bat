@@ -1,5 +1,6 @@
 @echo off
 setlocal
+chcp 1250 >nul
 set "pyenv=cscript //nologo "%~dp0"..\libexec\pyenv.vbs"
 
 rem if not the 'exec' command then just call pyenv.vbs directly and exit
@@ -8,6 +9,7 @@ if /i not [%1]==[exec] (
   exit /b
 )
 
+'<<<<<<< fix-exec
 rem handle 'exec' command.
 rem 'exec' is enhanced such that now any program can be launched using it.
 rem it ensures that PATH is prefixed so 'current' version of python will
@@ -40,6 +42,11 @@ if not [%3]==[] (
   set "params=%params%%3 "
   shift
   goto loop
+'=======
+'call cscript //nologo "%~dp0"..\libexec\pyenv.vbs %*
+'IF EXIST "%~dp0"..\exec.bat (
+'   "%~dp0"..\exec.bat
+'>>>>>>> pr99-testing
 )
 
 rem 'exe' could be a '.bat' file (or any ext in pathext), in which case

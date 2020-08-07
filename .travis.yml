@@ -1,0 +1,18 @@
+language: shell
+os: windows
+before_install:
+  - export PYENV="$TRAVIS_BUILD_DIR/pyenv-win"
+  - export PATH="$PYENV/bin:$PYENV/shims:$PATH"
+install:
+    - pyenv --version
+    - pyenv update
+    - pyenv install -q < $PYENV/../.python-version
+    - pyenv global < $PYENV/../.python-version
+    - pyenv versions
+    - python --version
+    - pip install -r requirements_dev.txt
+    - pyenv rehash
+script:
+  - "PYTHONPATH=. python -m pytest -v -s tests"
+after_success:
+  - coveralls
