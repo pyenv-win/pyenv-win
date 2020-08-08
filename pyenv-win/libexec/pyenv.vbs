@@ -81,7 +81,7 @@ Function GetCurrentVersion()
     str=GetCurrentVersionShell
     If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
     If IsNull(str) Then str = GetCurrentVersionGlobal
-    If IsNull(str) Then 
+    If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
 		WScript.echo "pyenv global 3.7.2"
 		WScript.quit
@@ -99,8 +99,8 @@ End Function
 
 Function GetBinDir(ver)
     Dim str
-    str=strDirVers & "\" & ver & "\" 
-    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then 
+    str=strDirVers & "\" & ver & "\"
+    If Not(IsVersion(ver) And objfs.FolderExists(str)) Then
 		WScript.echo "pyenv specific python requisite didn't meet. Project is using different version of python."
 		WScript.echo "Install python '"&ver&"' by typing: 'pyenv install "&ver&"'"
 		WScript.quit
@@ -128,14 +128,11 @@ Function GetCommandList()
     Set GetCommandList = cmdList
 End Function
 
-Sub ExecCommand(str)
-    Dim ofile
-    Set ofile = CreateObject("ADODB.Stream")
-    ofile.CharSet = "utf-8"
-    ofile.Open
-    ofile.WriteText("chcp 65001 > NUL" & vbCrLf)
-    ofile.WriteText(str & vbCrLf)
-    ofile.SaveToFile strPyenvHome & "\exec.bat", 2
+Sub ExecCommand(cmd)
+    Dim oExec
+    Set oExec = objws.exec(cmd)
+    WScript.StdOut.Write oExec.StdOut.ReadAll
+    WScript.StdErr.Write oExec.StdErr.ReadAll
 End Sub
 
 Function getCommandOutput(theCommand)
@@ -250,7 +247,7 @@ Sub CommandRehash(arg)
           ofile.Close()
         End If
     Next
-    
+
     If objfs.FolderExists(GetBinDir(GetCurrentVersion()(0)) & "\Scripts") Then
         For Each file In objfs.GetFolder(GetBinDir(GetCurrentVersion()(0)) & "\Scripts").Files
             If objfs.GetExtensionName(file) = "exe" or objfs.GetExtensionName(file) = "bat" or objfs.GetExtensionName(file) = "cmd" or objfs.GetExtensionName(file) = "py" Then
@@ -267,31 +264,6 @@ Sub CommandRehash(arg)
     End If
 End Sub
 
-Sub CommandExecute(arg)
-    If arg.Count >= 2 then
-        If arg(1) = "--help" then
-            help = getCommandOutput("cmd /c "&strDirLibs&"\pyenv-exec.bat --help")
-            WScript.echo help
-            Exit Sub
-        End If
-    End If
-
-    Dim str
-    Dim dstr
-    dstr=GetBinDir(GetCurrentVersion()(0))
-    str="set PATH=" & dstr & ";%PATH:&=^&%" & vbCrLf
-    If arg.Count > 1 Then  
-      str=str & """" & dstr & "\" & arg(1) & """"
-      Dim idx
-      If arg.Count > 2 Then  
-        For idx = 2 To arg.Count - 1 
-          str=str & " """& arg(idx) &""""
-        Next
-      End If
-    End If
-    ExecCommand(str)
-End Sub
-
 Sub CommandGlobal(arg)
     If arg.Count >= 2 then
         If arg(1) = "--help" then
@@ -301,7 +273,7 @@ Sub CommandGlobal(arg)
         End If
     End If
 
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         Dim ver
         ver=GetCurrentVersionGlobal()
         If IsNull(ver) Then
@@ -328,7 +300,7 @@ Sub CommandLocal(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver=GetCurrentVersionLocal(strCurrent)
         If IsNull(ver) Then
             WScript.echo "no local version configured for this directory"
@@ -365,7 +337,7 @@ Sub CommandShell(arg)
     End If
 
     Dim ver
-    If arg.Count < 2 Then  
+    If arg.Count < 2 Then
         ver=GetCurrentVersionShell
         If IsNull(ver) Then
             WScript.echo "no shell-specific version configured"
@@ -379,7 +351,7 @@ Sub CommandShell(arg)
         Else
             GetBinDir(ver)
         End If
-        ExecCommand("endlocal"&vbCrLf&"set PYENV_VERSION=" & ver)
+        ExecCommand("endlocal && set PYENV_VERSION=" & ver)
     End If
 End Sub
 
@@ -458,7 +430,7 @@ Sub PlugIn(arg)
        WScript.Quit
     End If
 
-    For idx = 1 To arg.Count - 1 
+    For idx = 1 To arg.Count - 1
       str=str & " """& arg(idx) &""""
     Next
 
@@ -491,7 +463,6 @@ Sub main(arg)
         ShowHelp
     Else
         Select Case arg(0)
-           Case "exec"        CommandExecute(arg)
            Case "rehash"      CommandRehash(arg)
            Case "global"      CommandGlobal(arg)
            Case "local"       CommandLocal(arg)
