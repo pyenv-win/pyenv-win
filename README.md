@@ -106,11 +106,11 @@ Get pyenv-win via one of the following methods:
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
    2. Extract to 
-    - Powershell or Git Bash: `~/.pyenv/pyenv-win`
+    - Powershell or Git Bash: `$HOME/.pyenv/pyenv-win`
     - cmd.exe: `%USERPROFILE%\.pyenv\pyenv-win`
    3. Ensure you see `bin` folder under `pyenv-win`
 - **With Git**
-   - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git ~/.pyenv`
+   - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv`
    - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv`
 - **With [Chocolatey](https://chocolatey.org/packages/pyenv-win)**
    - `choco install pyenv-win` (this also installs all the environment variables)
@@ -138,7 +138,7 @@ Get pyenv-win via one of the following methods:
       2. If you receive a command not found error, ensure the environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
 
    4. Now run the `pyenv rehash` from home directory
-      - You should see the [current pyenv version](https://github.com/pyenv-win/pyenv-win/blob/master/setup.py). If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
+      - If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
    5. Run `pyenv` to see list of commands it supports. [More info...](#usage)
 
 
@@ -158,7 +158,7 @@ Get pyenv-win via one of the following methods:
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/32bit-train.zip)
    2. Extract to 
-    - Powershell or Git Bash: `~/.pyenv/pyenv-win`
+    - Powershell or Git Bash: `$HOME/.pyenv/pyenv-win`
     - cmd.exe: `%USERPROFILE%\.pyenv\pyenv-win`
    3. Ensure you see `bin` folder under `pyenv-win`
 
