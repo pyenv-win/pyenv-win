@@ -199,6 +199,14 @@ Sub AppendElement(doc, parent, tag, text)
     parent.appendChild elem
 End Sub
 
+Function LocaleIndependantCStr(booleanVal)
+    If booleanVal Then
+        LocaleIndependantCStr = "true"
+    Else
+        LocaleIndependantCStr = "false"
+    End If
+End Function
+
 ' Append new version to DB
 Sub SaveVersionsXML(xmlPath, versArray)
     ' WScript.echo "kkotari: pyenv-install-lib.vbs SaveVersionsXML..!"
@@ -213,9 +221,9 @@ Sub SaveVersionsXML(xmlPath, versArray)
         doc.documentElement.appendChild versElem
 
         With versElem
-            .setAttribute "x64",        LCase(CStr(CBool(Len(versRow(SFV_Version)(VRX_x64)))))
-            .setAttribute "webInstall", LCase(CStr(CBool(Len(versRow(SFV_Version)(VRX_Web)))))
-            .setAttribute "msi",        LCase(CStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi"))
+            .setAttribute "x64",        LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_x64))))
+            .setAttribute "webInstall", LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_Web))))
+            .setAttribute "msi",        LocaleIndependantCStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi")
         End With
         AppendElement doc, versElem, "code", JoinWin32String(versRow(SFV_Version))
         AppendElement doc, versElem, "file", versRow(0)
