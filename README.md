@@ -61,8 +61,6 @@ Both the tracks supports installation of 64bit and 32bit python versions, the ch
 ....
 ```
 
-**_Note:_ For non-english localizations please avoid typing `pyenv update`, we didn't thought this will be impacted for non-english. We are working on this.**
-
 ## Introduction
 
 [pyenv][1] for python is a great tool but, like [rbenv][2] for ruby developers, it doesn't support Windows directly. After a bit of research and feedback from python developers, I discovered they wanted a similiar feature for Windows systems.
