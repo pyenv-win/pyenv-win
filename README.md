@@ -123,7 +123,7 @@ Get pyenv-win via one of the following methods:
    1. Add PYENV to your Environment Variables
          1. Using either PowerShell or Windows Terminal run
          ```
-         [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+         [System.Environment]::SetEnvironmentVariable('PYENV_HOME',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
          ```
 
    2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows Terminal:
