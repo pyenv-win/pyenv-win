@@ -167,7 +167,7 @@ Now follow [finish the installation](#finish-the-installation) which are above
 
 ## Usage
 
-- Update the list of discoverable Python versions: `pyenv update`
+- Update the list of discoverable Python versions using: `pyenv update` command for pyenv-win `2.64.x` and `2.32.x` versions
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
 - To install a python version:  `pyenv install 3.5.2`
    - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quite installation_
