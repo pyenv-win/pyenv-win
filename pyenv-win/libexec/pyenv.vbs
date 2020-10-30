@@ -354,7 +354,7 @@ Sub CommandExecute(arg)
     Dim str
     Dim dstr
     dstr = GetBinDir(GetCurrentVersion()(0))
-    str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
+    str = "set PATH="& dstr &";"& dstr &"\Library\bin;%PATH:&=^&%"& vbCrLf
     If arg.Count > 1 Then
         str = str &""""& dstr &"\"& arg(1) &""""
         Dim idx
