@@ -99,8 +99,8 @@ I found a similar system for [rbenv-win][3] for ruby developers. This project wa
 Get pyenv-win via one of the following methods:
 
 - **With pip** (to support existing python users)
-   - Powershell or Git Bash: `pip install pyenv-win --target $HOME\.pyenv`
-   - cmd.exe: `pip install pyenv-win --target %USERPROFILE%\.pyenv`
+   - Powershell or Git Bash: `pip install pyenv-win --target "$HOME\.pyenv"`
+   - cmd.exe: `pip install pyenv-win --target "%USERPROFILE%\.pyenv"`
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
    2. Create a `.pyenv` directory if not exist under `$HOME` or `%USERPROFILE%`
@@ -109,8 +109,8 @@ Get pyenv-win via one of the following methods:
     - cmd.exe: `%USERPROFILE%\.pyenv\`
    4. Ensure you see `bin` folder under `%USERPROFILE%\.pyenv\pyenv-win`
 - **With Git**
-   - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv`
-   - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git %USERPROFILE%\.pyenv`
+   - Powershell or Git Bash: `git clone https://github.com/pyenv-win/pyenv-win.git "$HOME/.pyenv"`
+   - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git "%USERPROFILE%\.pyenv"`
 - **With [Chocolatey](https://chocolatey.org/packages/pyenv-win)**
    - `choco install pyenv-win` (this also installs all the environment variables)
 
@@ -121,14 +121,14 @@ Get pyenv-win via one of the following methods:
    If you installed using Chocolatey, you can skip to step 3.
 
    1. Add PYENV and PYENV_HOME to your Environment Variables
-         1. Using either PowerShell or Windows Terminal run
+         1. Using either PowerShell or Windows 8/above Terminal run
          ```
          [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
          [System.Environment]::SetEnvironmentVariable('PYENV_HOME',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
          ```
          Note: PYENV_HOME is to support pipenv
 
-   2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows Terminal:
+   2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows 8/above Terminal:
       
       ```
       [System.Environment]::SetEnvironmentVariable('path', $HOME + "\.pyenv\pyenv-win\bin;" + $HOME + "\.pyenv\pyenv-win\shims;" + $env:Path,"User")
