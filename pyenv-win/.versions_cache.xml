@@ -2056,6 +2056,16 @@
 		<URL>https://www.python.org/ftp/python/3.8.2/python-3.8.2-amd64-webinstall.exe</URL>
 	</version>
 	<version x64="false" webInstall="true" msi="false">
+		<code>3.8.7-win32</code>
+		<file>python-3.8.7-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.7/python-3.8.7-webinstall.exe</URL>
+	</version>
+	<version x64="true" webInstall="true" msi="false">
+		<code>3.8.7</code>
+		<file>python-3.8.7-amd64-webinstall.exe</file>
+		<URL>https://www.python.org/ftp/python/3.8.7/python-3.8.7-amd64-webinstall.exe</URL>
+	</version>
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.9.0a1-win32</code>
 		<file>python-3.9.0a1-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.0/python-3.9.0a1-webinstall.exe</URL>
