@@ -201,7 +201,7 @@ Sub WriteLinuxScript(baseName, strDirBin)
     ' WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
     With objfs.CreateTextFile(strDirShims &"\"& baseName)
         .WriteLine("#!/bin/sh")
-        .WriteLine("pyenv exec "&strDirBin&"$(basename $0) $*")
+        .WriteLine("pyenv exec "&strDirBin&"$(basename $0) ""$@""")
         .Close
     End With
 End Sub
