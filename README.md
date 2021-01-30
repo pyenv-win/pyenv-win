@@ -98,8 +98,8 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 Get pyenv-win via one of the following methods:
 
 - **With pip** (to support existing python users)
-   - Powershell or Git Bash: `pip install pyenv-win --target "$HOME\.pyenv"`
-   - cmd.exe: `pip install pyenv-win --target "%USERPROFILE%\.pyenv"`
+   - Powershell or Git Bash: `pip install pyenv-win --target $HOME\\.pyenv`
+   - cmd.exe: `pip install pyenv-win --target %USERPROFILE%\.pyenv`
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
    2. Create a `.pyenv` directory under `$HOME` or `%USERPROFILE%` if not existing 
