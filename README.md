@@ -44,6 +44,8 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 3.8.1
 3.8.2-win32
 3.8.2
+3.9.0-win32
+3.9.0
 ....
 ```
 
@@ -245,7 +247,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 - Create an upstream remote and sync your local copy before you branch.
 - Branch for each separate piece of work. It's good practice to write test cases.
 - Do the work, write good commit messages, and read the CONTRIBUTING file if there is one.
-- Test the changes by running `tests\test_install.bat` and `tests\test_uninstall.bat`
+- Test the changes by running `tests\bat_files\test_install.bat` and `tests\bat_files\test_uninstall.bat`
 - Push to your origin repository.
 - Create a new Pull Request in GitHub.
 
