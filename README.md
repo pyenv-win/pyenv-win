@@ -85,6 +85,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
    rehash       Rehash pyenv shims (run this after switching Python versions)
    vname        Show the current Python version
    version      Show the current Python version and its origin
+   version-name Show the current Python version
    versions     List all Python versions available to pyenv
    exec         Runs an executable by first preparing PATH so that the selected Python
    which        Display the full path to an executable

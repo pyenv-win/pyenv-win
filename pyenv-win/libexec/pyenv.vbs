@@ -293,6 +293,7 @@ Sub ShowHelp()
      WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
      WScript.Echo "   vname        Show the current Python version"
      WScript.Echo "   version      Show the current Python version and its origin"
+     WScript.Echo "   version-name Show the current Python version"
      WScript.Echo "   versions     List all Python versions available to pyenv"
      WScript.Echo "   exec         Runs an executable by first preparing PATH so that the selected Python"
      WScript.Echo "   which        Display the full path to an executable"
@@ -463,6 +464,17 @@ End Sub
 Sub CommandVersionName(arg)
     ' WScript.echo "kkotari: pyenv.vbs command version-name..!"
     If arg.Count >= 2 Then
+        If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
+    End If
+
+    If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
+
+    WScript.Echo GetCurrentVersion()(0)
+End Sub
+
+Sub CommandVersionNameShort(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command v-name..!"
+    If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-vname", 0
     End If
 
@@ -560,7 +572,8 @@ Sub main(arg)
            Case "local"        CommandLocal(arg)
            Case "shell"        CommandShell(arg)
            Case "version"      CommandVersion(arg)
-           Case "vname"        CommandVersionName(arg)
+           Case "vname"        CommandVersionNameShort(arg)
+           Case "version-name" CommandVersionName(arg)
            Case "versions"     CommandVersions(arg)
            Case "commands"     CommandCommands(arg)
            Case "shims"        CommandShims(arg)
