@@ -1,4 +1,8 @@
 pytest-cov==2.8.1
 pytest==5.3.0
-coveralls==1.5.1
+coveralls==1.7.0
+# This is needed to avoid ImportError: cannot import name 'Reporter' from 'coverage.report'
+# when Travis CI install requirements_dev.txt
+# See https://youtrack.jetbrains.com/issue/PY-40980
+coverage==4.5.4
 pathlib==1.0.1
