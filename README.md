@@ -248,7 +248,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 - Create an upstream remote and sync your local copy before you branch.
 - Branch for each separate piece of work. It's good practice to write test cases.
 - Do the work, write good commit messages, and read the CONTRIBUTING file if there is one.
-- Test the changes by running `tests\bat_files\test_install.bat` and `tests\bat_files\test_uninstall.bat`
+- Test the changes by running `tests\bat_files\test_install.bat` and `tests\bat_files\test_uninstall.bat` and `PYTHONPATH=. python -m pytest -v -s tests`
 - Push to your origin repository.
 - Create a new Pull Request in GitHub.
 
