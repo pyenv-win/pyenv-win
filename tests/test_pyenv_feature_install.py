@@ -33,7 +33,7 @@ class TestPyenvFeatureInstall(TestPyenvBase):
     def test_check_pyenv_install_mirror(self, setup):
         mirror_url = "https://my.artifactory.domain.com/artifactory/my-repo/python/"
         test_env = os.environ.copy()
-	test_env["PYTHON_BUILD_MIRROR_URL"] = mirror_url
+        test_env["PYTHON_BUILD_MIRROR_URL"] = mirror_url
         result = subprocess.run(['pyenv', 'install', '3.8.2'],
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 env=test_env)
