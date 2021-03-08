@@ -335,6 +335,9 @@ Sub main(arg)
                 strDirCache &"\"& verDef(LV_FileName), _
                 optQuiet _
             )
+            If Not mirror = "https://www.python.org/ftp/python" Then
+                installParams(LV_URL) = mirror &""& verDef(LV_Code) &"/"& verDef(LV_FileName)
+            End If
             If optForce Then clear(installParams)
             extract(installParams)
             installed(version) = Empty
