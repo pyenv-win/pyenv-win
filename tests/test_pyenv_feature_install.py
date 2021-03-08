@@ -34,7 +34,7 @@ class TestPyenvFeatureInstall(TestPyenvBase):
         result = subprocess.run(['pyenv', 'install', '3.8.2'],
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 env={"PYTHON_BUILD_MIRROR_URL": mirror_url})
-        result = str(result.stdout, "utf-8")
+        result = str(result.stderr, "utf-8")
         # result will be failed since mirror is not available, but we check only script output
         # to see if the mirror was chosen as a source
         assert f"Mirror: {mirror_url}" in result
