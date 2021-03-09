@@ -335,7 +335,7 @@ Sub main(arg)
                 strDirCache &"\"& verDef(LV_FileName), _
                 optQuiet _
             )
-            installParams(LV_URL) = mirror &""& verDef(LV_Code) &"/"& verDef(LV_FileName)
+            installParams(LV_URL) = mirror &"/"& verDef(LV_Code) &"/"& verDef(LV_FileName)
             If optForce Then clear(installParams)
             extract(installParams)
             installed(version) = Empty
