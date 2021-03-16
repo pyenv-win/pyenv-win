@@ -444,7 +444,7 @@ Sub CommandShell(arg)
             ver = Check32Bit(arg(1))
             GetBinDir(ver)
         End If
-        ExecCommand("endlocal"& vbCrLf &"set PYENV_VERSION="& ver)
+        ExecCommand("set PYENV_VERSION="& ver)
     End If
 End Sub
 
