@@ -109,3 +109,6 @@ version
 versions/
 exec.bat
 
+# PyCharm
+.idea/
+
