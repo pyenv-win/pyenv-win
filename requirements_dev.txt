@@ -6,3 +6,4 @@ coveralls==1.7.0
 # See https://youtrack.jetbrains.com/issue/PY-40980
 coverage==4.5.4
 pathlib==1.0.1
+tempenv==0.2.0
