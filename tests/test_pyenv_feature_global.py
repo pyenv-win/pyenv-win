@@ -36,3 +36,20 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
             assert output == ("pyenv specific python requisite didn't meet. "
                               "Project is using different version of python.\r\n"
                               "Install python '3.7.8' by typing: 'pyenv install 3.7.8'")
+
+    def test_global_unset(self, setup):
+        with tempfile.TemporaryDirectory() as tmp_path:
+            install_pyenv(tmp_path, ["3.8.9"], "3.8.9")
+            with working_directory(tmp_path):
+                bat = Path(tmp_path, r'bin\pyenv.bat')
+
+                def pyenv_global(option=None):
+                    args = ['cmd', '/d', '/c', f'call {bat}', "global"]
+                    if option is not None:
+                        args.append(option)
+                    result = subprocess.run(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    output = str(result.stdout, "utf-8").strip()
+                    return output
+
+                assert pyenv_global("--unset") == ""
+                assert pyenv_global() == "no global version configured"
