@@ -125,15 +125,16 @@ Get pyenv-win via one of the following methods:
    1. Add PYENV and PYENV_HOME to your Environment Variables
          1. Using either PowerShell or Windows 8/above Terminal run
          ```
-         [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
-         [System.Environment]::SetEnvironmentVariable('PYENV_HOME',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+         [System.Environment]::SetEnvironmentVariable('PYENV', "$HOME\.pyenv\pyenv-win\", "User")
+         [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "$HOME\.pyenv\pyenv-win\", "User")
          ```
          Note: PYENV_HOME is to support pipenv
 
    2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows 8/above Terminal:
       
       ```
-      [System.Environment]::SetEnvironmentVariable('path', $HOME + "\.pyenv\pyenv-win\bin;" + $HOME + "\.pyenv\pyenv-win\shims;" + $env:Path,"User")
+      $userpath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
+      [System.Environment]::SetEnvironmentVariable('Path', "$HOME\.pyenv\pyenv-win\bin;$HOME\.pyenv\pyenv-win\shims;$userpath", 'User')
       ```
    
    3. Close and reopen your terminal app and run `pyenv --version`
