@@ -1,6 +1,7 @@
 import subprocess
 from test_pyenv import TestPyenvBase
 
+
 class TestPyenvFeatureDuplicate(TestPyenvBase):
     def test_check_pyenv_duplicate(self, setup):
         # TODO: assert the list of commands
@@ -11,4 +12,4 @@ class TestPyenvFeatureDuplicate(TestPyenvBase):
     def test_check_pyenv_commands_help(self, setup):
         # TODO: assert the help result
         pass
-    
+
