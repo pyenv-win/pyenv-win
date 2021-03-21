@@ -123,6 +123,21 @@ Function deepExtract(params)
             Exit Function
         End If
     End If
+
+    ' Add pythonX & pythonXY exe
+    ' Windows try to execute pythonX.Y file (considers Y as en extension)
+    ' It requires explicit .bat extension to work ()pythonX.Y.bat)
+    ' That's why we use the pattern pythonXY
+    Dim version, pythonExe, pythonwExe, major, majorMinor
+    version = params(LV_Code)
+    pythonExe = installPath &"\python.exe"
+    pythonwExe = installPath &"\pythonw.exe"
+    major = Left(version, 1)
+    majorMinor = major & Mid(version, 3, 1)
+    objfs.CopyFile pythonExe, installPath &"\python"& major &".exe"
+    objfs.CopyFile pythonExe, installPath &"\python"& majorMinor &".exe"
+    objfs.CopyFile pythonwExe, installPath &"\pythonw"& major &".exe"
+    objfs.CopyFile pythonwExe, installPath &"\pythonw"& majorMinor &".exe"
 End Function
 
 Sub extract(params)

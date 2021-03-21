@@ -17,9 +17,14 @@ def working_directory(path):
         os.chdir(prev_cwd)
 
 
-def python_exes():
-    yield 'python.exe'
-    yield 'pythonw.exe'
+def python_exes(suffixes=None):
+    if suffixes is None:
+        suffixes = [""]
+    else:
+        suffixes.append("")
+    for suffix in suffixes:
+        yield f'python{suffix}.exe'
+        yield f'pythonw{suffix}.exe'
 
 
 def script_exes(ver):
@@ -50,7 +55,7 @@ def install_pyenv(root_path, versions=None, global_ver=None):
 
     def create_pythons(path):
         os.mkdir(path)
-        for exe in python_exes():
+        for exe in python_exes([f'{ver.major}', f'{ver.major}{ver.minor}']):
             touch(path.joinpath(exe))
         return path
 
@@ -60,8 +65,8 @@ def install_pyenv(root_path, versions=None, global_ver=None):
             touch(path.joinpath(exe))
 
     for v in versions:
-        version_path = create_pythons(versions_dir.joinpath(v))
         ver = version.parse(v)
+        version_path = create_pythons(versions_dir.joinpath(v))
         create_scripts(version_path.joinpath('Scripts'))
     if global_ver is not None:
         with open(Path(root_path, "version"), "w") as f:

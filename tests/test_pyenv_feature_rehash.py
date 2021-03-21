@@ -20,7 +20,9 @@ def pyenv_rehash(pyenv_path):
 
 def assert_shims(pyenv_path, ver):
     shims_path = Path(pyenv_path, 'shims')
-    all_exes = [Path(n).stem for n in list(python_exes()) + list(script_exes(version.parse(ver)))]
+    ver = version.parse(ver)
+    suffixes = [f'{ver.major}', f'{ver.major}{ver.minor}']
+    all_exes = [Path(n).stem for n in list(python_exes(suffixes)) + list(script_exes(ver))]
     all_shims = [n + s for n in all_exes for s in ['', '.bat']]
     for s in all_shims:
         assert shims_path.joinpath(s).is_file()
