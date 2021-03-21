@@ -29,10 +29,11 @@ def assert_shims(pyenv_path, ver):
 class TestPyenvFeatureRehash(TestPyenvBase):
     def test_rehash_global_version(self, setup):
         with tempfile.TemporaryDirectory() as pyenv_path:
-            install_pyenv(pyenv_path, versions=['3.8.6'], global_ver='3.8.6')
+            install_pyenv(pyenv_path, versions=['3.8.6', '3.8.7'], global_ver='3.8.6')
             with working_directory(pyenv_path):
                 pyenv_rehash(pyenv_path)
                 assert_shims(pyenv_path, '3.8.6')
+                assert_shims(pyenv_path, '3.8.7')
 
     def test_rehash_local_version(self, setup):
         with tempfile.TemporaryDirectory() as pyenv_path, tempfile.TemporaryDirectory() as cur_path:
@@ -40,6 +41,7 @@ class TestPyenvFeatureRehash(TestPyenvBase):
             with working_directory(cur_path):
                 set_local_version(cur_path, '3.9.1')
                 pyenv_rehash(pyenv_path)
+                assert_shims(pyenv_path, '3.8.6')
                 assert_shims(pyenv_path, '3.9.1')
 
     def test_rehash_shell_version(self, setup):
@@ -52,5 +54,7 @@ class TestPyenvFeatureRehash(TestPyenvBase):
                 with TemporaryEnvironment({"PYENV_VERSION": shell_ver}):
                     set_local_version(cur_path, local_ver)
                     pyenv_rehash(pyenv_path)
+                    assert_shims(pyenv_path, global_ver)
+                    assert_shims(pyenv_path, local_ver)
                     assert_shims(pyenv_path, shell_ver)
 

@@ -118,6 +118,19 @@ Function GetCurrentVersionNoError()
     GetCurrentVersionNoError = str
 End Function
 
+Function GetInstalledVersions()
+    ' WScript.echo "kkotari: pyenv-lib.vbs get installed versions..!"
+    Dim rootBinDir, winBinDir, version, versions()
+    ReDim Preserve versions(0)
+    Set rootBinDir = objfs.GetFolder(strDirVers)
+    For Each winBinDir in rootBinDir.SubFolders
+        version = winBinDir.Name
+        ReDim Preserve versions(UBound(versions) + 1)
+        versions(UBound(versions)) = version
+    Next
+    GetInstalledVersions = versions
+End Function
+
 Function IsVersion(version)
     ' WScript.echo "kkotari: pyenv-lib.vbs is version..!"
     Dim re
@@ -187,23 +200,31 @@ End Function
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName, strDirBin)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
-    With objfs.CreateTextFile(strDirShims &"\"& baseName &".bat")
-        .WriteLine("@echo off")
-        .WriteLine("setlocal")
-        .WriteLine("chcp 1250 > NUL")
-        .WriteLine("pyenv exec "&strDirBin&"%~n0 %*")
-        .Close
-    End With
+    Dim filespec
+    filespec = strDirShims &"\"& baseName &".bat"
+    If Not objfs.FileExists(filespec) Then
+        With objfs.CreateTextFile(filespec)
+            .WriteLine("@echo off")
+            .WriteLine("setlocal")
+            .WriteLine("chcp 1250 > NUL")
+            .WriteLine("pyenv exec "&strDirBin&"%~n0 %*")
+            .Close
+        End With
+    End If
 End Sub
 
 ' pyenv - bin - linux
 Sub WriteLinuxScript(baseName, strDirBin)
     ' WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
-    With objfs.CreateTextFile(strDirShims &"\"& baseName)
-        .WriteLine("#!/bin/sh")
-        .WriteLine("pyenv exec "&strDirBin&"$(basename $0) ""$@""")
-        .Close
-    End With
+    Dim filespec
+    filespec = strDirShims &"\"& baseName
+    If Not objfs.FileExists(filespec) Then
+        With objfs.CreateTextFile(filespec)
+            .WriteLine("#!/bin/sh")
+            .WriteLine("pyenv exec "&strDirBin&"$(basename $0) ""$@""")
+            .Close
+        End With
+    End If
 End Sub
 
 ' pyenv rehash
@@ -220,34 +241,32 @@ Sub Rehash()
     Dim winBinDir, nixBinDir
     Dim exts
     Dim baseName
-    version = GetCurrentVersionNoError()
-    If IsNull(version) Then Exit Sub
 
-    winBinDir = strDirVers &"\"& version(0)
-    If Not objfs.FolderExists(winBinDir) Then Exit Sub
+    For Each version In GetInstalledVersions()
+        winBinDir = strDirVers &"\"& version
+        nixBinDir = "/"& Replace(Replace(winBinDir, ":", ""), "\", "/")
+        Set exts = GetExtensionsNoPeriod(True)
 
-    nixBinDir = "/"& Replace(Replace(winBinDir, ":", ""), "\", "/")
-    Set exts = GetExtensionsNoPeriod(True)
-
-    For Each file In objfs.GetFolder(winBinDir).Files
-        ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
-        If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
-            baseName = objfs.GetBaseName(file)
-            WriteWinScript baseName, ""
-            WriteLinuxScript baseName, ""
-        End If
-    Next
-
-    If objfs.FolderExists(winBinDir & "\Scripts") Then
-        For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
-            ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+        For Each file In objfs.GetFolder(winBinDir).Files
+            ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName, "Scripts/"
-                WriteLinuxScript baseName, "Scripts/"
+                WriteWinScript baseName, ""
+                WriteLinuxScript baseName, ""
             End If
         Next
-    End If
+
+        If objfs.FolderExists(winBinDir & "\Scripts") Then
+            For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
+                ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+                If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
+                    baseName = objfs.GetBaseName(file)
+                    WriteWinScript baseName, "Scripts/"
+                    WriteLinuxScript baseName, "Scripts/"
+                End If
+            Next
+        End If
+    Next
 End Sub
 
 ' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
