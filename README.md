@@ -123,14 +123,14 @@ Get pyenv-win via one of the following methods:
    If you installed using Chocolatey, you can skip to step 3.
 
    1. Add PYENV and PYENV_HOME to your Environment Variables
-         1. Using either PowerShell or Windows 8/above Terminal run
+         1. Using PowerShell run:
          ```
          [System.Environment]::SetEnvironmentVariable('PYENV', "$HOME\.pyenv\pyenv-win\", "User")
          [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "$HOME\.pyenv\pyenv-win\", "User")
          ```
          Note: PYENV_HOME is to support pipenv
 
-   2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows 8/above Terminal:
+   2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell:
       
       ```
       $userpath = [System.Environment]::GetEnvironmentVariable('Path', 'User')
