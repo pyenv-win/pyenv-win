@@ -34,7 +34,7 @@ def script_exes(ver):
         yield f'easy_install{suffix}.exe'
 
 
-def install_pyenv(root_path, versions=None, global_ver=None):
+def install_pyenv(root_path, versions=None, global_ver=None, local_ver=None):
     if versions is None:
         versions = []
     src_path = Path(__file__).resolve().parents[1].joinpath('pyenv-win')
@@ -71,14 +71,17 @@ def install_pyenv(root_path, versions=None, global_ver=None):
     if global_ver is not None:
         with open(Path(root_path, "version"), "w") as f:
             print(global_ver, file=f)
+    if local_ver is not None:
+        with open(Path(root_path, ".python-version"), "w") as f:
+            print(local_ver, file=f)
 
 
 @contextmanager
-def temp_pyenv(command, option=None, versions=None, global_ver=None):
+def temp_pyenv(command, option=None, versions=None, global_ver=None, local_ver=None):
     if versions is None:
         versions = []
     with tempfile.TemporaryDirectory() as tmp_path:
-        install_pyenv(tmp_path, versions, global_ver)
+        install_pyenv(tmp_path, versions, global_ver, local_ver)
         with working_directory(tmp_path):
             bat = Path(tmp_path, r'bin\pyenv.bat')
             args = ['cmd', '/d', '/c', f'call {bat}', command]
