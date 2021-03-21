@@ -3,6 +3,7 @@ setlocal
 
 if "%1" == "--help" (
 echo Usage: pyenv global ^<version^>
+echo        pyenv global --unset
 echo.
 echo Sets the global Python version. You can override the global version at
 echo any time by setting a directory-specific version with `pyenv local'

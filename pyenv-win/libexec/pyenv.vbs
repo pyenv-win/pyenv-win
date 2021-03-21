@@ -383,8 +383,14 @@ Sub CommandGlobal(arg)
             WScript.Echo ver(0)
         End If
     Else
-        ver = Check32Bit(arg(1))
-        SetGlobalVersion ver
+        If arg(1) = "--unset" Then
+            ver = ""
+            objfs.DeleteFile strPyenvHome &"\version", True
+            Exit Sub
+        Else
+            ver = Check32Bit(arg(1))
+            SetGlobalVersion ver
+        End If
     End If
 End Sub
 
