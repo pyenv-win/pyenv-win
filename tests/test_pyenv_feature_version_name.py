@@ -40,3 +40,14 @@ def test_shell_version(command):
     }
     with TemporaryEnvironment({"PYENV_VERSION": "3.9.2"}):
         run_pyenv_test(settings, commands)
+
+
+@pytest.mark.parametrize("command", ['version-name', 'vname'])
+def test_many_local_versions(command):
+    def commands(ctx):
+        assert ctx.pyenv(command) == "3.8.8\r\n3.9.1"
+    settings = {
+        'global_ver': "3.7.2",
+        'local_ver': "3.8.8\n3.9.1\n"
+    }
+    run_pyenv_test(settings, commands)

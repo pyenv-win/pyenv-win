@@ -65,30 +65,49 @@ Function GetCurrentVersionGlobal()
     End If
 End Function
 
-Function GetCurrentVersionLocal(path)
-    ' WScript.echo "kkotari: pyenv-lib.vbs get current version local..!"
-    GetCurrentVersionLocal = Null
-
+Function GetCurrentVersionsLocal(path)
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current versions local..!"
     Dim fname
     Dim objFile
+    Dim line
+    ReDim versions(-1)
     Do While path <> ""
         fname = path & strVerFile
         If objfs.FileExists(fname) Then
             Set objFile = objfs.OpenTextFile(fname)
-            If objFile.AtEndOfStream <> True Then
-               GetCurrentVersionLocal = Array(objFile.ReadLine, fname)
-            End If
+            Do While objFile.AtEndOfStream <> True
+                line = objFile.ReadLine
+                If line <> "" Then
+                    ReDim Preserve versions (UBound(versions) + 1)
+                    versions(UBound(versions)) = Array(line, fname)
+                End If
+            Loop
             objFile.Close
-            Exit Function
+            Exit Do
         End If
         path = objfs.GetParentFolderName(path)
     Loop
+    if UBound(versions) >= 0 Then
+        GetCurrentVersionsLocal = versions
+    Else
+        GetCurrentVersionsLocal = Null
+    End If
+End Function
+
+Function GetFirstVersionLocal(path)
+    ' WScript.echo "kkotari: pyenv-lib.vbs get first version local..!"
+    Dim versions
+    versions = GetCurrentVersionsLocal(path)
+    if IsNull(versions) Then
+        GetFirstVersionLocal = Null
+    Else
+        GetFirstVersionLocal = versions(0)
+    End If
 End Function
 
 Function GetCurrentVersionShell()
     ' WScript.echo "kkotari: pyenv-lib.vbs get current version shell..!"
     GetCurrentVersionShell = Null
-
     Dim str
     str = objws.Environment("Process")("PYENV_VERSION")
     If str <> "" Then _
@@ -98,9 +117,7 @@ End Function
 Function GetCurrentVersion()
     ' WScript.echo "kkotari: pyenv-lib.vbs get current version..!"
     Dim str
-    str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
-    If IsNull(str) Then str = GetCurrentVersionGlobal
+    str = GetCurrentVersionNoError
     If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
 		WScript.echo "pyenv global 3.7.2"
@@ -113,9 +130,45 @@ Function GetCurrentVersionNoError()
     ' WScript.echo "kkotari: pyenv-lib.vbs get current version no error..!"
     Dim str
     str = GetCurrentVersionShell
-    If IsNull(str) Then str = GetCurrentVersionLocal(strCurrent)
+    If IsNull(str) Then str = GetFirstVersionLocal(strCurrent)
     If IsNull(str) Then str = GetCurrentVersionGlobal
     GetCurrentVersionNoError = str
+End Function
+
+Function GetCurrentVersions()
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current versions..!"
+    Dim versions
+    Set versions = GetCurrentVersionsNoError
+    If versions.Count = 0 Then
+		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
+		WScript.echo "pyenv global 3.7.2"
+		WScript.quit
+	End If
+	Set GetCurrentVersions = versions
+End Function
+
+Function GetCurrentVersionsNoError()
+    ' WScript.echo "kkotari: pyenv-lib.vbs get current version no error..!"
+    Dim versions
+    Set versions = CreateObject("Scripting.Dictionary")
+    Dim str
+    str = GetCurrentVersionShell
+    If Not(IsNull(str)) Then
+        versions.Add str(0), str(1)
+    Else
+        str = GetCurrentVersionsLocal(strCurrent)
+        If Not(IsNull(str)) Then
+            Dim v1
+            For Each v1 in str
+                versions.Add v1(0), v1(1)
+            Next
+        End If
+    End If
+    If IsNull(str) Then
+        str = GetCurrentVersionGlobal
+        If Not(IsNull(str)) Then versions.Add str(0), str(1)
+    End If
+    Set GetCurrentVersionsNoError = versions
 End Function
 
 Function GetInstalledVersions()
