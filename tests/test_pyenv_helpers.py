@@ -131,8 +131,8 @@ def temp_pyenv(command, option=None, versions=None, global_ver=None, local_ver=N
     with tempfile.TemporaryDirectory() as tmp_path:
         install_pyenv(tmp_path, versions, global_ver, local_ver)
         with working_directory(tmp_path):
-            bat = Path(tmp_path, r'bin\pyenv.bat')
-            args = ['cmd', '/d', '/c', f'call {bat}', command]
+            pyenv_bat = Path(tmp_path, r'bin\pyenv.bat')
+            args = ['cmd', '/d', '/c', f'call {pyenv_bat}', command]
             if option is not None:
                 args.append(option)
             result = subprocess.run(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
