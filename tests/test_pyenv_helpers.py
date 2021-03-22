@@ -28,7 +28,7 @@ def python_exes(suffixes=None):
 
 
 def script_exes(ver):
-    for suffix in ['', f'{ver.major}', f'{ver.major}{ver.minor}']:
+    for suffix in ['', f'{ver.major}', f'{ver.major}.{ver.minor}']:
         yield f'pip{suffix}.exe'
     for suffix in ['', f'-{ver.major}.{ver.minor}']:
         yield f'easy_install{suffix}.exe'
