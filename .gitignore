@@ -112,3 +112,6 @@ exec.bat
 # PyCharm
 .idea/
 
+# git
+*.orig
+
