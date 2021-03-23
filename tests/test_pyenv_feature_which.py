@@ -3,12 +3,16 @@ from test_pyenv import TestPyenvBase
 from test_pyenv_helpers import run_pyenv_test
 
 
+def assert_paths_equal(actual, expected):
+    assert actual.lower() == expected.lower()
+
+
 class TestPyenvFeatureWhich(TestPyenvBase):
     def test_which_exists_is_global(self, setup):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert_paths_equal(ctx.pyenv(["which", name]), rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe')
         settings = {
             'versions': ['3.8.5'],
             'global_ver': '3.8.5'
@@ -19,7 +23,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert_paths_equal(ctx.pyenv(["which", name]), rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe')
         settings = {
             'versions': ['3.8.5'],
             'local_ver': '3.8.5'
@@ -30,7 +34,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert_paths_equal(ctx.pyenv(["which", name]), rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe')
         with TemporaryEnvironment({"PYENV_VERSION": "3.8.5"}):
             run_pyenv_test({'versions': ['3.8.5']}, commands)
 
@@ -125,7 +129,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
                 ('pip3.8', r'3.8.2\Scripts\pip3.8.exe'),
             ]
             for (name, path) in cases:
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\{path}'
+                assert_paths_equal(ctx.pyenv(["which", name]), rf'{ctx.pyenv_path}\versions\{path}')
         settings = {
             'versions': ['3.7.7', '3.8.2', '3.9.1'],
             'local_ver': '3.7.7\n3.8.2\n'
