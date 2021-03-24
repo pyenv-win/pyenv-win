@@ -61,7 +61,7 @@ def pyenv_setup(settings):
 
     def create_pythons(path):
         os.mkdir(path)
-        for exe in python_exes([f'{ver.major}', f'{ver.major}{ver.minor}']):
+        for exe in python_exes([f'{ver.major}', f'{ver.major}{ver.minor}', f'{ver.major}.{ver.minor}']):
             touch(path.joinpath(exe))
         return path
 
