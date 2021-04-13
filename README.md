@@ -155,7 +155,7 @@ cmd.exe:
 ```
 reg add "HKCR\.py" /t REG_SZ /d Python.Pyenv
 reg add "HKCR\Python.Pyenv" /t REG_SZ /d "Python Source File"
-reg add "HKCR\Python.Pyenv\shell\open\command" /t REG_SZ /d "\"%USERPROFILE:\=\\%\\.pyenv\\pyenv-win\\shims\\python.bat\" \"%%1\""
+reg add "HKCR\Python.Pyenv\shell\open\command" /t REG_SZ /d "\"%USERPROFILE:\=\\%\\.pyenv\\pyenv-win\\shims\\python.bat\" \"%1\""
 reg add "HKCR\Python.Pyenv\DefaultIcon" /t REG_SZ /d "%USERPROFILE:\=\\%\\.pyenv\\pyenv-win\\py.ico"
 ```
 
