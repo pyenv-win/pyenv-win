@@ -222,7 +222,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
-### New in 2.64.3
+### New in 2.64.4
 - Version naming conventions have now changed from using 64-bit suffixes when specifying a version to (un)install. Now all you need to use is the version number to install your platform's specifc bit version.
    - **\*WARNING\*: This change is backwards incompatible with v1.2.5 or less; if upgrading from that version, install [32bit-train](#32bit-train-support) which is backward compatible, or uninstall all versions of python prior to upgrading pyenv.**
    - Ex. `pyenv install 2.7.17` will install as 64-bit on x64 and 32-bit on x86. (64-bit can still use `2.7.17-win32` to install the 32-bit version)
