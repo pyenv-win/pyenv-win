@@ -137,44 +137,47 @@ Sub CommandWhich(arg)
     Dim version
 
     program = arg(1)
-    version = objws.Environment("Process")("PYENV_VERSION")
-
     If program = "" Then PrintHelp "pyenv-which", 1
-    If version = "" Then version = GetCurrentVersion()(0)
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
     Set exts = GetExtensions(True)
 
-    If Not objfs.FolderExists(strDirVers &"\"& version) Then
-        WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
-        WScript.Quit 1
-    End If
+    Dim versions
+    Set versions = GetCurrentVersions
+    For Each version In versions
 
-    If objfs.FileExists(strDirVers &"\"& version &"\"& program) Then
-        WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program).Path
-        WScript.Quit 0
-    End If
-
-    For Each ext In exts.Keys
-        If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
-            WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
-            WScript.Quit 0
+        If Not objfs.FolderExists(strDirVers &"\"& version) Then
+            WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
+            WScript.Quit 1
         End If
-    Next
 
-    If objfs.FolderExists(strDirVers &"\"& version & "\Scripts") Then
-        If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program) Then
-            WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program).Path
+        If objfs.FileExists(strDirVers &"\"& version &"\"& program) Then
+            WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program).Path
             WScript.Quit 0
         End If
 
         For Each ext In exts.Keys
-            If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
-                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
+            If objfs.FileExists(strDirVers &"\"& version &"\"& program & ext) Then
+                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\"& program & ext).Path
                 WScript.Quit 0
             End If
         Next
-    End If
+
+        If objfs.FolderExists(strDirVers &"\"& version & "\Scripts") Then
+            If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program) Then
+                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program).Path
+                WScript.Quit 0
+            End If
+
+            For Each ext In exts.Keys
+                If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
+                    WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
+                    WScript.Quit 0
+                End If
+            Next
+        End If
+    Next
+
     WScript.Echo "pyenv: "& arg(1) &": command not found"
 
     version = getCommandOutput("cscript //Nologo "& WScript.ScriptFullName &" whence "& program)
@@ -402,11 +405,14 @@ Sub CommandLocal(arg)
 
     Dim ver
     If arg.Count < 2 Then
-        ver = GetCurrentVersionLocal(strCurrent)
-        If IsNull(ver) Then
+        Dim currentVersions
+        currentVersions = GetCurrentVersionsLocal(strCurrent)
+        If IsNull(currentVersions) Then
             WScript.Echo "no local version configured for this directory"
         Else
-            WScript.Echo ver(0)
+            For Each ver in currentVersions
+                WScript.Echo ver(0)
+            Next
         End If
     Else
         If arg(1) = "--unset" Then
@@ -414,8 +420,14 @@ Sub CommandLocal(arg)
             objfs.DeleteFile strCurrent & strVerFile, True
             Exit Sub
         Else
-            ver = Check32Bit(arg(1))
-            GetBinDir(ver)
+            Dim versionCount
+            versionCount = arg.Count - 1
+            ReDim localVersions(versionCount - 1)
+            Dim i
+            For i = 0 To versionCount - 1
+                localVersions(i) = Check32Bit(arg(i + 1))
+                GetBinDir(localVersions(i))
+            Next
         End If
 
         Dim ofile
@@ -424,7 +436,9 @@ Sub CommandLocal(arg)
         Else
             Set ofile = objfs.CreateTextFile(strCurrent & strVerFile, True)
         End If
-        ofile.WriteLine(ver)
+        For Each ver in localVersions
+            ofile.WriteLine(ver)
+        Next
         ofile.Close()
     End If
 End Sub
@@ -463,8 +477,11 @@ Sub CommandVersion(arg)
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
-    curVer = GetCurrentVersion
-    WScript.Echo curVer(0) &" (set by "& curVer(1) &")"
+    Dim versions
+    Set versions = GetCurrentVersions
+    For Each curVer In versions
+        WScript.Echo curVer &" (set by "& versions(curVer) &")"
+    Next
 End Sub
 
 Sub CommandVersionName(arg)
@@ -475,18 +492,26 @@ Sub CommandVersionName(arg)
 
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
-    WScript.Echo GetCurrentVersion()(0)
+    Dim ver, versions
+    Set versions = GetCurrentVersions
+    For Each ver in versions
+        WScript.Echo ver
+    Next
 End Sub
 
 Sub CommandVersionNameShort(arg)
-    ' WScript.echo "kkotari: pyenv.vbs command v-name..!"
+    ' WScript.echo "kkotari: pyenv.vbs command vname..!"
     If arg.Count >= 2 Then
         If arg(1) = "--help" Then PrintHelp "pyenv-vname", 0
     End If
 
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
-    WScript.Echo GetCurrentVersion()(0)
+    Dim ver, versions
+    Set versions = GetCurrentVersions
+    For Each ver in versions
+        WScript.Echo ver
+    Next
 End Sub
 
 Sub CommandVersions(arg)
@@ -503,11 +528,8 @@ Sub CommandVersions(arg)
 
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
-    Dim curVer
-    curVer = GetCurrentVersionNoError
-    If IsNull(curVer) Then
-        curVer = Array("", "")
-    End If
+    Dim versions
+    Set versions = GetCurrentVersionsNoError
 
     Dim dir
     Dim ver
@@ -515,8 +537,8 @@ Sub CommandVersions(arg)
         ver = objfs.GetFileName(dir)
         If isBare Then
             WScript.Echo ver
-        ElseIf ver = curVer(0) Then
-            WScript.Echo "* "& ver &" (set by "& curVer(1) &")"
+        ElseIf versions.Exists(ver) Then
+            WScript.Echo "* "& ver &" (set by "& versions(ver) &")"
         Else
             WScript.Echo "  "& ver
         End If

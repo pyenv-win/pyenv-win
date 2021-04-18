@@ -312,6 +312,7 @@ Sub main(arg)
     Else
         If installVersions.Count = 0 Then
             Dim ary
+            ' TODO Should we handle many versions here?
             ary = GetCurrentVersionNoError()
             If Not IsNull(ary) Then
                 installVersions.Item(ary(0)) = Empty

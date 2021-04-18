@@ -40,6 +40,18 @@ class TestPyenvFeatureVersions(TestPyenvBase):
         }
         run_pyenv_test(settings, commands)
 
+    def test_list_current_local_many_versions(self, setup):
+        def commands(ctx):
+            assert ctx.pyenv("versions") == (f"* 3.6.5 (set by {ctx.local_path}\\.python-version)\r\n"
+                                             f"* 3.7.7 (set by {ctx.local_path}\\.python-version)\r\n"
+                                             f"  3.9.1")
+        settings = {
+            'versions': ["3.6.5", "3.7.7", "3.9.1"],
+            'global_ver': "3.9.1",
+            'local_ver': "3.6.5\n3.7.7\n"
+        }
+        run_pyenv_test(settings, commands)
+
     def test_list_current_shell_version(self, setup):
         def commands(ctx):
             assert ctx.pyenv("versions") == (f"  3.6.5\r\n"

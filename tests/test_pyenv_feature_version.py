@@ -34,3 +34,13 @@ class TestPyenvFeatureVersion(TestPyenvBase):
         }
         with TemporaryEnvironment({"PYENV_VERSION": "3.9.2"}):
             run_pyenv_test(settings, commands)
+
+    def test_many_local_versions(self, setup):
+        def commands(ctx):
+            assert ctx.pyenv("version") == (f'3.8.8 (set by {ctx.local_path}\\.python-version)\r\n'
+                                            f'3.9.1 (set by {ctx.local_path}\\.python-version)')
+        settings = {
+            'global_ver': "3.7.2",
+            'local_ver': "3.8.8\n3.9.1\n"
+        }
+        run_pyenv_test(settings, commands)
