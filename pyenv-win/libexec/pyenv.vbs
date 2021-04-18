@@ -180,7 +180,7 @@ Sub CommandWhich(arg)
     version = getCommandOutput("cscript //Nologo "& WScript.ScriptFullName &" whence "& program)
     If Trim(version) <> "" Then
         WScript.Echo
-        WScript.Echo "The `"& arg(1) &"' command exists in these Python versions:"
+        WScript.Echo "The '"& arg(1) &"' command exists in these Python versions:"
         WScript.Echo "  "& Replace(version, vbCrLf, vbCrLf &"  ")
     End If
 
