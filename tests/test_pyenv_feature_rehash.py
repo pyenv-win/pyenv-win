@@ -8,7 +8,7 @@ from test_pyenv_helpers import python_exes, script_exes, run_pyenv_test
 def assert_shims(pyenv_path, ver):
     shims_path = Path(pyenv_path, 'shims')
     ver = version.parse(ver)
-    suffixes = [f'{ver.major}', f'{ver.major}{ver.minor}']
+    suffixes = [f'{ver.major}', f'{ver.major}{ver.minor}', f'{ver.major}.{ver.minor}']
     all_exes = [Path(n).stem for n in list(python_exes(suffixes)) + list(script_exes(ver))]
     all_shims = [n + s for n in all_exes for s in ['', '.bat']]
     for s in all_shims:

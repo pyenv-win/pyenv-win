@@ -89,7 +89,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
 
     def test_which_exists_is_shell_other_version(self, setup):
         def commands(ctx):
-            for name in ['python38', 'pip3.8']:
+            for name in ['python38', 'python3.8', 'pip3.8']:
                 assert ctx.pyenv(["which", name]) == (f"pyenv: {name}: command not found\r\n"
                                                       f"\r\n"
                                                       f"The '{name}' command exists in these Python versions:\r\n"
@@ -104,7 +104,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
 
     def test_which_command_not_found(self, setup):
         def commands(ctx):
-            for name in ['python3.8']:
+            for name in ['unknown3.8']:
                 assert ctx.pyenv(["which", name]) == f"pyenv: {name}: command not found"
         settings = {
             'versions': ['3.8.6'],
