@@ -8,7 +8,8 @@ class TestPyenvFeatureWhich(TestPyenvBase):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe' or \
+                    ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.EXE'
         settings = {
             'versions': ['3.8.5'],
             'global_ver': '3.8.5'
@@ -19,7 +20,8 @@ class TestPyenvFeatureWhich(TestPyenvBase):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe' or \
+                    ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.EXE'
         settings = {
             'versions': ['3.8.5'],
             'local_ver': '3.8.5'
@@ -30,7 +32,8 @@ class TestPyenvFeatureWhich(TestPyenvBase):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
                 sub_dir = '' if 'python' in name else 'Scripts\\'
-                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe'
+                assert ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.exe' or \
+                    ctx.pyenv(["which", name]) == rf'{ctx.pyenv_path}\versions\3.8.5\{sub_dir}{name}.EXE'
         with TemporaryEnvironment({"PYENV_VERSION": "3.8.5"}):
             run_pyenv_test({'versions': ['3.8.5']}, commands)
 
