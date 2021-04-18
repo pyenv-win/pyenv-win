@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import tempfile
 from contextlib import contextmanager
+from packaging import version
 from pathlib import Path
 
 
@@ -16,24 +17,59 @@ def working_directory(path):
         os.chdir(prev_cwd)
 
 
-def install_pyenv(path, versions=None, global_ver=None):
+def python_exes(suffixes=None):
+    if suffixes is None:
+        suffixes = [""]
+    else:
+        suffixes.append("")
+    for suffix in suffixes:
+        yield f'python{suffix}.exe'
+        yield f'pythonw{suffix}.exe'
+
+
+def script_exes(ver):
+    for suffix in ['', f'{ver.major}', f'{ver.major}{ver.minor}']:
+        yield f'pip{suffix}.exe'
+    for suffix in ['', f'-{ver.major}.{ver.minor}']:
+        yield f'easy_install{suffix}.exe'
+
+
+def install_pyenv(root_path, versions=None, global_ver=None):
     if versions is None:
         versions = []
     src_path = Path(__file__).resolve().parents[1].joinpath('pyenv-win')
     dirs = [r'bin', r'libexec\libs', r'shims', r'versions']
     for d in dirs:
-        os.makedirs(Path(path, d))
+        os.makedirs(Path(root_path, d))
     files = [r'bin\pyenv.bat',
              r'libexec\pyenv.vbs',
              r'libexec\libs\pyenv-install-lib.vbs',
              r'libexec\libs\pyenv-lib.vbs']
     for f in files:
-        shutil.copy(src_path.joinpath(f), Path(path, f))
-    versions_dir = Path(path, r'versions')
+        shutil.copy(src_path.joinpath(f), Path(root_path, f))
+    versions_dir = Path(root_path, r'versions')
+
+    def touch(exe):
+        with open(exe, 'a'):
+            os.utime(exe, None)
+
+    def create_pythons(path):
+        os.mkdir(path)
+        for exe in python_exes([f'{ver.major}', f'{ver.major}{ver.minor}']):
+            touch(path.joinpath(exe))
+        return path
+
+    def create_scripts(path):
+        os.mkdir(path)
+        for exe in script_exes(ver):
+            touch(path.joinpath(exe))
+
     for v in versions:
-        os.mkdir(versions_dir.joinpath(v))
+        ver = version.parse(v)
+        version_path = create_pythons(versions_dir.joinpath(v))
+        create_scripts(version_path.joinpath('Scripts'))
     if global_ver is not None:
-        with open(Path(path, "version"), "w") as f:
+        with open(Path(root_path, "version"), "w") as f:
             print(global_ver, file=f)
 
 
