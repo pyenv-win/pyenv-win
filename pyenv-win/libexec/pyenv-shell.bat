@@ -27,6 +27,6 @@ if [%1]==[] (
 
 ) else (
   echo pyenv specific python requisite didn't meet. Project is using different version of python.
-  echo Install python %1 by typing: 'pyenv install %1'
+  echo Install python '%1' by typing: 'pyenv install %1'
 )
 
