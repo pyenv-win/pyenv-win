@@ -35,7 +35,7 @@ rem ============================================================================
 
 echo %bindir%
 if not exist "%bindir%" (
-	echo No global python version has been set yet. Please set the global version.
+  echo No global python version has been set yet. Please set the global version.
 )
 
 shift
@@ -58,7 +58,7 @@ if exist "%exe%.bat" (
   set "exe=endlocal & call "%exe%.bat""
 
 ) else if exist "%exe.cmd%" (
-	set "exe=call "%exe%.cmd""
+  set "exe=call "%exe%.cmd""
 
 ) else if exist "%exe%.vbs" (
   set "exe=cscript //nologo "%exe%.vbs""
