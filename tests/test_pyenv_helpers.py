@@ -101,7 +101,7 @@ def run_pyenv_test(settings, commands):
             bat = Path(pyenv_path, r'bin\pyenv.bat')
 
             def pyenv(pyenv_args=None):
-                args = ['cmd', '/d', '/c', f'call {bat}']
+                args = ['cmd', '/d', '/c', 'call', f'{bat}']
                 if pyenv_args is not None:
                     if isinstance(pyenv_args, list):
                         args = args + pyenv_args

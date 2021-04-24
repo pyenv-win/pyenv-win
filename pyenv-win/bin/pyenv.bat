@@ -11,7 +11,7 @@ if [%1]==[] (
 )
 
 rem use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
-for /f %%i in ('%pyenv% version') do call :normalizepath "%~dp0..\versions\%%i" bindir
+for /f %%i in ('%pyenv% vname') do call :normalizepath "%~dp0..\versions\%%i" bindir
 
 rem all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
@@ -28,7 +28,6 @@ for %%a in (%commands%) do (
 rem jump to plugin or fall to exec
 if /i not [%1]==[exec] goto :plugin
 
-
 rem ====================================================================================
 :exec
 
@@ -38,9 +37,6 @@ for /f "tokens=1,2 delims=/" %%i in ("%1") do set "exepath=%%i" & set "exe=%%j"
 if [%exe%]==[] (set "exe=%exepath%") else (set "exe=%bindir%\%exepath%\%exe%")
 set "exe=cmd /c "%exe%""
 goto :run
-
-
-
 
 rem ====================================================================================
 :plugin
@@ -59,17 +55,16 @@ if exist "%exe%.bat" (
   exit /b
 )
 
-
-
 rem ====================================================================================
 :run
 
 rem update PATH to active version
-set "path=%bindir%;%bindir%\Scripts;%path%"
+if exist %bindir% set "path=%bindir%;%bindir%\Scripts;%path%"
 
 rem copy params to program precisely, preserving double-quotes and percents.
 rem this is the main fix for how 'exec' processing in pyenv.vbs did not
 rem correctly handle (get passed) params with percent chars in them
+set params=
 :paramloop
 if not [%2]==[] (
   set params=%params% %2
@@ -80,9 +75,6 @@ if not [%2]==[] (
 rem run exec or plugin
 %exe% %params%
 exit /b
-
-
-
 
 rem ====================================================================================
 rem convert path which may have relative nodes (.. or .)

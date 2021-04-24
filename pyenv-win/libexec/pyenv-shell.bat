@@ -11,7 +11,6 @@ if "%1" == "--help" (
   EXIT /B
 )
 
-
 if [%1]==[] (
   if [%PYENV_VERSION%]==[] (
     echo no shell-specific version configured
