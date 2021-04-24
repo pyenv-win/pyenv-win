@@ -33,9 +33,9 @@ if /i not [%1]==[exec] goto :plugin
 rem ====================================================================================
 :exec
 
-echo %bindir%
 if not exist "%bindir%" (
   echo No global python version has been set yet. Please set the global version.
+  exit /b
 )
 
 shift
@@ -82,7 +82,7 @@ rem correctly handle (get passed) params with percent chars in them
 set "params="
 :paramloop
 if not [%2]==[] (
-  set params=%params% %2
+  set "params=%params% %2"
   shift
   goto paramloop
 )
