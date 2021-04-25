@@ -16,6 +16,11 @@ def assert_shims(pyenv_path, ver):
 
 
 class TestPyenvFeatureRehash(TestPyenvBase):
+    def test_rehash_no_version(self, setup):
+        def commands(ctx):
+            assert ctx.pyenv('rehash') == "No version installed. Please install one with 'pyenv install <version>'."
+        run_pyenv_test({}, commands)
+
     def test_rehash_global_version(self, setup):
         def commands(ctx):
             assert ctx.pyenv('rehash') == ""

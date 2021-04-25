@@ -175,12 +175,14 @@ Function GetInstalledVersions()
     ' WScript.echo "kkotari: pyenv-lib.vbs get installed versions..!"
     Dim rootBinDir, winBinDir, version, versions()
     ReDim Preserve versions(0)
-    Set rootBinDir = objfs.GetFolder(strDirVers)
-    For Each winBinDir in rootBinDir.SubFolders
-        version = winBinDir.Name
-        ReDim Preserve versions(UBound(versions) + 1)
-        versions(UBound(versions)) = version
-    Next
+    If objfs.FolderExists(strDirVers) Then
+        Set rootBinDir = objfs.GetFolder(strDirVers)
+        For Each winBinDir in rootBinDir.SubFolders
+            version = winBinDir.Name
+            ReDim Preserve versions(UBound(versions) + 1)
+            versions(UBound(versions)) = version
+        Next
+    End If
     GetInstalledVersions = versions
 End Function
 
