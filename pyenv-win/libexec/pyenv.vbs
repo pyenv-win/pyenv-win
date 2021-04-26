@@ -322,7 +322,17 @@ End Sub
 
 Sub CommandRehash(arg)
     ' WScript.echo "kkotari: pyenv.vbs command rehash..!"
-    Rehash
+    If arg.Count >= 2 Then
+        If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
+    End If
+
+    Dim versions
+    versions = GetInstalledVersions()
+    If UBound(versions) = 0 Then
+        WScript.Echo "No version installed. Please install one with 'pyenv install <version>'."
+    Else
+        Rehash
+    End If
 End Sub
 
 Sub CommandGlobal(arg)
