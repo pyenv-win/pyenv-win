@@ -27,11 +27,12 @@ Const LV_URL = 2
 Const LV_x64 = 3
 Const LV_Web = 4
 Const LV_MSI = 5
+Const LV_ZipRootDir = 6
 
 ' Installation parameters used for clear/extract, extension of LV.
-Const IP_InstallPath = 6
-Const IP_InstallFile = 7
-Const IP_Quiet = 8
+Const IP_InstallPath = 7
+Const IP_InstallFile = 8
+Const IP_Quiet = 9
 
 Dim regexVer
 Dim regexFile
@@ -129,6 +130,7 @@ strDBSchema = _
               "<xs:element name=""code"" type=""xs:string""/>"& _
               "<xs:element name=""file"" type=""xs:string""/>"& _
               "<xs:element name=""URL"" type=""xs:anyURI""/>"& _
+              "<xs:element name=""zipRootDir"" type=""xs:string"" minOccurs=""0"" maxOccurs=""1""/>"& _
             "</xs:sequence>"& _
             "<xs:attribute name=""x64"" type=""xs:boolean"" default=""false""/>"& _
             "<xs:attribute name=""webInstall"" type=""xs:boolean"" default=""false""/>"& _
@@ -177,15 +179,23 @@ Function LoadVersionsXML(xmlPath)
     Dim versDict
     Dim version
     Dim code
+    Dim zipRootDirElement, zipRootDir
     For Each version In doc.documentElement.childNodes
         code = version.getElementsByTagName("code")(0).text
+        Set zipRootDirElement = version.getElementsByTagName("zipRootDir")
+        If zipRootDirElement.length = 1 Then
+            zipRootDir = zipRootDirElement(0).text
+        Else
+            zipRootDir = ""
+        End If
         LoadVersionsXML.Item(code) = Array( _
             code, _
             version.getElementsByTagName("file")(0).text, _
             version.getElementsByTagName("URL")(0).text, _
             CBool(version.getAttribute("x64")), _
             CBool(version.getAttribute("webInstall")), _
-            CBool(version.getAttribute("msi")) _
+            CBool(version.getAttribute("msi")), _
+            zipRootDir _
         )
     Next
 End Function

@@ -145,16 +145,47 @@ Function deepExtract(params)
     objfs.CopyFile pythonwExe, installPath &"\pythonw"& majorDotMinor &".exe"
 End Function
 
+Function unzip(installFile, installPath, zipRootDir)
+    Dim objFso
+	Set objFso = WScript.CreateObject("Scripting.FileSystemObject")
+    If objFso.FolderExists(installPath) Then
+        unzip = 1
+    Else
+        ' https://docs.microsoft.com/en-us/previous-versions/windows/desktop/sidebar/system-shell-folder-copyhere
+        Dim copyOptions, objShell, objZip, objFiles, objDir
+        ' 4: Do not display a progress dialog box.
+        copyOptions = 4
+        Set objShell = CreateObject("Shell.Application")
+        Set objZip = objShell.NameSpace(installFile)
+        Set objFiles = objZip.Items()
+        If zipRootDir = "" Then
+            objFso.CreateFolder(installPath)
+            Set objDir = objShell.NameSpace(installPath)
+            objDir.copyHere objFiles, copyOptions
+        Else
+            Dim parentDir
+            parentDir = objFso.GetParentFolderName(installPath)
+            If Not objFso.FolderExists(parentDir) Then objFso.CreateFolder(parentDir)
+            Set objDir = objShell.NameSpace(parentDir)
+            objDir.copyHere objFiles, copyOptions
+            objFso.moveFolder parentDir &"\"& zipRootDir, installPath
+        End If
+        unzip = 0
+    End If
+End Function
+
 Sub extract(params)
     ' WScript.echo "kkotari: pyenv-install.vbs Extract..!"
     Dim installFile
     Dim installFileFolder
     Dim installPath
+    Dim zipRootDir
     Dim quiet
 
     installFile = params(IP_InstallFile)
     installFileFolder = objfs.GetParentFolderName(installFile)
     installPath = params(IP_InstallPath)
+    zipRootDir = params(LV_ZipRootDir)
     If params(IP_Quiet) Then quiet = " /quiet"
 
     If Not objfs.FolderExists(installFileFolder) Then _
@@ -194,6 +225,8 @@ Sub extract(params)
         End If
     ElseIf params(LV_Web) Then
         exitCode = deepExtract(params)
+    ElseIf objfs.GetExtensionName(installFile) = "zip" Then
+        exitCode = unzip(installFile, installPath, zipRootDir)
     Else
         exitCode = objws.Run(qInstallFile & quiet &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
     End If
@@ -352,6 +385,7 @@ Sub main(arg)
                 verDef(LV_x64), _
                 verDef(LV_Web), _
                 verDef(LV_MSI), _
+                verDef(LV_ZipRootDir), _
                 strDirVers &"\"& verDef(LV_Code), _
                 strDirCache &"\"& verDef(LV_FileName), _
                 optQuiet _
