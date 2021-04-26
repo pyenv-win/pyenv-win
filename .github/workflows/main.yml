@@ -1,4 +1,4 @@
-- name: pypi-publish
+- name: pyenv-win
   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
   uses: pypa/gh-action-pypi-publish@v1.4.2
   with:
