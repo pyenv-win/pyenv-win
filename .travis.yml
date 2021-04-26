@@ -16,3 +16,13 @@ script:
   - "PYTHONPATH=. python -m pytest -v -s tests"
 after_success:
   - coveralls
+deploy:
+  provider: pypi
+  user: _token_
+  password:
+    secure: r54obe35gcQHyrF9jZdaGiyALS2HZhib3QkJbDxyhZOKlw/vi85bxjPsfvAfTZ5AV2K4YtftbLA1fAjafrnqOJSB0uGaeFNtp43QEdacmoNgwMfChI6ETyJZI/bIEmHgCI3uOi6IcuIXRDDg90p4sst0NU26Ucrs1YuE22e7mtdyTvyLZJHOUzEvCzpzcocfb5eAiML1Hh0ryQsIa075V0dcaqr5l7KlycXPSrupOtlom0sinQh8ZqE5WP6CGbpgLpo1RQqn1dZmCer7NJfcPPum4ZHf/rBIu7ss/GzeSE5YZtk0gFq8QoRhQidlXkK7Fge2AC+Nf1tEuSsGLDb30FiVuj8YuJAcYIdLk+pcWTeTbhNuNlGokFvGugUogGbLa+RAQJF5Uq6Kk+ipeoeCt5WH6EmdQNTVd8TY/s37klYOa9Jg2Uuk7RL6XKKrbe5HuuhZfId2OIrfipGHPJKtJct33hWm8THKss0iXkvIsc3HBY8BTF3FzA5X+cMvgJK5+uULbAXG17x+fHX6HnXrxKZXhS1gl56N/8bV2vsjVVCPCuWXPGji3ryF9SDdkflnjopOtkdER3JWk91joN0hCKjPj9r1GwlKBrOTtwWoyClmmkud35VKMt1m7cDYRBRmPpvIt21g6Dg9Wym9vSyOCqC+mmsegUeTBi4FJwM7kh4=
+  distributions: sdist bdist_wheel
+  skip_existing: true
+  on:
+    tags: true
+    branch: master
