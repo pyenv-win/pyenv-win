@@ -124,10 +124,8 @@ End Sub
 
 Sub CommandWhich(arg)
     ' WScript.echo "kkotari: pyenv.vbs command which..!"
-    If arg.Count < 2 Then
+    If arg.Count < 2 or arg(1) = "" Then
         PrintHelp "pyenv-which", 1
-    ElseIf arg(1) = "--help" Or arg(1) = "" Then
-        PrintHelp "pyenv-which", Abs(arg(1) = "")
     End If
 
     Dim path
@@ -137,7 +135,6 @@ Sub CommandWhich(arg)
     Dim version
 
     program = arg(1)
-    If program = "" Then PrintHelp "pyenv-which", 1
     If Right(program, 1) = "." Then program = Left(program, Len(program)-1)
 
     Set exts = GetExtensions(True)
@@ -192,10 +189,8 @@ End Sub
 
 Sub CommandWhence(arg)
     ' WScript.echo "kkotari: pyenv.vbs command whence..!"
-    If arg.Count < 2 Then
+    If arg.Count < 2 or arg(1) = "" Then
         PrintHelp "pyenv-whence", 1
-    ElseIf arg(1) = "--help" Or arg(1) = "" Then
-        PrintHelp "pyenv-whence", Abs(arg(1) = "")
     End If
 
     Dim program
@@ -308,10 +303,6 @@ End Sub
 
 Sub CommandScriptVersion(arg)
     ' WScript.echo "kkotari: pyenv.vbs command script version..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv---version", 0
-    End If
-
     If arg.Count = 1 Then
         Dim list
         Set list = GetCommandList
@@ -326,57 +317,16 @@ Sub CommandScriptVersion(arg)
 End Sub
 
 Sub CommandHelp(arg)
-    ' WScript.echo "kkotari: pyenv.vbs command help..!"
-    If arg.Count > 1 Then
-        Dim list
-        Set list = GetCommandList
-        If list.Exists(arg(1)) Then
-            ExecCommand(list(arg(1)) & " --help")
-        Else
-             WScript.Echo "unknown pyenv command '"& arg(1) &"'"
-        End If
-    Else
-        ShowHelp
-    End If
+    ShowHelp
 End Sub
 
 Sub CommandRehash(arg)
     ' WScript.echo "kkotari: pyenv.vbs command rehash..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-rehash", 0
-    End If
-
     Rehash
-End Sub
-
-Sub CommandExecute(arg)
-    ' WScript.echo "kkotari: pyenv.vbs command exec..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-exec", 0
-    End If
-
-    Dim str
-    Dim dstr
-    dstr = GetBinDir(GetCurrentVersion()(0))
-    str = "set PATH="& dstr &";%PATH:&=^&%"& vbCrLf
-    If arg.Count > 1 Then
-        str = str &""""& dstr &"\"& arg(1) &""""
-        Dim idx
-        If arg.Count > 2 Then
-            For idx = 2 To arg.Count - 1
-                str = str &" """& arg(idx) &""""
-            Next
-        End If
-    End If
-    ExecCommand(str)
 End Sub
 
 Sub CommandGlobal(arg)
     ' WScript.echo "kkotari: pyenv.vbs command global..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-global", 0
-    End If
-
     Dim ver
     If arg.Count < 2 Then
         ver = GetCurrentVersionGlobal()
@@ -399,10 +349,6 @@ End Sub
 
 Sub CommandLocal(arg)
     ' WScript.echo "kkotari: pyenv.vbs command local..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-local", 0
-    End If
-
     Dim ver
     If arg.Count < 2 Then
         Dim currentVersions
@@ -443,37 +389,8 @@ Sub CommandLocal(arg)
     End If
 End Sub
 
-Sub CommandShell(arg)
-    ' WScript.echo "kkotari: pyenv.vbs command shell..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-shell", 0
-    End If
-
-    Dim ver
-    If arg.Count < 2 Then
-        ver = GetCurrentVersionShell
-        If IsNull(ver) Then
-            WScript.Echo "no shell-specific version configured"
-        Else
-            WScript.Echo ver(0)
-        End If
-    Else
-        If arg(1) = "--unset" Then
-            ver = ""
-        Else
-            ver = Check32Bit(arg(1))
-            GetBinDir(ver)
-        End If
-        ExecCommand("set PYENV_VERSION="& ver)
-    End If
-End Sub
-
 Sub CommandVersion(arg)
     ' WScript.echo "kkotari: pyenv.vbs command version..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-version", 0
-    End If
-
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim curVer
@@ -486,10 +403,6 @@ End Sub
 
 Sub CommandVersionName(arg)
     ' WScript.echo "kkotari: pyenv.vbs command version-name..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-version-name", 0
-    End If
-
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim ver, versions
@@ -501,10 +414,6 @@ End Sub
 
 Sub CommandVersionNameShort(arg)
     ' WScript.echo "kkotari: pyenv.vbs command vname..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-vname", 0
-    End If
-
     If Not objfs.FolderExists(strDirVers) Then objfs.CreateFolder(strDirVers)
 
     Dim ver, versions
@@ -516,10 +425,6 @@ End Sub
 
 Sub CommandVersions(arg)
     ' WScript.echo "kkotari: pyenv.vbs command versions..!"
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-versions", 0
-    End If
-
     Dim isBare
     isBare = False
     If arg.Count >= 2 Then
@@ -545,36 +450,9 @@ Sub CommandVersions(arg)
     Next
 End Sub
 
-Sub PlugIn(arg)
-    ' WScript.echo "kkotari: pyenv.vbs plugin..!"
-
-    Dim fname
-    Dim idx
-    Dim str
-    fname = strDirLibs &"\pyenv-"& arg(0)
-    If objfs.FileExists(fname &".bat" ) Then
-        str = """"& fname &".bat"""
-    ElseIf objfs.FileExists(fname &".vbs" ) Then
-        str = "cscript //nologo """& fname &".vbs"""
-    Else
-       WScript.Echo "pyenv: no such command `"& arg(0) &"'"
-       WScript.Quit
-    End If
-
-    For idx = 1 To arg.Count - 1
-      str = str &" """& arg(idx) &""""
-    Next
-
-    ExecCommand(str)
-End Sub
-
 Sub CommandCommands(arg)
     ' WScript.echo "kkotari: pyenv.vbs command commands..!"
     Dim cname
-
-    If arg.Count >= 2 Then
-        If arg(1) = "--help" Then PrintHelp "pyenv-commands", 0
-    End If
 
     For Each cname In GetCommandList()
         WScript.Echo cname
@@ -594,11 +472,9 @@ Sub main(arg)
     Else
         Select Case arg(0)
            Case "--version"    CommandScriptVersion(arg)
-           Case "exec"         CommandExecute(arg)
            Case "rehash"       CommandRehash(arg)
            Case "global"       CommandGlobal(arg)
            Case "local"        CommandLocal(arg)
-           Case "shell"        CommandShell(arg)
            Case "version"      CommandVersion(arg)
            Case "vname"        CommandVersionNameShort(arg)
            Case "version-name" CommandVersionName(arg)
@@ -609,7 +485,6 @@ Sub main(arg)
            Case "whence"       CommandWhence(arg)
            Case "help"         CommandHelp(arg)
            Case "--help"       CommandHelp(arg)
-           Case Else           PlugIn(arg)
         End Select
     End If
 End Sub

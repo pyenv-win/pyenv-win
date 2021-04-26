@@ -49,6 +49,7 @@ def pyenv_setup(settings):
         os.makedirs(Path(pyenv_path, d))
     files = [r'bin\pyenv.bat',
              r'libexec\pyenv.vbs',
+             r'libexec\pyenv-shell.bat',
              r'libexec\libs\pyenv-install-lib.vbs',
              r'libexec\libs\pyenv-lib.vbs']
     for f in files:
@@ -106,7 +107,7 @@ def run_pyenv_test(settings, commands):
                         args = args + pyenv_args
                     else:
                         args.append(pyenv_args)
-                result = subprocess.run(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                result = subprocess.run(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stderr = str(result.stderr, "utf-8").strip()
                 if stderr != "":
                     print(stderr)

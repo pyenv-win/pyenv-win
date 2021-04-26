@@ -24,9 +24,9 @@ class TestPyenvFeatureShell(TestPyenvBase):
             tmp_bat = str(Path(ctx.local_path, "tmp.bat"))
             with open(tmp_bat, "w") as f:
                 # must chain commands because env var is lost when cmd ends
-                print(f'@call {pyenv_bat} shell 3.7.7 & call {pyenv_bat} shell', file=f)
+                print(f'@call {pyenv_bat} shell 3.7.7 && call {pyenv_bat} shell', file=f)
             args = ['cmd', '/d', '/c', 'call', tmp_bat]
-            result = subprocess.run(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.run(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output = str(result.stdout, "utf-8").strip()
             assert output == "3.7.7"
 
