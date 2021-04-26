@@ -16,13 +16,13 @@ script:
   - PYTHONPATH=. python -m pytest -v -s tests
 after_success:
   - coveralls
-deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  skip_existing: true
-  on:
-    tags: true
-    branch: master
-  user: _token_
-  password:
-    secure: mmxZHRdfMeOM4cS0RNrttlzU0S79DI6nJODTOBz5HYXqM0/PUd3u7dHrnINxNJFBswjzz0mzgWPo/ifRKNwlCHT2Gln8tc6kjY3pYjV/9KrPmZMCxu8odVnMkeAbTOZTM7GD1JFxKaS1pw4k6WAPaBG0KjZEqSMu3oq7qRQHEkPkVXuaxcgNiHnwfFY/qx5M39Mae7Z9qGHy8xz+gk1plZHG5NjX38k4jIg3nkGm+9BAOct4FU07NrtzrXzIIcnZ6ztqL0E1PWc7HdtYn3gPJ35/EyvNbdARDPm+aQi+gNoBH81zeITn0CzcCxzOqqEnDRpsHn0lh9ndT4dS3+1ml53tGV8WgIlbbdludKfX6QVKN6B3+qJuTHIQIJidbmecIN9RAn8bNDeGAe4Mizd5cvV+S2TizX1y03Q6hOtWfYJ6DopWCHwwkpS5RZz+Tk2gmBzsdvQY0IKdlgejwujmTs8OZPxPMLymT17UWS765oaeRx3yJiSGrn+FMcAeIRS+Nwmx4vxnzk5vCCfyhpg+npi6NMmPfecbWFzoc/5cLp7kByGYyok0AbmR8jcfdeywIgPioTkpBMKiAVi0ZbQZS6ltvpzYXEkZdk530REZ+Hp4WheqkBmjxxR7+zZnF/yUTfXhnMNcqv8wrNpw7Ey+4WpGZIxE1oSa6ZHVOb3szGQ=
+# deploy:
+#  provider: pypi
+#  distributions: sdist bdist_wheel
+#  skip_existing: true
+#  on:
+#    tags: true
+#    branch: master
+#  user: _token_
+#  password:
+#    secure: mmxZHRdfMeOM4cS0RNrttlzU0S79DI6nJODTOBz5HYXqM0/PUd3u7dHrnINxNJFBswjzz0mzgWPo/ifRKNwlCHT2Gln8tc6kjY3pYjV/9KrPmZMCxu8odVnMkeAbTOZTM7GD1JFxKaS1pw4k6WAPaBG0KjZEqSMu3oq7qRQHEkPkVXuaxcgNiHnwfFY/qx5M39Mae7Z9qGHy8xz+gk1plZHG5NjX38k4jIg3nkGm+9BAOct4FU07NrtzrXzIIcnZ6ztqL0E1PWc7HdtYn3gPJ35/EyvNbdARDPm+aQi+gNoBH81zeITn0CzcCxzOqqEnDRpsHn0lh9ndT4dS3+1ml53tGV8WgIlbbdludKfX6QVKN6B3+qJuTHIQIJidbmecIN9RAn8bNDeGAe4Mizd5cvV+S2TizX1y03Q6hOtWfYJ6DopWCHwwkpS5RZz+Tk2gmBzsdvQY0IKdlgejwujmTs8OZPxPMLymT17UWS765oaeRx3yJiSGrn+FMcAeIRS+Nwmx4vxnzk5vCCfyhpg+npi6NMmPfecbWFzoc/5cLp7kByGYyok0AbmR8jcfdeywIgPioTkpBMKiAVi0ZbQZS6ltvpzYXEkZdk530REZ+Hp4WheqkBmjxxR7+zZnF/yUTfXhnMNcqv8wrNpw7Ey+4WpGZIxE1oSa6ZHVOb3szGQ=
