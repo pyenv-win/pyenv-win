@@ -40,9 +40,7 @@ if not exist "%bindir%" (
 
 shift
 
-for /f "tokens=1,2 delims=/" %%i in ("%1") do set "exepath=%%i" & set "exe=%%j"
-if [%exe%]==[] (set "exe=%exepath%") else (set "exe=%bindir%\%exepath%\%exe%")
-set "exe="%exe%""
+set "exe="%~1""
 goto :run
 
 
