@@ -16,6 +16,14 @@ for /f %%i in ('%pyenv% version') do call :normalizepath "%~dp0..\versions\%%i" 
 
 rem all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
+if /i [%1]==[--help] (
+  call :plugin %2 %1
+  exit /b
+)
+if /i [%1]==[help] (
+  call :plugin %2 --help
+  exit /b
+)
 
 rem let pyenv.vbs handle these
 set commands=rehash global local version vname version-name versions commands shims which whence help --help

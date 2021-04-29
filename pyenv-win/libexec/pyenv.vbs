@@ -59,31 +59,6 @@ Sub PrintHelp(cmd, exitCode)
     WScript.Quit exitCode
 End Sub
 
-Sub ExecCommand(str)
-    ' WScript.echo "kkotari: pyenv.vbs exec command..!"
-    Dim utfStream
-    Dim outStream
-    Set utfStream = CreateObject("ADODB.Stream")
-    Set outStream = CreateObject("ADODB.Stream")
-    With utfStream
-        .CharSet = "utf-8"
-        .Mode = 3 ' adModeReadWrite
-        .Open
-        .WriteText("chcp 1250 > NUL" & vbCrLf)
-        .WriteText(str & vbCrLf)
-        .Position = 3
-    End With
-    With outStream
-        .Type = 1 ' adTypeBinary
-        .Mode = 3 ' adModeReadWrite
-        .Open
-        utfStream.CopyTo outStream
-        .SaveToFile strPyenvHome & "\exec.bat", 2
-        .Close
-    End With
-    utfStream.Close
-End Sub
-
 Function getCommandOutput(theCommand)
     ' WScript.echo "kkotari: pyenv.vbs get command output..!"
     Set objCmdExec = objws.exec(thecommand)
@@ -124,7 +99,9 @@ End Sub
 
 Sub CommandWhich(arg)
     ' WScript.echo "kkotari: pyenv.vbs command which..!"
-    If arg.Count < 2 or arg(1) = "" Then
+    If arg.Count < 2 Then
+        PrintHelp "pyenv-which", 1
+    ElseIf arg(1) = "" Then
         PrintHelp "pyenv-which", 1
     End If
 
@@ -189,7 +166,9 @@ End Sub
 
 Sub CommandWhence(arg)
     ' WScript.echo "kkotari: pyenv.vbs command whence..!"
-    If arg.Count < 2 or arg(1) = "" Then
+    If arg.Count < 2 Then
+        PrintHelp "pyenv-whence", 1
+    ElseIf arg(1) = "" Then
         PrintHelp "pyenv-whence", 1
     End If
 
@@ -495,6 +474,7 @@ Sub main(arg)
            Case "whence"       CommandWhence(arg)
            Case "help"         CommandHelp(arg)
            Case "--help"       CommandHelp(arg)
+           ' Case Else           WScript.Echo "main Case Else"
         End Select
     End If
 End Sub

@@ -2,8 +2,23 @@ from test_pyenv import TestPyenvBase
 from test_pyenv_helpers import not_installed_output, run_pyenv_test
 
 
+def pyenv_global_help():
+    return (f"Usage: pyenv global <version>\r\n"
+            f"       pyenv global --unset")
+
+
 class TestPyenvFeatureGlobal(TestPyenvBase):
-    def test_no_global_version(self, setup):
+    def test_global_help(self, setup):
+        def commands(ctx):
+            for args in [
+                ["--help", "global"],
+                ["help", "global"],
+                ["global", "--help"],
+            ]:
+                assert "\r\n".join(ctx.pyenv(args).splitlines()[:2]) == pyenv_global_help()
+        run_pyenv_test({}, commands)
+
+    def test_global_no_version(self, setup):
         def commands(ctx):
             assert ctx.pyenv("global") == "no global version configured"
         run_pyenv_test({}, commands)

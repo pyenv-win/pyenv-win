@@ -260,7 +260,6 @@ Sub WriteWinScript(baseName, strDirBin)
     If Not objfs.FileExists(filespec) Then
         With objfs.CreateTextFile(filespec)
             .WriteLine("@echo off")
-            .WriteLine("setlocal")
             .WriteLine("chcp 1250 > NUL")
             .WriteLine("pyenv exec "&strDirBin&"%~n0 %*")
             .Close

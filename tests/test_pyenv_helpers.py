@@ -47,8 +47,10 @@ def pyenv_setup(settings):
     dirs = [r'bin', r'libexec\libs', r'shims', r'versions']
     for d in dirs:
         os.makedirs(Path(pyenv_path, d))
+    _, _, libexec_files = next(os.walk(src_path.joinpath('libexec')))
+    for f in libexec_files:
+        shutil.copy(Path(src_path, 'libexec', f), Path(pyenv_path, 'libexec', f))
     files = [r'bin\pyenv.bat',
-             r'libexec\pyenv.vbs',
              r'libexec\pyenv-shell.bat',
              r'libexec\libs\pyenv-install-lib.vbs',
              r'libexec\libs\pyenv-lib.vbs']
