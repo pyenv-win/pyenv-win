@@ -276,7 +276,7 @@ Sub WriteLinuxScript(baseName, strDirBin)
     If Not objfs.FileExists(filespec) Then
         With objfs.CreateTextFile(filespec)
             .WriteLine("#!/bin/sh")
-            .WriteLine("pyenv exec "&strDirBin&"$(basename $0) ""$@""")
+            .WriteLine("pyenv exec "&strDirBin&"$(basename ""$0"") ""$@""")
             .Close
         End With
     End If
