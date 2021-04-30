@@ -11,7 +11,6 @@ if "%1" == "--help" (
   EXIT /B
 )
 
-
 if [%1]==[] (
   if [%PYENV_VERSION%]==[] (
     echo no shell-specific version configured
@@ -29,4 +28,3 @@ if [%1]==[] (
   echo pyenv specific python requisite didn't meet. Project is using different version of python.
   echo Install python '%1' by typing: 'pyenv install %1'
 )
-
