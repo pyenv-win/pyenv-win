@@ -21,7 +21,8 @@ if /i [%1]==[--help] (
   exit /b
 )
 if /i [%1]==[help] (
-  call :plugin %2 --help
+  if [%2]==[] call :plugin help --help
+  if not [%2]==[] call :plugin %2 --help
   exit /b
 )
 
