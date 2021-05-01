@@ -5,7 +5,22 @@ from test_pyenv import TestPyenvBase
 from test_pyenv_helpers import not_installed_output, run_pyenv_test
 
 
+def pyenv_shell_help():
+    return (f"Usage: pyenv shell <version>\r\n"
+            f"       pyenv shell --unset")
+
+
 class TestPyenvFeatureShell(TestPyenvBase):
+    def test_shell_help(self, setup):
+        def commands(ctx):
+            for args in [
+                ["--help", "shell"],
+                ["help", "shell"],
+                ["shell", "--help"],
+            ]:
+                assert "\r\n".join(ctx.pyenv(args).splitlines()[:2]) == pyenv_shell_help()
+        run_pyenv_test({}, commands)
+
     def test_no_shell_version(self, setup):
         def commands(ctx):
             assert ctx.pyenv("shell") == "no shell-specific version configured"

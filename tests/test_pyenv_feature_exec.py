@@ -106,6 +106,11 @@ class TestPyenvFeatureExec(TestPyenvBase):
             ["help", "exec"],
             ["exec", "--help"],
         ],
+        ids=[
+            "--help exec",
+            "help exec",
+            "exec --help",
+        ]
     )
     def test_exec_help(self, setup, args):
         args = [str(self.__class__.ctx.pyenv_path / "bin" / "pyenv.bat"), *args]

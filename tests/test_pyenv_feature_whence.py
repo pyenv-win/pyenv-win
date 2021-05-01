@@ -15,6 +15,7 @@ class TestPyenvFeatureWhence(TestPyenvBase):
             assert ctx.pyenv("whence") == pyenv_whence_usage()
             assert ctx.pyenv(["whence", "--help"]) == pyenv_whence_usage()
             assert ctx.pyenv(["--help", "whence"]) == pyenv_whence_usage()
+            assert ctx.pyenv(["help", "whence"]) == pyenv_whence_usage()
         run_pyenv_test({'versions': ['3.7.7']}, commands)
 
     def test_whence_major(self, setup):

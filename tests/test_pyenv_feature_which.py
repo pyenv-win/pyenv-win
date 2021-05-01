@@ -20,6 +20,7 @@ class TestPyenvFeatureWhich(TestPyenvBase):
             assert ctx.pyenv("which") == pyenv_which_usage()
             assert ctx.pyenv(["which", "--help"]) == pyenv_which_usage()
             assert ctx.pyenv(["--help", "which"]) == pyenv_which_usage()
+            assert ctx.pyenv(["help", "which"]) == pyenv_which_usage()
         run_pyenv_test({'versions': ['3.7.7']}, commands)
 
     def test_which_exists_is_global(self, setup):
