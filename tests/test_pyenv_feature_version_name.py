@@ -3,6 +3,30 @@ from tempenv import TemporaryEnvironment
 from test_pyenv_helpers import run_pyenv_test
 
 
+def test_version_name_help():
+    def commands(ctx):
+        for args in [
+            ["--help", "version-name"],
+            ["help", "version-name"],
+            ["version-name", "--help"],
+        ]:
+            stdout = "\r\n".join(ctx.pyenv(args).splitlines()[:2]).strip()
+            assert stdout == "Usage: pyenv version-name"
+    run_pyenv_test({}, commands)
+
+
+def test_vname_help():
+    def commands(ctx):
+        for args in [
+            ["--help", "vname"],
+            ["help", "vname"],
+            ["vname", "--help"],
+        ]:
+            stdout = "\r\n".join(ctx.pyenv(args).splitlines()[:2]).strip()
+            assert stdout == "Usage: pyenv vname"
+    run_pyenv_test({}, commands)
+
+
 @pytest.mark.parametrize("command", ['version-name', 'vname'])
 def test_no_version(command):
     def commands(ctx):
