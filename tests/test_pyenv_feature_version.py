@@ -3,7 +3,21 @@ from test_pyenv import TestPyenvBase
 from test_pyenv_helpers import run_pyenv_test
 
 
+def pyenv_version_help():
+    return "Usage: pyenv version"
+
+
 class TestPyenvFeatureVersion(TestPyenvBase):
+    def test_version_help(self, setup):
+        def commands(ctx):
+            for args in [
+                ["--help", "version"],
+                ["help", "version"],
+                ["version", "--help"],
+            ]:
+                assert "\r\n".join(ctx.pyenv(args).splitlines()[:2]).strip() == pyenv_version_help()
+        run_pyenv_test({}, commands)
+
     def test_no_version(self, setup):
         def commands(ctx):
             assert ctx.pyenv("version") == ("No global python version has been set yet. "

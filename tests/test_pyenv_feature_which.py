@@ -7,7 +7,22 @@ def assert_paths_equal(actual, expected):
     assert actual.lower() == expected.lower()
 
 
+def pyenv_which_usage():
+    return (f"Usage: pyenv which <command>\r\n"
+            f"\r\n"
+            f"Shows the full path of the executable\r\n"
+            f"selected. To obtain the full path, use `pyenv which pip'.")
+
+
 class TestPyenvFeatureWhich(TestPyenvBase):
+    def test_which_no_arg(self, setup):
+        def commands(ctx):
+            assert ctx.pyenv("which") == pyenv_which_usage()
+            assert ctx.pyenv(["which", "--help"]) == pyenv_which_usage()
+            assert ctx.pyenv(["--help", "which"]) == pyenv_which_usage()
+            assert ctx.pyenv(["help", "which"]) == pyenv_which_usage()
+        run_pyenv_test({'versions': ['3.7.7']}, commands)
+
     def test_which_exists_is_global(self, setup):
         def commands(ctx):
             for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:

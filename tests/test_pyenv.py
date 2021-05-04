@@ -3,6 +3,7 @@ import sys
 import subprocess
 from pathlib import Path
 
+
 class TestPyenvBase:
     @pytest.fixture
     def setup(self):
