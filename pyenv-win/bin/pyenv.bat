@@ -49,8 +49,6 @@ if not exist "%bindir%" (
   exit /b
 )
 
-rem TODO test unicode
-
 set cmdline=%*
 set cmdline=%cmdline:~5%
 :: update PATH to active version and run command
@@ -58,7 +56,9 @@ set cmdline=%cmdline:~5%
 set cmddir=
 if exist %bindir%\%2 set cmddir=%bindir%\
 if exist %bindir%\%2.exe set cmddir=%bindir%\
-endlocal && set "path=%bindir%;%bindir%\Scripts;%path%" && %cmddir%%cmdline%
+set "path=%bindir%;%bindir%\Scripts;%path%"
+%cmddir%%cmdline%
+endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :plugin

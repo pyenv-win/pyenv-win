@@ -6,7 +6,7 @@ For existing python users, we support [installation via pip](#installation).
 
 Contributors and Interested people can join us on @[Slack](https://join.slack.com/t/pyenv/shared_invite/zt-f9ydwgyt-Fp8tehxqeCQi5mi77RxpGw). Your help keeps us motivated!
 
-   
+![Build Status](https://travis-ci.org/pyenv-win/pyenv-win.svg?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
@@ -222,7 +222,32 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.7.2
+- Fix [#250](https://github.com/pyenv-win/pyenv-win/issues/250): PATH is not impacted after a `pyenv exec`.
+
 ### New in 2.64.7.1
+- Fix [#246](https://github.com/pyenv-win/pyenv-win/issues/246): `pyenv which` and `pyenv whence` show help if no argument specified.
+- Fix exec problems after merge of [#140](https://github.com/pyenv-win/pyenv-win/pull/140).
+- Fix [#247](https://github.com/pyenv-win/pyenv-win/pull/247): no more incorrect file name in bash script if username contains a space.
+- Fix [#243](https://github.com/pyenv-win/pyenv-win/issues/243): hot fix for `pyenv exec`.
+
+### New in 2.64.6.1
+- Use GitHub Actions to publish to PyPi.
+
+### New in 2.64.5
+- Fix [#239](https://github.com/pyenv-win/pyenv-win/issues/239): Improve `rehash` error when no version installed.
+- Add pypy support.
+- Fix [#140](https://github.com/pyenv-win/pyenv-win/pull/140): Get rid of temp `exec.bat` to support multiple exec in parallel.
+
+### New in 2.64.4
+- More python versions supported.
+- Fix [#217](https://github.com/pyenv-win/pyenv-win/pull/217): Add missing call to `exec.bat`.
+- Enhancement [#225](https://github.com/pyenv-win/pyenv-win/pull/217): Add tox support.
+- Fix [#204](https://github.com/pyenv-win/pyenv-win/issues/239): Support many local versions.
+- Enhancement [#220](https://github.com/pyenv-win/pyenv-win/issues/220): Rehash all installed versions with more shims.
+- Enhancement [#221](https://github.com/pyenv-win/pyenv-win/pull/221): Add `pyenv global --unset`.
+
+### New in 2.64.3
 - Version naming conventions have now changed from using 64-bit suffixes when specifying a version to (un)install. Now all you need to use is the version number to install your platform's specific bit version.
    - **\*WARNING\*: This change is backwards incompatible with v1.2.5 or less; if upgrading from that version, install [32bit-train](#32bit-train-support) which is backward compatible, or uninstall all versions of python prior to upgrading pyenv.**
    - Ex. `pyenv install 2.7.17` will install as 64-bit on x64 and 32-bit on x86. (64-bit can still use `2.7.17-win32` to install the 32-bit version)
