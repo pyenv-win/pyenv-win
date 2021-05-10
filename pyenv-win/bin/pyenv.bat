@@ -12,7 +12,8 @@ if [%1]==[] (
 
 :: use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
 set "bindir="
-for /f %%i in ('%pyenv% vname') do call :normalizepath "%~dp0..\versions\%%i" bindir
+set "extrapaths="
+for /f %%i in ('%pyenv% vname') do call :extrapath "%~dp0..\versions\%%i"
 
 :: all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
@@ -56,7 +57,7 @@ set cmdline=%cmdline:~5%
 set cmddir=
 if exist %bindir%\%2 set cmddir=%bindir%\
 if exist %bindir%\%2.exe set cmddir=%bindir%\
-set "path=%bindir%;%bindir%\Scripts;%path%"
+set "path=%extrapaths%%path%"
 %cmddir%%cmdline%
 endlocal
 exit /b
@@ -103,4 +104,10 @@ exit /b
 :: to its absolute value so can be used in PATH
 :normalizepath
 set "%~2=%~dpf1"
+goto :eof
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: compute list of paths to add for all activated python versions
+:extrapath
+call :normalizepath %1 bindir
+set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;"
 goto :eof
