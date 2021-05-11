@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set KNOWN_VER=2.64.7.2
+for /f %%v in ('type %~dp0..\..\.version') do set "KNOWN_VER=%%v"
 
 if "%1" == "--help" (
 echo Usage: pyenv --version

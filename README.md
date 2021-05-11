@@ -222,6 +222,9 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.7.3
+- Fix [#254](https://github.com/pyenv-win/pyenv-win/issues/254): Fix exec with many local versions.
+
 ### New in 2.64.7.2
 - Fix [#250](https://github.com/pyenv-win/pyenv-win/issues/250): PATH is not impacted after a `pyenv exec`.
 
