@@ -222,6 +222,9 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.7.4
+- Fix [#256](https://github.com/pyenv-win/pyenv-win/issues/256): Fix `pyenv --version` for username with space.
+
 ### New in 2.64.7.3
 - Fix [#254](https://github.com/pyenv-win/pyenv-win/issues/254): Fix exec with many local versions.
 
