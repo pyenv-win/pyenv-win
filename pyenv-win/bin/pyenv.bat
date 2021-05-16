@@ -51,14 +51,18 @@ if not exist "%bindir%" (
 )
 
 set cmdline=%*
+:: remove 'exec ' from args
 set cmdline=%cmdline:~5%
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 set cmddir=
-if exist %bindir%\%2 set cmddir=%bindir%\
-if exist %bindir%\%2.exe set cmddir=%bindir%\
+set arg2=%~2
+if exist "%bindir%\%arg2%" set cmddir=%bindir%\
+if exist "%bindir%\%arg2%.exe" set cmddir=%bindir%\
 set "path=%extrapaths%%path%"
-%cmddir%%cmdline%
+:: cmdline starts with %2 which includes quotes
+:: we move first quote of cmdline before cmddir
+"%cmddir%%cmdline:~1%
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
