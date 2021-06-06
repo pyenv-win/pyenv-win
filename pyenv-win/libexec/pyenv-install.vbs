@@ -20,19 +20,20 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"
-    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...]"
+    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...] [-r|--register]"
     WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
-    WScript.Echo "  -l/--list   List all available versions"
-    WScript.Echo "  -a/--all    Installs all known version from the local version DB cache"
-    WScript.Echo "  -c/--clear  Removes downloaded installers from the cache to free space"
-    WScript.Echo "  -f/--force  Install even if the version appears to be installed already"
-    WScript.Echo "  -q/--quiet  Install using /quiet. This does not show the UI nor does it prompt for inputs"
-    WScript.Echo "  --32only    Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --64only    Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --help      Help, list of options allowed on pyenv install"
+    WScript.Echo "  -l/--list      List all available versions"
+    WScript.Echo "  -a/--all       Installs all known version from the local version DB cache"
+    WScript.Echo "  -c/--clear     Removes downloaded installers from the cache to free space"
+    WScript.Echo "  -f/--force     Install even if the version appears to be installed already"
+    WScript.Echo "  -r/--register  Register version for py launcher"
+    WScript.Echo "  -q/--quiet     Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only       Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only       Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --help         Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -174,7 +175,65 @@ Function unzip(installFile, installPath, zipRootDir)
     End If
 End Function
 
-Sub extract(params)
+Sub registerVersion(version, installPath)
+    ' WScript.echo "kkotari: pyenv-install.vbs Register..!"
+
+    ' cscript must be running in 64 bits
+    ' (C:\Windows\System32\cscript.exe not C:\Windows\SysWOW64\cscript.exe)
+    Dim sh, env
+    Set sh = CreateObject("WScript.Shell")
+    Set env = sh.Environment("Process")
+    Dim arch
+    arch = env("PROCESSOR_ARCHITECTURE")
+    if arch = "x86" Then
+        WScript.Echo "Python registration not supported in 32 bits"
+        Exit Sub
+    End If
+
+    If InStr(version, "pypy") Then
+        WScript.Echo "Registering pypy versions is not supported yet"
+        ' TODO guess python version for pypy
+        Exit Sub
+    End If
+
+    Dim fso, fileVersion, parts, sysVersion, featureVersion, key, subKey
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    fileVersion = fso.GetFileVersion(installPath &"\python.exe")
+    parts = Split(fileVersion, ".")
+    sysVersion = parts(0) &"."& parts(1)
+    featureVersion = parts(0) &"."& parts(1) &"."& parts(2) &".0"
+
+    key = "HKCU\SOFTWARE\Python\PythonCore\"
+    ' I prefer not overriding default Python registry values (that might already exist)
+    ' Python Software Foundation
+    'sh.RegWrite key & "DiplayName","pyenv-win","REG_SZ"
+    ' http://www.python.org/
+    'sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
+    key = key & version &"\"
+    sh.RegWrite key & "DiplayName","Python "& sysVersion &" (64-bit)","REG_SZ"
+    sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
+    sh.RegWrite key & "SysArchitecture","64bit","REG_SZ"
+    sh.RegWrite key & "SysVersion",sysVersion,"REG_SZ"
+    sh.RegWrite key & "Version",version,"REG_SZ"
+    ' python only (not pypy)
+    subKey = key & "InstalledFeatures\"
+    sh.RegWrite subKey & "dev",featureVersion,"REG_SZ"
+    sh.RegWrite subKey & "exe",featureVersion,"REG_SZ"
+    sh.RegWrite subKey & "lib",featureVersion,"REG_SZ"
+    sh.RegWrite subKey & "pip",featureVersion,"REG_SZ"
+    sh.RegWrite subKey & "tools",featureVersion,"REG_SZ"
+    ' TODO pypy: pypy3.exe & pypy3w.exe
+    subKey = key & "InstallPath\"
+    sh.RegWrite subKey,installPath &"\","REG_SZ"
+    sh.RegWrite subKey & "ExecutablePath",installPath &"\python.exe","REG_SZ"
+    sh.RegWrite subKey & "WindowedExecutablePath",installPath &"\pythonw.exe","REG_SZ"
+    ' TODO pypy C:\Users\ded\.pyenv\pyenv-win\versions\pypy3.7-v7.3.4\lib_pypy\
+    ' TODO pypy C:\Users\ded\.pyenv\pyenv-win\versions\pypy3.7-v7.3.4\lib-python\3\
+    subKey = key & "PythonPath\"
+    sh.RegWrite subKey,installPath &"\Lib\;"& installPath &"\DLLs\","REG_SZ"
+End Sub
+
+Sub extract(params, register)
     ' WScript.echo "kkotari: pyenv-install.vbs Extract..!"
     Dim installFile
     Dim installFileFolder
@@ -234,8 +293,11 @@ Sub extract(params)
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
         ' SetGlobalVersion params(LV_Code)
+        If register Then
+            registerVersion params(LV_Code), installPath
+        End If
     Else
-        WScript.Echo ":: [Error] :: couldn't install .. "& params(LV_Code)
+        WScript.Echo ":: [Error] :: couldn't install "& params(LV_Code)
     End If
 End Sub
 
@@ -250,6 +312,7 @@ Sub main(arg)
     Dim optAll
     Dim opt32
     Dim opt64
+    Dim optReg
     Dim optClear
     Dim installVersions
 
@@ -259,6 +322,7 @@ Sub main(arg)
     optAll = False
     opt32 = False
     opt64 = False
+    optReg = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
@@ -276,6 +340,8 @@ Sub main(arg)
             Case "--clear"  optClear = True
             Case "--32only" opt32 = True
             Case "--64only" opt64 = True
+            Case "-r" optReg = True
+            Case "--register" optReg = True
             Case Else
                 installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
@@ -287,6 +353,16 @@ Sub main(arg)
     If opt32 And opt64 Then
         WScript.Echo "pyenv-install: only --32only or --64only may be specified, not both."
         WScript.Quit 1
+    End If
+    If optReg Then
+        If opt32 Then
+            WScript.Echo "pyenv-install: --register not supported for 32 bits."
+            WScript.Quit 1
+        End If
+        If optAll Then
+            WScript.Echo "pyenv-install: --register not supported for all versions."
+            WScript.Quit 1
+        End If
     End If
 
     Dim versions
@@ -391,7 +467,7 @@ Sub main(arg)
                 optQuiet _
             )
             If optForce Then clear(installParams)
-            extract(installParams)
+            extract installParams, optReg
             installed(version) = Empty
         End If
     Next

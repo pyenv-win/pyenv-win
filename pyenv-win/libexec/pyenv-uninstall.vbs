@@ -30,6 +30,17 @@ Sub ShowHelp()
     WScript.Quit
 End Sub
 
+Sub unregister(version)
+    Dim sh, key
+    Set sh = CreateObject("WScript.Shell")
+    key = "HKCU\SOFTWARE\Python\PythonCore\"& version &"\"
+    ' No problem removing keys that do not exist
+    sh.RegDelete key & "InstallPath\"
+    sh.RegDelete key & "InstalledFeatures\"
+    sh.RegDelete key & "PythonPath\"
+    sh.RegDelete key
+End Sub
+
 Sub main(arg)
     If arg.Count = 0 Then ShowHelp
 
@@ -114,6 +125,7 @@ Sub main(arg)
                     Err.Clear
                     delError = 1
                 Else
+                    unregister folder
                     WScript.Echo "pyenv: Successfully uninstalled "& folder
                     uninstalled(folder) = Empty
                 End If
