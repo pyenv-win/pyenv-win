@@ -95,7 +95,7 @@ class PyenvContext:
 class TempPyEnv:
     def __init__(self, settings):
         self.tmp_path = tempfile.TemporaryDirectory()
-        settings['pyenv_path'] = pyenv_path = Path(self.tmp_path.name, 'pyenv')
+        settings['pyenv_path'] = pyenv_path = Path(self.tmp_path.name, 'py env')
         settings['local_path'] = local_path = Path(self.tmp_path.name, 'local')
         os.mkdir(pyenv_path)
         os.mkdir(local_path)
@@ -133,7 +133,7 @@ class TempPyEnv:
 
 def run_pyenv_test(settings, commands):
     with tempfile.TemporaryDirectory() as tmp_path:
-        settings['pyenv_path'] = pyenv_path = Path(tmp_path, 'pyenv')
+        settings['pyenv_path'] = pyenv_path = Path(tmp_path, 'py env')
         settings['local_path'] = local_path = Path(tmp_path, 'local')
         os.mkdir(pyenv_path)
         os.mkdir(local_path)

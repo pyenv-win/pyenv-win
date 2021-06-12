@@ -41,7 +41,7 @@ for %%a in (%commands%) do (
 
 :: jump to plugin or fall to exec
 if /i not [%1]==[exec] goto :plugin
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :exec
 
 if not exist "%bindir%" (
@@ -51,17 +51,21 @@ if not exist "%bindir%" (
 )
 
 set cmdline=%*
+:: remove 'exec ' from args
 set cmdline=%cmdline:~5%
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 set cmddir=
-if exist %bindir%\%2 set cmddir=%bindir%\
-if exist %bindir%\%2.exe set cmddir=%bindir%\
+set arg2=%~2
+if exist "%bindir%\%arg2%" set cmddir=%bindir%\
+if exist "%bindir%\%arg2%.exe" set cmddir=%bindir%\
 set "path=%extrapaths%%path%"
-%cmddir%%cmdline%
+:: cmdline starts with %2 which includes quotes
+:: we move first quote of cmdline before cmddir
+"%cmddir%%cmdline:~1%
 endlocal
 exit /b
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :plugin
 set "exe=%~dp0..\libexec\pyenv-%1"
 rem TODO needed?
@@ -99,13 +103,13 @@ set "cmdline=!exe! !cmdline:~%len%!"
 :: otherwise PYTHON_VERSION will be lost
 endlocal && endlocal && %cmdline%
 exit /b
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: convert path which may have relative nodes (.. or .)
 :: to its absolute value so can be used in PATH
 :normalizepath
 set "%~2=%~dpf1"
 goto :eof
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: compute list of paths to add for all activated python versions
 :extrapath
 call :normalizepath %1 bindir
