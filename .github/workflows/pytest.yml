@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Environment Setup
+        run: |
+          export PYENV="${{ github.action_path }}/pyenv-win"
+          export PATH="$PYENV/bin:$PYENV/shims:$PATH"
+
+      - name: Pyenv commands
+        run: | 
+          pyenv --version
+          pyenv update
+          pyenv install -q < $PYENV/../.python-version
+          pyenv global < $PYENV/../.python-version
+          pyenv versions
+          python --version
+          pip install -r requirements_dev.txt
+          pyenv rehash
+
+      - name: Test with PyTest
+        run: |
+          PYTHONPATH=. python -m pytest -v -s tests
+
+      # - name: Upload coverage
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     verbose: true
