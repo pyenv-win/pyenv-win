@@ -1,4 +1,4 @@
-name: CI
+name: "CI - PyTest "
 
 on:
   push:
@@ -18,8 +18,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Environment Setup
         run: |
-          export PYENV="${{ github.action_path }}/pyenv-win"
-          export PATH="$PYENV/bin:$PYENV/shims:$PATH"
+          set PYENV="./pyenv-win"
+          set PATH="$PYENV/bin:$PYENV/shims:$PATH"
 
       - name: Pyenv commands
         run: | 
