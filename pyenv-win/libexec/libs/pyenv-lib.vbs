@@ -253,7 +253,7 @@ Function GetExtensionsNoPeriod(addPy)
 End Function
 
 ' pyenv - bin - windows
-Sub WriteWinScript(baseName, strDirBin)
+Sub WriteWinScript(baseName, extension, strDirBin)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
     Dim filespec
     filespec = strDirShims &"\"& baseName &".bat"
@@ -261,7 +261,7 @@ Sub WriteWinScript(baseName, strDirBin)
         With objfs.CreateTextFile(filespec)
             .WriteLine("@echo off")
             .WriteLine("chcp 1250 > NUL")
-            .WriteLine("call pyenv exec "&strDirBin&"%~n0 %*")
+            .WriteLine("call pyenv exec "&strDirBin&baseName&"."&extension&" %*")
             .Close
         End With
     End If
@@ -294,7 +294,7 @@ Sub Rehash()
     Dim version
     Dim winBinDir, nixBinDir
     Dim exts
-    Dim baseName
+    Dim baseName, extension
 
     For Each version In GetInstalledVersions()
         winBinDir = strDirVers &"\"& version
@@ -305,7 +305,8 @@ Sub Rehash()
             ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName, ""
+                extension = objfs.GetExtensionName(file)
+                WriteWinScript baseName, extension, ""
                 WriteLinuxScript baseName, ""
             End If
         Next
@@ -315,7 +316,8 @@ Sub Rehash()
                 ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
                 If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                     baseName = objfs.GetBaseName(file)
-                    WriteWinScript baseName, "Scripts/"
+                    extension = objfs.GetExtensionName(file)
+                    WriteWinScript baseName, extension, "Scripts/"
                     WriteLinuxScript baseName, "Scripts/"
                 End If
             Next
