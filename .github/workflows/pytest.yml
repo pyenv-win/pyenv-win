@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Environment Setup
-        run: $Env:PYENV=$pwd.path\\pyenv-win
+        run: $Env:PYENV="$pwd.path\\pyenv-win"
       - name: Environment Setup - 1
         run: Set-Item -Path Env:Path -Value ("$Env:PYENV\\bin;$Env:PYENV\\shims;" + $Env:Path)
       - name: Environment Setup - 2
