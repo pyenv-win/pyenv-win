@@ -24,21 +24,4 @@ jobs:
       - name: Pyenv commands
         run: | 
           pyenv --version
-          pyenv update
-          pyenv install -q < $PYENV/../.python-version
-          pyenv global < $PYENV/../.python-version
-          pyenv versions
-          python --version
-          pip install -r requirements_dev.txt
-          pyenv rehash
-
-      - name: Test with PyTest
-        run: |
-          PYTHONPATH=. python -m pytest -v -s tests
-
-      # - name: Upload coverage
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     verbose: true
+          
