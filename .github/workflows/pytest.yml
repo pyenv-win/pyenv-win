@@ -17,11 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Environment Setup
-        run: |
-          set PYENV="./pyenv-win"
-          set PATH="$PYENV/bin:$PYENV/shims:$PATH"
-
-      - name: Pyenv commands
-        run: | 
-          pyenv --version
-          
+      - run: export PYENV=${{ github.action_path }}/pyenv-win
+        shell: bash
+      - run: PATH="$PYENV/bin:$PYENV/shims:$PATH"
+        shell: bash
+      - run: pyenv --version
+        shell: bash
+    
