@@ -1,4 +1,4 @@
-name: CI
+name: pytest
 
 on:
   push:
@@ -12,33 +12,20 @@ on:
 
 jobs:
   build:
+    name: pyenv-win pytest
     runs-on: windows-latest
-
+    env:
+      HOME: D:\a\.pyenv
     steps:
-      - uses: actions/checkout@v2
-      - name: Environment Setup
-        run: |
-          export PYENV="${{ github.action_path }}/pyenv-win"
-          export PATH="$PYENV/bin:$PYENV/shims:$PATH"
-
-      - name: Pyenv commands
+      - name: create pyenv workspace
         run: | 
-          pyenv --version
-          pyenv update
-          pyenv install -q < $PYENV/../.python-version
-          pyenv global < $PYENV/../.python-version
-          pyenv versions
-          python --version
-          pip install -r requirements_dev.txt
-          pyenv rehash
+          mkdir -p ${{ env.HOME }}
 
-      - name: Test with PyTest
-        run: |
-          PYTHONPATH=. python -m pytest -v -s tests
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          path: ../../.pyenv
 
-      # - name: Upload coverage
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     name: ${{ matrix.os }} Python ${{ matrix.python-version }}
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     verbose: true
+      - name: pytest bash script
+        run: ${{ env.HOME }}/.github/scripts/build.sh
+        shell: bash
