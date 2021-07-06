@@ -15,16 +15,11 @@ jobs:
     name: pyenv-win pytest
     runs-on: windows-latest
     env:
-      HOME: D:\a\.pyenv
+      HOME: D:/a/pyenv-win/pyenv-win
     steps:
-      - name: create pyenv workspace
-        run: | 
-          mkdir -p ${{ env.HOME }}
 
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          path: ../../.pyenv
 
       - name: pytest bash script
         run: ${{ env.HOME }}/.github/scripts/build.sh

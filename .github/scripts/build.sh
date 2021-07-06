@@ -1,4 +1,4 @@
-export HOME="/d/a/.pyenv"
+export HOME="/d/a/pyenv-win/pyenv-win"
 export PYENV="$HOME/pyenv-win"
 export PYENV_HOME="$HOME/pyenv-win"
 export PATH="$PYENV/bin:$PYENV/shims:$PATH"
