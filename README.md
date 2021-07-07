@@ -6,7 +6,7 @@ For existing python users, we support [installation via pip](#installation).
 
 Contributors and Interested people can join us on @[Slack](https://join.slack.com/t/pyenv/shared_invite/zt-f9ydwgyt-Fp8tehxqeCQi5mi77RxpGw). Your help keeps us motivated!
 
-![Build Status](https://travis-ci.org/pyenv-win/pyenv-win.svg?branch=master)
+[![pytest](https://github.com/pyenv-win/pyenv-win/actions/workflows/pytest.yml/badge.svg)](https://github.com/pyenv-win/pyenv-win/actions/workflows/pytest.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
@@ -221,6 +221,9 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
    - **Answer:** According to Windows, when adding a path under the User variable you need to logout and login again, in order to reflect any change. For the System variable it's not required.
 
 ## Change Log
+
+### New in 2.64.9
+- Fix [#269] (https://github.com/pyenv-win/pyenv-win/issues/269): Migration from travis-ci to GitHub Actions
 
 ### New in 2.64.8
 - Fix [#198](https://github.com/pyenv-win/pyenv-win/issues/198): [PEP 514](https://www.python.org/dev/peps/pep-0514/) support (64 bits only, excluding pypy).
