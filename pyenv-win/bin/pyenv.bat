@@ -57,6 +57,7 @@ set cmdline=%cmdline:~5%
 set cmddir=
 if exist %bindir%\%2 set cmddir=%bindir%\
 if exist %bindir%\%2.exe set cmddir=%bindir%\
+if exist %bindir%\%2.bat set cmddir=%bindir%\
 set "path=%extrapaths%%path%"
 %cmddir%%cmdline%
 endlocal

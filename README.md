@@ -224,6 +224,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ### New in 2.64.9
 - Fix [#269] (https://github.com/pyenv-win/pyenv-win/issues/269): Migration from travis-ci to GitHub Actions
+- Fix `exec` shims for `bat` files.
 
 ### New in 2.64.8
 - Fix [#198](https://github.com/pyenv-win/pyenv-win/issues/198): [PEP 514](https://www.python.org/dev/peps/pep-0514/) support (64 bits only, excluding pypy).
