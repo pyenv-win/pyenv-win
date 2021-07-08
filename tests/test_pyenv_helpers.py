@@ -72,6 +72,8 @@ def pyenv_setup(settings):
         os.mkdir(path)
         for exe in script_exes(ver):
             touch(path.joinpath(exe))
+        with open(path.joinpath('hello.bat'), "w") as batch:
+            print("@echo Hello world!", file=batch)
 
     for v in versions:
         ver = version.parse(v)

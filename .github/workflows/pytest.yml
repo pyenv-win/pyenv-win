@@ -1,0 +1,26 @@
+name: pytest
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: pyenv-win pytest
+    runs-on: windows-latest
+    env:
+      HOME: D:/a/pyenv-win/pyenv-win
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: pytest bash script
+        run: ${{ env.HOME }}/.github/scripts/build.sh
+        shell: bash
