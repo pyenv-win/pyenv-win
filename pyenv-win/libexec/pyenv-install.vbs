@@ -33,6 +33,7 @@ Sub ShowHelp()
     WScript.Echo "  -q/--quiet     Install using /quiet. This does not show the UI nor does it prompt for inputs"
     WScript.Echo "  --32only       Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --64only       Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --dev          Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
     WScript.Echo "  --help         Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
@@ -91,8 +92,8 @@ Function deepExtract(params)
     For Each file In objfs.GetFolder(webCachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
         If LCase(objfs.GetExtensionName(file)) <> "msi" Or _
-           Right(baseName, 2) = "_d" Or _
-           Right(baseName, 4) = "_pdb" Or _
+           (Right(baseName, 2) = "_d" And params(IP_Dev) = False) Or _
+           (Right(baseName, 4) = "_pdb" And params(IP_Dev) = False) Or _
            baseName = "launcher" Or _
            baseName = "path" Or _
            baseName = "pip" _
@@ -239,13 +240,11 @@ Sub extract(params, register)
     Dim installFileFolder
     Dim installPath
     Dim zipRootDir
-    Dim quiet
 
     installFile = params(IP_InstallFile)
     installFileFolder = objfs.GetParentFolderName(installFile)
     installPath = params(IP_InstallPath)
     zipRootDir = params(LV_ZipRootDir)
-    If params(IP_Quiet) Then quiet = " /quiet"
 
     If Not objfs.FolderExists(installFileFolder) Then _
         EnsureFolder(installFileFolder)
@@ -287,7 +286,13 @@ Sub extract(params, register)
     ElseIf objfs.GetExtensionName(installFile) = "zip" Then
         exitCode = unzip(installFile, installPath, zipRootDir)
     Else
-        exitCode = objws.Run(qInstallFile & quiet &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
+        Dim quiet
+        Dim dev
+
+        If params(IP_Quiet) Then quiet = " /quiet"
+        If params(IP_Dev) Then dev = " Include_debug=1 Include_symbols=1 Include_dev=1 "
+
+        exitCode = objws.Run(qInstallFile & quiet & dev &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
     End If
 
     If exitCode = 0 Then
@@ -312,6 +317,7 @@ Sub main(arg)
     Dim optAll
     Dim opt32
     Dim opt64
+    Dim optDev
     Dim optReg
     Dim optClear
     Dim installVersions
@@ -322,26 +328,28 @@ Sub main(arg)
     optAll = False
     opt32 = False
     opt64 = False
+    optDev = False
     optReg = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"   ShowHelp
-            Case "-l"       optList = True
-            Case "--list"   optList = True
-            Case "-f"       optForce = True
-            Case "--force"  optForce = True
-            Case "-q"       optQuiet = True
-            Case "--quiet"  optQuiet = True
-            Case "-a"       optAll = True
-            Case "--all"    optAll = True
-            Case "-c"       optClear = True
-            Case "--clear"  optClear = True
-            Case "--32only" opt32 = True
-            Case "--64only" opt64 = True
-            Case "-r" optReg = True
-            Case "--register" optReg = True
+            Case "--help"       ShowHelp
+            Case "-l"           optList = True
+            Case "--list"       optList = True
+            Case "-f"           optForce = True
+            Case "--force"      optForce = True
+            Case "-q"           optQuiet = True
+            Case "--quiet"      optQuiet = True
+            Case "-a"           optAll = True
+            Case "--all"        optAll = True
+            Case "-c"           optClear = True
+            Case "--clear"      optClear = True
+            Case "--32only"     opt32 = True
+            Case "--64only"     opt64 = True
+            Case "--dev"        optDev = True
+            Case "-r"           optReg = True
+            Case "--register"   optReg = True
             Case Else
                 installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
@@ -464,7 +472,8 @@ Sub main(arg)
                 verDef(LV_ZipRootDir), _
                 strDirVers &"\"& verDef(LV_Code), _
                 strDirCache &"\"& verDef(LV_FileName), _
-                optQuiet _
+                optQuiet, _
+                optDev _
             )
             If optForce Then clear(installParams)
             extract installParams, optReg
