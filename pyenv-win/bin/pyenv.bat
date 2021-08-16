@@ -10,6 +10,8 @@ if [%1]==[] (
   exit /b
 )
 
+if /i [%1%2]==[version] call :check_path
+
 :: use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
 set "bindir="
 set "extrapaths="
@@ -111,4 +113,30 @@ goto :eof
 :extrapath
 call :normalizepath %1 bindir
 set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;"
+goto :eof
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: check pyenv python shim is first in PATH
+:check_path
+set "python_shim=%~dp0..\shims\python.bat"
+if not exist "%python_shim%" goto :eof
+call :normalizepath %python_shim% python_shim
+set "python_where="
+for /f "delims=" %%f in ('where python') do call :set_python_where %%f
+:: On recent Windows versions, where finds python shim with shebang first
+if /i [%python_shim%]==[%python_where%.bat] goto :eof
+if /i [%python_shim%]==[%python_where%] goto :eof
+call :bad_path "%python_where%"
+exit /b 1
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: set python_where variable if empty
+:set_python_where
+if [%python_where%]==[] set "python_where=%~1"
+goto :eof
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: tell bad PATH and exit
+:bad_path
+set bad_python=%~1
+set bad_dir=%~dp1
+echo [91mFATAL: Found [95m%bad_python%[91m version before pyenv in PATH.[0m
+echo [91mPlease remove [95m%bad_dir%[91m from PATH for pyenv to work properly.[0m
 goto :eof

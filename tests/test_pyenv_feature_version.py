@@ -1,6 +1,9 @@
+import os
+import tempfile
+from pathlib import Path
 from tempenv import TemporaryEnvironment
 from test_pyenv import TestPyenvBase
-from test_pyenv_helpers import run_pyenv_test
+from test_pyenv_helpers import run_pyenv_test, touch
 
 
 def pyenv_version_help():
@@ -58,3 +61,22 @@ class TestPyenvFeatureVersion(TestPyenvBase):
             'local_ver': "3.8.8\n3.9.1\n"
         }
         run_pyenv_test(settings, commands)
+
+    def test_bad_path(self, setup):
+        with tempfile.TemporaryDirectory() as tmp_path:
+            def commands(ctx):
+                touch(Path(ctx.pyenv_path, r'shims\python.bat'))
+                stdout = ctx.pyenv("version")
+                expected = (f'\x1b[91mFATAL: Found \x1b[95m{tmp_path}\\python.exe\x1b[91m version '
+                            f'before pyenv in PATH.\x1b[0m\r\n'
+                            f'\x1b[91mPlease remove \x1b[95m{tmp_path}\\\x1b[91m from '
+                            f'PATH for pyenv to work properly.\x1b[0m\r\n'
+                            f'3.7.2 (set by {ctx.pyenv_path}\\version)')
+                # Fix 8.3 mismatch in GitHub actions
+                stdout = stdout.replace('RUNNER~1', 'runneradmin')
+                expected = expected.replace('RUNNER~1', 'runneradmin')
+                assert stdout == expected
+
+            touch(Path(tmp_path, 'python.exe'))
+            with TemporaryEnvironment({"PATH": f"{tmp_path};{os.environ['PATH']}"}):
+                run_pyenv_test({'global_ver': "3.7.2"}, commands)

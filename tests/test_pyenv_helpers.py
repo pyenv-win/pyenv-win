@@ -34,6 +34,11 @@ def script_exes(ver):
         yield f'easy_install{suffix}.exe'
 
 
+def touch(exe):
+    with open(exe, 'a'):
+        os.utime(exe, None)
+
+
 def pyenv_setup(settings):
     pyenv_path, local_path, versions, global_ver, local_ver =\
         settings['pyenv_path'],\
@@ -57,10 +62,6 @@ def pyenv_setup(settings):
     for f in files:
         shutil.copy(src_path.joinpath(f), Path(pyenv_path, f))
     versions_dir = Path(pyenv_path, r'versions')
-
-    def touch(exe):
-        with open(exe, 'a'):
-            os.utime(exe, None)
 
     def create_pythons(path):
         os.mkdir(path)
