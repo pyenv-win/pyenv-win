@@ -44,6 +44,7 @@ for %%a in (%commands%) do (
 :: jump to plugin or fall to exec
 if /i not [%1]==[exec] goto :plugin
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Specific case to exec commands
 :exec
 
 if not exist "%bindir%" (
@@ -61,10 +62,16 @@ if exist %bindir%\%2 set cmddir=%bindir%\
 if exist %bindir%\%2.exe set cmddir=%bindir%\
 if exist %bindir%\%2.bat set cmddir=%bindir%\
 set "path=%extrapaths%%path%"
+if [%_pyenv_exec%]==[] goto :exec_cmd
+echo '%2' not found ^(shim exists but target missing in '%bindir%'^)
+exit /b 1
+:exec_cmd
+set _pyenv_exec=%cmddir%%cmdline%
 %cmddir%%cmdline%
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Handle plugins (e.g. help, version)
 :plugin
 set "exe=%~dp0..\libexec\pyenv-%1"
 rem TODO needed?

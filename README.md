@@ -224,6 +224,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ### New in 2.64.10
 - Check `PATH` in `pyenv version` to report other Python versions.
+- Fix [#287](https://github.com/pyenv-win/pyenv-win/issues/287): No infinite loop and proper error message when shim unavailable for current version.
 
 ### New in 2.64.9
 - Feature [#210](https://github.com/pyenv-win/pyenv-win/issues/210): Support extended installer options
