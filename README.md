@@ -222,6 +222,9 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.10
+- Check `PATH` in `pyenv version` to report other Python versions.
+
 ### New in 2.64.9
 - Feature [#210](https://github.com/pyenv-win/pyenv-win/issues/210): Support extended installer options
 - Fix [#269](https://github.com/pyenv-win/pyenv-win/issues/269): Migration from travis-ci to GitHub Actions
