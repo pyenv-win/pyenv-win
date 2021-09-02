@@ -73,7 +73,7 @@ call :normalizepath %exe% exe
 if exist "%exe%.bat" (
   set "exe=call "%exe%.bat""
 
-) else if exist "%exe.cmd%" (
+) else if exist "%exe%.cmd" (
   set "exe=call "%exe%.cmd""
 
 ) else if exist "%exe%.vbs" (
