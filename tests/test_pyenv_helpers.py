@@ -67,6 +67,8 @@ def pyenv_setup(settings):
         os.mkdir(path)
         for exe in python_exes([f'{ver.major}', f'{ver.major}{ver.minor}', f'{ver.major}.{ver.minor}']):
             touch(path.joinpath(exe))
+        with open(path.joinpath('version.bat'), "w") as batch:
+            print(f"@echo {ver.major}.{ver.minor}.{ver.micro}", file=batch)
         return path
 
     def create_scripts(path):
@@ -75,6 +77,8 @@ def pyenv_setup(settings):
             touch(path.joinpath(exe))
         with open(path.joinpath('hello.bat'), "w") as batch:
             print("@echo Hello world!", file=batch)
+        with open(path.joinpath('version.bat'), "w") as batch:
+            print(f"@echo {ver.major}.{ver.minor}.{ver.micro}", file=batch)
 
     for v in versions:
         ver = version.parse(v)

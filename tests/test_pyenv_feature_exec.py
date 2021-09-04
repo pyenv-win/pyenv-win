@@ -129,13 +129,17 @@ class TestPyenvFeatureExec(TestPyenvBase):
     def test_many_paths(self, setup):
         args = ['exec', 'python', '-c', "import os; print(os.environ['PATH'])"]
         stdout, stderr = self.__class__.ctx.pyenv(args)
-        paths = stdout.split(sep=';')
-        i = 0
-        for v in ['3.7.7', '3.8.9']:
-            for relative in ['', r'\Scripts']:
-                assert paths[i].endswith(f'{v}{relative}')
-                i = i + 1
+        assert stdout.startswith(
+            (
+                rf"{self.__class__.ctx.pyenv_path}\versions\3.7.7;"
+                rf"{self.__class__.ctx.pyenv_path}\versions\3.7.7\Scripts;"
+                rf"{self.__class__.ctx.pyenv_path}\versions\3.8.9;"
+                rf"{self.__class__.ctx.pyenv_path}\versions\3.8.9\Scripts;"
+            )
+        )
         assert stderr == ""
+        args = ['exec', 'version']
+        assert self.__class__.ctx.pyenv(args) == ("3.7.7", "")
 
     def test_bat_shim(self, setup):
         args = ['exec', 'Scripts/hello']
