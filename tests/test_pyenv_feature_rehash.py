@@ -18,12 +18,15 @@ def assert_shims(pyenv_path, ver):
 class TestPyenvFeatureRehash(TestPyenvBase):
     def test_rehash_no_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv('rehash') == "No version installed. Please install one with 'pyenv install <version>'."
+            assert ctx.pyenv('rehash') == (
+                "No version installed. Please install one with 'pyenv install <version>'.",
+                ""
+            )
         run_pyenv_test({}, commands)
 
     def test_rehash_global_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv('rehash') == ""
+            assert ctx.pyenv('rehash') == ("", "")
             assert_shims(ctx.pyenv_path, '3.8.6')
             assert_shims(ctx.pyenv_path, '3.8.7')
         settings = {
@@ -34,7 +37,7 @@ class TestPyenvFeatureRehash(TestPyenvBase):
 
     def test_rehash_local_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv('rehash') == ""
+            assert ctx.pyenv('rehash') == ("", "")
             assert_shims(ctx.pyenv_path, '3.8.6')
             assert_shims(ctx.pyenv_path, '3.9.1')
         settings = {
@@ -46,7 +49,7 @@ class TestPyenvFeatureRehash(TestPyenvBase):
 
     def test_rehash_shell_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv('rehash') == ""
+            assert ctx.pyenv('rehash') == ("", "")
         global_ver = '3.7.5'
         local_ver = '3.8.6'
         shell_ver = '3.9.1'

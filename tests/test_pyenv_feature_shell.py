@@ -18,18 +18,20 @@ class TestPyenvFeatureShell(TestPyenvBase):
                 ["help", "shell"],
                 ["shell", "--help"],
             ]:
-                assert "\r\n".join(ctx.pyenv(args).splitlines()[:2]) == pyenv_shell_help()
+                stdout, stderr = ctx.pyenv(args)
+                assert "\r\n".join(stdout.splitlines()[:2]) == pyenv_shell_help()
+                stderr == ""
         run_pyenv_test({}, commands)
 
     def test_no_shell_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv("shell") == "no shell-specific version configured"
+            assert ctx.pyenv("shell") == ("no shell-specific version configured", "")
         with TemporaryEnvironment({"PYENV_VERSION": ""}):
             run_pyenv_test({}, commands)
 
     def test_shell_version_defined(self, setup):
         def commands(ctx):
-            assert ctx.pyenv("shell") == "3.9.2"
+            assert ctx.pyenv("shell") == ("3.9.2", "")
         with TemporaryEnvironment({"PYENV_VERSION": "3.9.2"}):
             run_pyenv_test({}, commands)
 
@@ -50,5 +52,5 @@ class TestPyenvFeatureShell(TestPyenvBase):
 
     def test_shell_set_unknown_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv(["shell", "3.7.8"]) == not_installed_output("3.7.8")
+            assert ctx.pyenv(["shell", "3.7.8"]) == (not_installed_output("3.7.8"), "")
         run_pyenv_test({'versions': ["3.8.9"]}, commands)
