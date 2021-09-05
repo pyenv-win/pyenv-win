@@ -56,9 +56,49 @@ set "__pyenv_cmdline=%*"
 set "__pyenv_cmdline=%__pyenv_cmdline:~5%"
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
-set "path=%__pyenv_extrapaths%%path%"
+call :remove_shims_from_path
 %__pyenv_cmdline%
 endlocal
+exit /b
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:remove_shims_from_path
+:: arcane magic courtesy of StackOverflow question 5471556
+
+set "__pyenv_path=%path%"
+set "__pyenv_path=%__pyenv_path:"=""%"
+set "__pyenv_path=%__pyenv_path:^=^^%"
+set "__pyenv_path=%__pyenv_path:&=^&%"
+set "__pyenv_path=%__pyenv_path:|=^|%"
+set "__pyenv_path=%__pyenv_path:<=^<%"
+set "__pyenv_path=%__pyenv_path:>=^>%"
+
+set "__pyenv_path=%__pyenv_path:;=^;^;%"
+rem ** This is the key line, the missing quote is intended
+set __pyenv_path=%__pyenv_path:""="%
+set "__pyenv_path=%__pyenv_path:"=""%"
+
+set "__pyenv_path=%__pyenv_path:;;="";""%"
+set "__pyenv_path=%__pyenv_path:^;^;=;%"
+set "__pyenv_path=%__pyenv_path:""="%"
+set "__pyenv_path=%__pyenv_path:"=""%"
+set "__pyenv_path=%__pyenv_path:"";""=";"%"
+set "__pyenv_path=%__pyenv_path:"""="%"
+
+set "__pyenv_python_shims=%~dp0..\shims"
+call :normalizepath "%__pyenv_python_shims%" __pyenv_python_shims
+set "path=%__pyenv_extrapaths%"
+
+setlocal EnableDelayedExpansion
+for %%a in ("!__pyenv_path!") do (
+    endlocal
+    if /i not "%%~a"=="%__pyenv_python_shims%" call :append_to_path %%~a
+    setlocal EnableDelayedExpansion
+)
+
+exit /b
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:append_to_path
+set "path=%path%%*;"
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :plugin
