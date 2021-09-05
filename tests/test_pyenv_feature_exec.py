@@ -142,7 +142,7 @@ class TestPyenvFeatureExec(TestPyenvBase):
         assert self.__class__.ctx.pyenv(args) == ("3.7.7", "")
 
     def test_bat_shim(self, setup):
-        args = ['exec', 'Scripts/hello']
+        args = ['exec', 'hello']
         assert self.__class__.ctx.pyenv(args) == ("Hello world!", "")
 
 

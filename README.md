@@ -222,6 +222,9 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.11
+- Fix [#305](https://github.com/pyenv-win/pyenv-win/issues/305): Fix `exec` preferring the last version listed in `.python-version` instead of the first.
+
 ### New in 2.64.10
 - Check `PATH` in `pyenv version` to report other Python versions.
 

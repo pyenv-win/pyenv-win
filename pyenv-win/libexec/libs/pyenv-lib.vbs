@@ -253,7 +253,7 @@ Function GetExtensionsNoPeriod(addPy)
 End Function
 
 ' pyenv - bin - windows
-Sub WriteWinScript(baseName, strDirBin)
+Sub WriteWinScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
     Dim filespec
     filespec = strDirShims &"\"& baseName &".bat"
@@ -261,21 +261,21 @@ Sub WriteWinScript(baseName, strDirBin)
         With objfs.CreateTextFile(filespec)
             .WriteLine("@echo off")
             .WriteLine("chcp 1250 > NUL")
-            .WriteLine("call pyenv exec "&strDirBin&"%~n0 %*")
+            .WriteLine("call pyenv exec %~n0 %*")
             .Close
         End With
     End If
 End Sub
 
 ' pyenv - bin - linux
-Sub WriteLinuxScript(baseName, strDirBin)
+Sub WriteLinuxScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
     Dim filespec
     filespec = strDirShims &"\"& baseName
     If Not objfs.FileExists(filespec) Then
         With objfs.CreateTextFile(filespec)
             .WriteLine("#!/bin/sh")
-            .WriteLine("pyenv exec "&strDirBin&"$(basename ""$0"") ""$@""")
+            .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
             .Close
         End With
     End If
@@ -305,8 +305,8 @@ Sub Rehash()
             ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName, ""
-                WriteLinuxScript baseName, ""
+                WriteWinScript baseName
+                WriteLinuxScript baseName
             End If
         Next
 
@@ -315,8 +315,8 @@ Sub Rehash()
                 ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
                 If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                     baseName = objfs.GetBaseName(file)
-                    WriteWinScript baseName, "Scripts/"
-                    WriteLinuxScript baseName, "Scripts/"
+                    WriteWinScript baseName
+                    WriteLinuxScript baseName
                 End If
             Next
         End If
