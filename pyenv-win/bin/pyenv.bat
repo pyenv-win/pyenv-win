@@ -157,16 +157,16 @@ set "python_shim=%~dp0..\shims\python.bat"
 if not exist "%python_shim%" goto :eof
 call :normalizepath "%python_shim%" python_shim
 set "python_where="
-for /f "delims=" %%f in ('where python') do call :set_python_where "%%f"
-:: On recent Windows versions, where finds python shim with shebang first
-if /i "%python_shim%"=="%python_where:~1,-1%.bat" goto :eof
-if /i "%python_shim%"=="%python_where:~1,-1%" goto :eof
-call :bad_path %python_where%
+for /f "delims=" %%a in ('where python') do (
+  if /i "%python_shim%"=="%%~dpfa" goto :eof
+  call :set_python_where %%~dpfa
+)
+call :bad_path "%python_where%"
 exit /b 1
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: set python_where variable if empty
 :set_python_where
-if [%python_where%]==[] set "python_where="%~1""
+if "%python_where%"=="" set "python_where=%*"
 goto :eof
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: tell bad PATH and exit
