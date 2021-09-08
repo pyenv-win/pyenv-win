@@ -226,6 +226,11 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 - Fix [#287](https://github.com/pyenv-win/pyenv-win/issues/287): Prevent infinite recursion by removing the shims directory from the path.
 - Fix [#259](https://github.com/pyenv-win/pyenv-win/issues/259): Correctly handle spaces in `pyenv` path.
 - Fix [#305](https://github.com/pyenv-win/pyenv-win/issues/305): Fix `exec` preferring the last version listed in `.python-version` instead of the first.
+  - **Note:** `pyenv rehash` must be called after upgrading. Expect the following error message if you don't:
+    ```
+    'Scripts' is not recognized as an internal or external command,
+    operable program or batch file.
+    ```
 
 ### New in 2.64.10
 - Check `PATH` in `pyenv version` to report other Python versions.
