@@ -62,37 +62,37 @@ endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :remove_shims_from_path
-:: arcane magic courtesy of StackOverflow question 5471556
-
+set "python_shims=%~dp0..\shims"
+call :normalizepath "%python_shims%" python_shims
 set "_path=%path%"
+set "path=%extrapaths%"
+
+:: arcane magic courtesy of StackOverflow question 5471556
+:: https://stackoverflow.com/a/7940444/381865
+setlocal DisableDelayedExpansion
 set "_path=%_path:"=""%"
 set "_path=%_path:^=^^%"
 set "_path=%_path:&=^&%"
 set "_path=%_path:|=^|%"
 set "_path=%_path:<=^<%"
 set "_path=%_path:>=^>%"
-
 set "_path=%_path:;=^;^;%"
-rem ** This is the key line, the missing quote is intended
 set _path=%_path:""="%
-set "_path=%_path:"=""%"
-
-set "_path=%_path:;;="";""%"
+set "_path=%_path:"=""Q%"
+set "_path=%_path:;;="S"S%"
 set "_path=%_path:^;^;=;%"
 set "_path=%_path:""="%"
-set "_path=%_path:"=""%"
-set "_path=%_path:"";""=";"%"
-set "_path=%_path:"""="%"
-
-set "python_shims=%~dp0..\shims"
-call :normalizepath "%python_shims%" python_shims
-set "path=%extrapaths%"
-
 setlocal EnableDelayedExpansion
-for %%a in ("!_path!") do (
+
+set "_path=!_path:"Q=!"
+for %%a in ("!_path:"S"S=";"!") do (
+  if "!!"=="" (
     endlocal
-    if /i not "%%~a"=="%python_shims%" call :append_to_path %%~a
-    setlocal EnableDelayedExpansion
+    endlocal
+  )
+  if %%a neq "" (
+    if /i not "%%~dpfa"=="%python_shims%" call :append_to_path %%~dpfa
+  )
 )
 
 exit /b
