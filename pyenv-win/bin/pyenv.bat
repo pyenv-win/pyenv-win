@@ -70,6 +70,7 @@ set "path=%extrapaths%"
 :: arcane magic courtesy of StackOverflow question 5471556
 :: https://stackoverflow.com/a/7940444/381865
 setlocal DisableDelayedExpansion
+:: escape all special characters
 set "_path=%_path:"=""%"
 set "_path=%_path:^=^^%"
 set "_path=%_path:&=^&%"
@@ -77,6 +78,7 @@ set "_path=%_path:|=^|%"
 set "_path=%_path:<=^<%"
 set "_path=%_path:>=^>%"
 set "_path=%_path:;=^;^;%"
+:: the 'missing' quotes below are intended
 set _path=%_path:""="%
 set "_path=%_path:"=""Q%"
 set "_path=%_path:;;="S"S%"
