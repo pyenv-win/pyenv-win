@@ -7,7 +7,7 @@ from pathlib import Path
 class TestPyenvBase:
     @pytest.fixture
     def setup(self):
-        pyenv_path = Path.cwd()
+        pyenv_path = Path(__file__).parent.parent
         bin_path = pyenv_path / 'pyenv-win' / 'bin'
         shims_path = pyenv_path / 'pyenv-win' / 'shims'
         sys.path.append(str(bin_path))

@@ -16,8 +16,7 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
                 ["global", "--help"],
             ]:
                 stdout, stderr = ctx.pyenv(args)
-                assert "\r\n".join(stdout.splitlines()[:2]) == pyenv_global_help()
-                assert stderr == ""
+                assert ("\r\n".join(stdout.splitlines()[:2]), stderr) == (pyenv_global_help(), "")
         run_pyenv_test({}, commands)
 
     def test_global_no_version(self, setup):

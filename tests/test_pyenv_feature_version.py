@@ -19,8 +19,7 @@ class TestPyenvFeatureVersion(TestPyenvBase):
                 ["version", "--help"],
             ]:
                 stdout, stderr = ctx.pyenv(args)
-                assert "\r\n".join(stdout.splitlines()[:2]).strip() == pyenv_version_help()
-                assert stderr == ""
+                assert ("\r\n".join(stdout.splitlines()[:2]).strip(), stderr) == (pyenv_version_help(), "")
         run_pyenv_test({}, commands)
 
     def test_no_version(self, setup):
@@ -87,8 +86,7 @@ class TestPyenvFeatureVersion(TestPyenvBase):
                 # Fix 8.3 mismatch in GitHub actions
                 stdout = stdout.replace('RUNNER~1', 'runneradmin')
                 expected = expected.replace('RUNNER~1', 'runneradmin')
-                assert stdout == expected
-                assert stderr == ""
+                assert (stdout, stderr) == (expected, "")
 
             touch(Path(tmp_path, 'python.exe'))
             with TemporaryEnvironment({"PATH": f"{tmp_path};{os.environ['PATH']}"}):
