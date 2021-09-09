@@ -103,6 +103,7 @@ class PyenvContext:
 class TempPyEnv:
     def __init__(self, settings):
         self.tmp_path = tempfile.TemporaryDirectory()
+        touch(Path(self.tmp_path.name, '.python-version'))
         settings['pyenv_path'] = pyenv_path = Path(self.tmp_path.name, 'pyenv dir with spaces')
         settings['local_path'] = local_path = Path(self.tmp_path.name, 'local dir with spaces')
         os.mkdir(pyenv_path)
