@@ -10,12 +10,15 @@ if [%1]==[] (
   exit /b
 )
 
+set "skip=0"
+for /f "delims=" %%i in ('echo skip') do (call :incrementskip)
+
 if /i [%1%2]==[version] call :check_path
 
 :: use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
 set "bindir="
 set "extrapaths="
-for /f %%i in ('%pyenv% vname') do call :extrapath "%~dp0..\versions\%%i"
+for /f "skip=%skip% delims=" %%i in ('echo skip ^&^& %pyenv% vname') do call :extrapath "%~dp0..\versions\%%i"
 
 :: all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
@@ -159,7 +162,7 @@ set "python_shim=%~dp0..\shims\python.bat"
 if not exist "%python_shim%" goto :eof
 call :normalizepath "%python_shim%" python_shim
 set "python_where="
-for /f "delims=" %%a in ('where python') do (
+for /f "skip=%skip% delims=" %%a in ('echo skip ^&^& where python') do (
   if /i "%python_shim%"=="%%~dpfa" goto :eof
   call :set_python_where %%~dpfa
 )
@@ -177,4 +180,14 @@ set "bad_python=%~1"
 set "bad_dir=%~dp1"
 echo [91mFATAL: Found [95m%bad_python%[91m version before pyenv in PATH.[0m
 echo [91mPlease remove [95m%bad_dir%[91m from PATH for pyenv to work properly.[0m
+goto :eof
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: if AutoExec/AutoRun is configured for cmd it probably ends with the `cls` command
+:: meaning there will be a Form Feed (U+000C) included in the output.
+:: so we add it as a dilimiter so that we can skip x number of lines.
+:: we find out how many to skip and pass that tot the skip option of the for loop,
+:: EXCEPT skip=0 gives errors...
+:: so we prepend every command with `echo skip` to force skip being at least 1
+:incrementskip
+set /a skip=%skip%+1
 goto :eof
