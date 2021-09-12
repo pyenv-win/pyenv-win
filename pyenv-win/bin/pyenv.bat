@@ -10,15 +10,17 @@ if [%1]==[] (
   exit /b
 )
 
-set "skip=0"
+set "skip=-1"
 for /f "delims=" %%i in ('echo skip') do (call :incrementskip)
+if [%skip%]==[0] set "skip_arg="
+if not [%skip%]==[0] set "skip_arg=skip=%skip% "
 
 if /i [%1%2]==[version] call :check_path
 
 :: use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
 set "bindir="
 set "extrapaths="
-for /f "skip=%skip% delims=" %%i in ('echo skip ^&^& %pyenv% vname') do call :extrapath "%~dp0..\versions\%%i"
+for /f "%skip_arg%delims=" %%i in ('%pyenv% vname') do call :extrapath "%~dp0..\versions\%%i"
 
 :: all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
@@ -83,13 +85,17 @@ set "_path=%_path:>=^>%"
 set "_path=%_path:;=^;^;%"
 :: the 'missing' quotes below are intended
 set _path=%_path:""="%
+:: " => ""Q (like quote)
 set "_path=%_path:"=""Q%"
+:: ;; => "S"S (like semicolon)
 set "_path=%_path:;;="S"S%"
 set "_path=%_path:^;^;=;%"
 set "_path=%_path:""="%"
 setlocal EnableDelayedExpansion
 
+:: "Q => <empty>
 set "_path=!_path:"Q=!"
+:: "S"S => ";"
 for %%a in ("!_path:"S"S=";"!") do (
   if "!!"=="" (
     endlocal
@@ -162,7 +168,7 @@ set "python_shim=%~dp0..\shims\python.bat"
 if not exist "%python_shim%" goto :eof
 call :normalizepath "%python_shim%" python_shim
 set "python_where="
-for /f "skip=%skip% delims=" %%a in ('echo skip ^&^& where python') do (
+for /f "%skip_arg%delims=" %%a in ('where python') do (
   if /i "%python_shim%"=="%%~dpfa" goto :eof
   call :set_python_where %%~dpfa
 )
