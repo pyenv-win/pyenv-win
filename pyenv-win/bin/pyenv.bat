@@ -56,12 +56,8 @@ set cmdline=%*
 set cmdline=%cmdline:~5%
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
-set cmddir=
-if exist %bindir%\%2 set cmddir=%bindir%\
-if exist %bindir%\%2.exe set cmddir=%bindir%\
-if exist %bindir%\%2.bat set cmddir=%bindir%\
 set "path=%extrapaths%%path%"
-%cmddir%%cmdline%
+%cmdline%
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

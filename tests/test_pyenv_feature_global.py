@@ -15,23 +15,25 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
                 ["help", "global"],
                 ["global", "--help"],
             ]:
-                assert "\r\n".join(ctx.pyenv(args).splitlines()[:2]) == pyenv_global_help()
+                stdout, stderr = ctx.pyenv(args)
+                assert "\r\n".join(stdout.splitlines()[:2]) == pyenv_global_help()
+                assert stderr == ""
         run_pyenv_test({}, commands)
 
     def test_global_no_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv("global") == "no global version configured"
+            assert ctx.pyenv("global") == ("no global version configured", "")
         run_pyenv_test({}, commands)
 
     def test_global_version_defined(self, setup):
         def commands(ctx):
-            assert ctx.pyenv("global") == "3.8.9"
+            assert ctx.pyenv("global") == ("3.8.9", "")
         run_pyenv_test({'global_ver': "3.8.9"}, commands)
 
     def test_global_set_installed_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv(["global", "3.7.7"]) == ""
-            assert ctx.pyenv("global") == "3.7.7"
+            assert ctx.pyenv(["global", "3.7.7"]) == ("", "")
+            assert ctx.pyenv("global") == ("3.7.7", "")
         settings = {
             'versions': ["3.7.7", "3.8.9"],
             'global_ver': "3.8.9"
@@ -40,7 +42,7 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
 
     def test_global_set_unknown_version(self, setup):
         def commands(ctx):
-            assert ctx.pyenv(["global", "3.7.8"]) == not_installed_output("3.7.8")
+            assert ctx.pyenv(["global", "3.7.8"]) == (not_installed_output("3.7.8"), "")
         settings = {
             'versions': ["3.8.9"],
             'global_ver': "3.8.9",
@@ -49,8 +51,8 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
 
     def test_global_unset(self, setup):
         def commands(ctx):
-            assert ctx.pyenv(["global", "--unset"]) == ""
-            assert ctx.pyenv("global") == "no global version configured"
+            assert ctx.pyenv(["global", "--unset"]) == ("", "")
+            assert ctx.pyenv("global") == ("no global version configured", "")
         settings = {
             'versions': ["3.8.9"],
             'global_ver': "3.8.9",
