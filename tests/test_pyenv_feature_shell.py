@@ -19,8 +19,7 @@ class TestPyenvFeatureShell(TestPyenvBase):
                 ["shell", "--help"],
             ]:
                 stdout, stderr = ctx.pyenv(args)
-                assert "\r\n".join(stdout.splitlines()[:2]) == pyenv_shell_help()
-                stderr == ""
+                assert ("\r\n".join(stdout.splitlines()[:2]), stderr) == (pyenv_shell_help(), "")
         run_pyenv_test({}, commands)
 
     def test_no_shell_version(self, setup):

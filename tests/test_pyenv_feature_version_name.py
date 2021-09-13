@@ -12,8 +12,7 @@ def test_version_name_help():
         ]:
             stdout, stderr = ctx.pyenv(args)
             stdout = "\r\n".join(stdout.splitlines()[:2]).strip()
-            assert stdout == "Usage: pyenv version-name"
-            assert stderr == ""
+            assert (stdout, stderr) == ("Usage: pyenv version-name", "")
     run_pyenv_test({}, commands)
 
 
@@ -26,8 +25,7 @@ def test_vname_help():
         ]:
             stdout, stderr = ctx.pyenv(args)
             stdout = "\r\n".join(stdout.splitlines()[:2]).strip()
-            assert stdout == "Usage: pyenv vname"
-            assert stderr == ""
+            assert (stdout, stderr) == ("Usage: pyenv vname", "")
     run_pyenv_test({}, commands)
 
 

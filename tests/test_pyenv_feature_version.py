@@ -19,8 +19,7 @@ class TestPyenvFeatureVersion(TestPyenvBase):
                 ["version", "--help"],
             ]:
                 stdout, stderr = ctx.pyenv(args)
-                assert "\r\n".join(stdout.splitlines()[:2]).strip() == pyenv_version_help()
-                assert stderr == ""
+                assert ("\r\n".join(stdout.splitlines()[:2]).strip(), stderr) == (pyenv_version_help(), "")
         run_pyenv_test({}, commands)
 
     def test_no_version(self, setup):
@@ -75,21 +74,19 @@ class TestPyenvFeatureVersion(TestPyenvBase):
         run_pyenv_test(settings, commands)
 
     def test_bad_path(self, setup):
-        with tempfile.TemporaryDirectory() as tmp_path:
-            def commands(ctx):
+        def commands(ctx):
+            touch(Path(ctx.local_path, 'python.exe'))
+            with TemporaryEnvironment({"PATH": f"{ctx.local_path};{os.environ['PATH']}"}):
                 touch(Path(ctx.pyenv_path, r'shims\python.bat'))
                 stdout, stderr = ctx.pyenv("version")
-                expected = (f'\x1b[91mFATAL: Found \x1b[95m{tmp_path}\\python.exe\x1b[91m version '
+                expected = (f'\x1b[91mFATAL: Found \x1b[95m{ctx.local_path}\\python.exe\x1b[91m version '
                             f'before pyenv in PATH.\x1b[0m\r\n'
-                            f'\x1b[91mPlease remove \x1b[95m{tmp_path}\\\x1b[91m from '
+                            f'\x1b[91mPlease remove \x1b[95m{ctx.local_path}\\\x1b[91m from '
                             f'PATH for pyenv to work properly.\x1b[0m\r\n'
                             f'3.7.2 (set by {ctx.pyenv_path}\\version)')
                 # Fix 8.3 mismatch in GitHub actions
                 stdout = stdout.replace('RUNNER~1', 'runneradmin')
                 expected = expected.replace('RUNNER~1', 'runneradmin')
-                assert stdout == expected
-                assert stderr == ""
+                assert (stdout, stderr) == (expected, "")
 
-            touch(Path(tmp_path, 'python.exe'))
-            with TemporaryEnvironment({"PATH": f"{tmp_path};{os.environ['PATH']}"}):
-                run_pyenv_test({'global_ver': "3.7.2"}, commands)
+        run_pyenv_test({'global_ver': "3.7.2"}, commands)

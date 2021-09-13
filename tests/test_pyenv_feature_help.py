@@ -7,6 +7,5 @@ class TestPyenvFeatureGlobal(TestPyenvBase):
         def commands(ctx):
             stdout, stderr = ctx.pyenv("help")
             stdout = "\r\n".join(stdout.splitlines()[:2])
-            assert stdout.strip() == "Usage: pyenv <command> [<args>]"
-            assert stderr == ""
+            assert (stdout.strip(), stderr) == ("Usage: pyenv <command> [<args>]", "")
         run_pyenv_test({}, commands)
