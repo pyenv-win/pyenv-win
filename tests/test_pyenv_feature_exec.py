@@ -117,7 +117,7 @@ class TestPyenvFeatureExec(TestPyenvBase):
         with open(tmp_bat, "w") as f:
             # must chain commands because env var is lost when cmd ends
             print(f'@echo %PATH%', file=f)
-            print(f'@call {python} -V>nul', file=f)
+            print(f'@call "{python}" -V>nul', file=f)
             print(f'@echo %PATH%', file=f)
         args = ["call", tmp_bat]
         stdout, stderr = self.__class__.ctx.exec(args)

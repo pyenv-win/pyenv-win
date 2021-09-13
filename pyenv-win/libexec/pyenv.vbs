@@ -46,7 +46,7 @@ End Function
 Sub PrintVersion(cmd, exitCode)
     ' WScript.echo "kkotari: pyenv.vbs print version..!"
     Dim help
-    help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat")
+    help = getCommandOutput("cmd /c """& strDirLibs &"\"& cmd &".bat""")
     WScript.Echo help
     WScript.Quit exitCode
 End Sub
@@ -54,7 +54,7 @@ End Sub
 Sub PrintHelp(cmd, exitCode)
     ' WScript.echo "kkotari: pyenv.vbs print help..!"
     Dim help
-    help = getCommandOutput("cmd /c "& strDirLibs &"\"& cmd &".bat --help")
+    help = getCommandOutput("cmd /c """& strDirLibs &"\"& cmd &".bat"" --help")
     WScript.Echo help
     WScript.Quit exitCode
 End Sub
@@ -154,7 +154,7 @@ Sub CommandWhich(arg)
 
     WScript.Echo "pyenv: "& arg(1) &": command not found"
 
-    version = getCommandOutput("cscript //Nologo "& WScript.ScriptFullName &" whence "& program)
+    version = getCommandOutput("cscript //Nologo """& WScript.ScriptFullName &""" whence "& program)
     If Trim(version) <> "" Then
         WScript.Echo
         WScript.Echo "The '"& arg(1) &"' command exists in these Python versions:"
