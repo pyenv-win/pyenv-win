@@ -20,21 +20,22 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"
-    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...] [-r|--register]"
+    WScript.Echo "Usage: pyenv install [-s] [-f] <version> [<version> ...] [-r|--register]"
     WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
-    WScript.Echo "  -l/--list      List all available versions"
-    WScript.Echo "  -a/--all       Installs all known version from the local version DB cache"
-    WScript.Echo "  -c/--clear     Removes downloaded installers from the cache to free space"
-    WScript.Echo "  -f/--force     Install even if the version appears to be installed already"
-    WScript.Echo "  -r/--register  Register version for py launcher"
-    WScript.Echo "  -q/--quiet     Install using /quiet. This does not show the UI nor does it prompt for inputs"
-    WScript.Echo "  --32only       Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --64only       Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --dev          Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
-    WScript.Echo "  --help         Help, list of options allowed on pyenv install"
+    WScript.Echo "  -l/--list           List all available versions"
+    WScript.Echo "  -a/--all            Installs all known version from the local version DB cache"
+    WScript.Echo "  -c/--clear          Removes downloaded installers from the cache to free space"
+    WScript.Echo "  -f/--force          Install even if the version appears to be installed already"
+    WScript.Echo "  -s/--skip-existing  Skips installation if the version appears to be installed already"
+    WScript.Echo "  -r/--register       Register version for py launcher"
+    WScript.Echo "  -q/--quiet          Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only            Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only            Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --dev               Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
+    WScript.Echo "  --help              Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -312,6 +313,7 @@ Sub main(arg)
 
     Dim idx
     Dim optForce
+    Dim optSkip
     Dim optList
     Dim optQuiet
     Dim optAll
@@ -323,6 +325,7 @@ Sub main(arg)
     Dim installVersions
 
     optForce = False
+    optSkip = False
     optList = False
     optQuiet = False
     optAll = False
@@ -334,22 +337,24 @@ Sub main(arg)
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"       ShowHelp
-            Case "-l"           optList = True
-            Case "--list"       optList = True
-            Case "-f"           optForce = True
-            Case "--force"      optForce = True
-            Case "-q"           optQuiet = True
-            Case "--quiet"      optQuiet = True
-            Case "-a"           optAll = True
-            Case "--all"        optAll = True
-            Case "-c"           optClear = True
-            Case "--clear"      optClear = True
-            Case "--32only"     opt32 = True
-            Case "--64only"     opt64 = True
-            Case "--dev"        optDev = True
-            Case "-r"           optReg = True
-            Case "--register"   optReg = True
+            Case "--help"           ShowHelp
+            Case "-l"               optList = True
+            Case "--list"           optList = True
+            Case "-f"               optForce = True
+            Case "--force"          optForce = True
+            Case "-s"               optSkip = True
+            Case "--skip-existing"  optSkip = True
+            Case "-q"               optQuiet = True
+            Case "--quiet"          optQuiet = True
+            Case "-a"               optAll = True
+            Case "--all"            optAll = True
+            Case "-c"               optClear = True
+            Case "--clear"          optClear = True
+            Case "--32only"         opt32 = True
+            Case "--64only"         opt64 = True
+            Case "--dev"            optDev = True
+            Case "-r"               optReg = True
+            Case "--register"       optReg = True
             Case Else
                 installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
