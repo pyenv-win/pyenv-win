@@ -128,7 +128,7 @@ Get pyenv-win via one of the following methods:
          [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
          [System.Environment]::SetEnvironmentVariable('PYENV_ROOT',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
          ```
-         Note: PYENV_ROOT is to support pipenv
+         Note: `PYENV_ROOT` is to support pipenv. In case another application is unable to find/use pyenv, try setting `PYENV_HOME` as well for compatibility, using the above command and replacing `ROOT` with `HOME`.
 
    2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows 8/above Terminal:
       
