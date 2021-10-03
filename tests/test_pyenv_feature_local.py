@@ -1,45 +1,42 @@
-from test_pyenv import TestPyenvBase
-from test_pyenv_helpers import local_python_versions, not_installed_output, run_pyenv_test
+import pytest
+
+from test_pyenv_helpers import local_python_versions, not_installed_output, Native, Arch
 
 
-class TestPyenvFeatureLocal(TestPyenvBase):
-    def test_no_local_version(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv("local") == ("no local version configured for this directory", "")
-        run_pyenv_test({}, commands)
+def test_no_local_version(pyenv):
+    assert pyenv.local() == ("no local version configured for this directory", "")
 
-    def test_local_version_defined(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv("local") == ("3.8.9", "")
-        run_pyenv_test({'local_ver': "3.8.9"}, commands)
 
-    def test_local_set_installed_version(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv(["local", "3.7.7"]) == ("", "")
-            assert ctx.pyenv("local") == ("3.7.7", "")
-        settings = {
-            'versions': ["3.7.7", "3.8.9"],
-            'local_ver': "3.8.9",
-        }
-        run_pyenv_test(settings, commands)
+@pytest.mark.parametrize('settings', [lambda: {'local_ver': Native("3.8.9")}])
+def test_local_version_defined(pyenv):
+    assert pyenv.local() == (Native("3.8.9"), "")
 
-    def test_local_set_unknown_version(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv(["local", "3.7.8"]) == (not_installed_output("3.7.8"), "")
-        run_pyenv_test({'versions': ["3.8.9"]}, commands)
 
-    def test_local_set_many_versions(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv(["local", "3.7.7", "3.8.9"]) == ("", "")
-            assert local_python_versions(ctx.local_path) == "3.7.7\n3.8.9"
-        run_pyenv_test({'versions': ["3.7.7", "3.8.9"]}, commands)
+@pytest.mark.parametrize('settings', [lambda: {
+    'versions': [Native("3.7.7"), Native("3.8.9")],
+    'local_ver': Native("3.8.9"),
+}])
+def test_local_set_installed_version(pyenv):
+    assert pyenv.local(Arch("3.7.7")) == ("", "")
+    assert pyenv.local() == (Native("3.7.7"), "")
 
-    def test_local_set_many_versions_one_not_installed(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv(["local", "3.7.7", "3.8.9"]) == (not_installed_output("3.8.9"), "")
-        run_pyenv_test({'versions': ["3.7.7"]}, commands)
 
-    def test_local_many_versions_defined(self, setup):
-        def commands(ctx):
-            assert ctx.pyenv("local") == ("3.7.7\r\n3.8.9", "")
-        run_pyenv_test({'local_ver': "3.7.7\n3.8.9\n"}, commands)
+@pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.8.9")]}])
+def test_local_set_unknown_version(pyenv):
+    assert pyenv.local(Arch("3.7.8")) == (not_installed_output(Native("3.7.8")), "")
+
+
+@pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7"), Native("3.8.9")]}])
+def test_local_set_many_versions(local_path, pyenv):
+    assert pyenv.local(Arch("3.7.7"), Arch("3.8.9")) == ("", "")
+    assert local_python_versions(local_path) == "\n".join([Native('3.7.7'), Native('3.8.9')])
+
+
+@pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7")]}])
+def test_local_set_many_versions_one_not_installed(pyenv):
+    assert pyenv.local(Arch("3.7.7"), Arch("3.8.9")) == (not_installed_output(Native("3.8.9")), "")
+
+
+@pytest.mark.parametrize('settings', [lambda: {'local_ver': [Native('3.7.7'), Native('3.8.9')]}])
+def test_local_many_versions_defined(pyenv):
+    assert pyenv.local() == ("\r\n".join([Native('3.7.7'), Native('3.8.9')]), "")

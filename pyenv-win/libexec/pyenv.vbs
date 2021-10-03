@@ -121,7 +121,7 @@ Sub CommandWhich(arg)
     For Each version In versions
 
         If Not objfs.FolderExists(strDirVers &"\"& version) Then
-            WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
+            WScript.Echo "pyenv: version '"& version &"' is not installed (set by "& version &")"
             WScript.Quit 1
         End If
 
