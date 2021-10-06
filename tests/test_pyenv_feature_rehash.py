@@ -1,7 +1,6 @@
 import pytest
 from packaging import version
 from pathlib import Path
-from tempenv import TemporaryEnvironment
 from test_pyenv_helpers import python_exes, script_exes, Native
 
 
@@ -49,5 +48,5 @@ def test_rehash_local_version(pyenv_path, pyenv):
         'local_ver': Native('3.8.6')
     }])
 def test_rehash_shell_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native('3.9.1')}):
-        assert pyenv.rehash() == ("", "")
+    env = {"PYENV_VERSION": Native('3.9.1')}
+    assert pyenv.rehash(env=env) == ("", "")

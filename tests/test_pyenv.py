@@ -1,22 +1,20 @@
-import sys
-import subprocess
 
 
-def test_check_pyenv_path(bin_path):
+def test_check_pyenv_path(bin_path, run):
     assert bin_path.exists() is True
-    assert str(bin_path) in sys.path
+    assert str(bin_path) in run('echo', '%PATH%')[0]
 
 
 def test_check_pyenv_version(src_path, pyenv):
     ver_path = str(src_path / '.version')
     version = open(ver_path).read().strip()
-    result = subprocess.run(['pyenv'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    assert version in str(result.stdout, "utf-8")
+    stdout, stderr = pyenv()
+    assert version in stdout
 
 
 def test_check_pyenv_features_list(pyenv):
-    result = subprocess.run(['pyenv'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result = str(result.stdout, "utf-8")
+    result, stderr = pyenv()
+    assert stderr == ''
     assert 'commands' in result
     assert 'duplicate' in result
     assert 'local' in result

@@ -2,7 +2,6 @@ import pytest
 
 import os
 from pathlib import Path
-from tempenv import TemporaryEnvironment
 from test_pyenv_helpers import touch, Native
 
 
@@ -51,8 +50,8 @@ def test_one_local_version(local_path, pyenv):
         'local_ver': Native("3.8.6"),
     }])
 def test_shell_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.2")}):
-        assert pyenv.version() == (f"{Native('3.9.2')} (set by %PYENV_VERSION%)", "")
+    env = {"PYENV_VERSION": Native("3.9.2")}
+    assert pyenv.version(env=env) == (f"{Native('3.9.2')} (set by %PYENV_VERSION%)", "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {
@@ -72,15 +71,15 @@ def test_many_local_versions(local_path, pyenv):
 @pytest.mark.parametrize('settings', [lambda: {'global_ver': Native("3.7.2")}])
 def test_bad_path(local_path, pyenv_path, pyenv):
     touch(Path(local_path, 'python.exe'))
-    with TemporaryEnvironment({"PATH": f"{local_path};{os.environ['PATH']}"}):
-        touch(Path(pyenv_path, r'shims\python.bat'))
-        stdout, stderr = pyenv.version()
-        expected = (f'\x1b[91mFATAL: Found \x1b[95m{local_path}\\python.exe\x1b[91m version '
-                    f'before pyenv in PATH.\x1b[0m\r\n'
-                    f'\x1b[91mPlease remove \x1b[95m{local_path}\\\x1b[91m from '
-                    f'PATH for pyenv to work properly.\x1b[0m\r\n'
-                    f'{Native("3.7.2")} (set by {pyenv_path}\\version)')
-        # Fix 8.3 mismatch in GitHub actions
-        stdout = stdout.replace('RUNNER~1', 'runneradmin')
-        expected = expected.replace('RUNNER~1', 'runneradmin')
-        assert (stdout, stderr) == (expected, "")
+    touch(Path(pyenv_path, r'shims\python.bat'))
+    env = {"PATH": f"{local_path};{os.environ['PATH']}"}
+    stdout, stderr = pyenv.version(env=env)
+    expected = (f'\x1b[91mFATAL: Found \x1b[95m{local_path}\\python.exe\x1b[91m version '
+                f'before pyenv in PATH.\x1b[0m\r\n'
+                f'\x1b[91mPlease remove \x1b[95m{local_path}\\\x1b[91m from '
+                f'PATH for pyenv to work properly.\x1b[0m\r\n'
+                f'{Native("3.7.2")} (set by {pyenv_path}\\version)')
+    # Fix 8.3 mismatch in GitHub actions
+    stdout = stdout.replace('RUNNER~1', 'runneradmin')
+    expected = expected.replace('RUNNER~1', 'runneradmin')
+    assert (stdout, stderr) == (expected, "")

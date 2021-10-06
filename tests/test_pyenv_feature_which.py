@@ -1,5 +1,4 @@
 import pytest
-from tempenv import TemporaryEnvironment
 
 from test_pyenv_helpers import Native
 
@@ -49,12 +48,12 @@ def test_which_exists_is_local(pyenv_path, pyenv):
 
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native('3.8.5')]}])
 def test_which_exists_is_shell(pyenv_path, pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.8.5")}):
-        for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
-            sub_dir = '' if 'python' in name else 'Scripts\\'
-            stdout, stderr = pyenv.which(name)
-            assert_paths_equal(stdout, rf'{pyenv_path}\versions\{Native("3.8.5")}\{sub_dir}{name}.exe')
-            assert stderr == ""
+    env = {"PYENV_VERSION": Native("3.8.5")}
+    for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
+        sub_dir = '' if 'python' in name else 'Scripts\\'
+        stdout, stderr = pyenv.which(name, env=env)
+        assert_paths_equal(stdout, rf'{pyenv_path}\versions\{Native("3.8.5")}\{sub_dir}{name}.exe')
+        assert stderr == ""
 
 
 @pytest.mark.parametrize('settings', [lambda: {'global_ver': Native('3.8.5')}])
@@ -70,9 +69,9 @@ def test_which_exists_is_local_not_installed(pyenv):
 
 
 def test_which_exists_is_shell_not_installed(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.8.5")}):
-        for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
-            assert pyenv.which(name) == (f"pyenv: version '{Native('3.8.5')}' is not installed (set by {Native('3.8.5')})", "")
+    env = {"PYENV_VERSION": Native("3.8.5")}
+    for name in ['python', 'python3', 'python38', 'pip3', 'pip3.8']:
+        assert pyenv.which(name, env=env) == (f"pyenv: version '{Native('3.8.5')}' is not installed (set by {Native('3.8.5')})", "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {
@@ -117,19 +116,19 @@ def test_which_exists_is_local_other_version(pyenv):
         'versions': [Native('3.8.2'), Native('3.8.6'), Native('3.9.1')],
     }])
 def test_which_exists_is_shell_other_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.1")}):
-        for name in ['python38', 'python3.8', 'pip3.8']:
-            assert pyenv.which(name) == (
-                (
-                    f"pyenv: {name}: command not found\r\n"
-                    f"\r\n"
-                    f"The '{name}' command exists in these Python versions:\r\n"
-                    f"  {Native('3.8.2')}\r\n"
-                    f"  {Native('3.8.6')}\r\n"
-                    f"  "
-                ),
-                ""
-            )
+    env = {"PYENV_VERSION": Native("3.9.1")}
+    for name in ['python38', 'python3.8', 'pip3.8']:
+        assert pyenv.which(name, env=env) == (
+            (
+                f"pyenv: {name}: command not found\r\n"
+                f"\r\n"
+                f"The '{name}' command exists in these Python versions:\r\n"
+                f"  {Native('3.8.2')}\r\n"
+                f"  {Native('3.8.6')}\r\n"
+                f"  "
+            ),
+            ""
+        )
 
 
 @pytest.mark.parametrize('settings', [lambda: {

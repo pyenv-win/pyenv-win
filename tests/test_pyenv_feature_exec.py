@@ -16,14 +16,15 @@ def settings():
     }
 
 
-@pytest.fixture(autouse=True)
-def tmp_env_var_path(pyenv_path):
-    environment = TemporaryEnvironment({"PATH": f"{os.path.dirname(sys.executable)};"
-                                                f"{str(Path(pyenv_path, 'bin'))};"
-                                                f"{str(Path(pyenv_path, 'shims'))};"
-                                                f"{os.environ['PATH']}"})
+@pytest.fixture()
+def env(pyenv_path):
+    env = {"PATH": f"{os.path.dirname(sys.executable)};" \
+                     f"{str(Path(pyenv_path, 'bin'))};" \
+                     f"{str(Path(pyenv_path, 'shims'))};" \
+                     f"{os.environ['PATH']}"}
+    environment = TemporaryEnvironment(env)
     with environment:
-        yield
+        yield env
 
 
 @pytest.fixture(autouse=True)
@@ -79,15 +80,16 @@ def remove_python_exe(pyenv, pyenv_path, settings):
         "Imbalance Double Quote",
     ]
 )
-def test_exec_arg(command, arg, pyenv_path, exec):
-    with TemporaryEnvironment({'World': 'Earth'}):
-        stdout, stderr = exec(
-            *command(pyenv_path),
-            "-c",
-            "import sys; print(sys.argv[1])",
-            arg
-        )
-        assert (stdout, stderr) == (arg.replace('%World%', 'Earth'), "")
+def test_exec_arg(command, arg, env, pyenv_path, run):
+    env['World'] = 'Earth'
+    stdout, stderr = run(
+        *command(pyenv_path),
+        "-c",
+        "import sys; print(sys.argv[1])",
+        arg,
+        env=env
+    )
+    assert (stdout, stderr) == (arg.replace('%World%', 'Earth'), "")
 
 
 @pytest.mark.parametrize(
@@ -103,12 +105,12 @@ def test_exec_arg(command, arg, pyenv_path, exec):
         "exec --help",
     ]
 )
-def test_exec_help(args, pyenv):
-    stdout, stderr = pyenv(*args)
+def test_exec_help(args, env, pyenv):
+    stdout, stderr = pyenv(*args, env=env)
     assert ("\r\n".join(stdout.splitlines()[:1]), stderr) == (pyenv_exec_help(), "")
 
 
-def test_path_not_updated(pyenv_path, local_path, exec):
+def test_path_not_updated(pyenv_path, local_path, env, run):
     python = str(pyenv_path / "shims" / "python.bat")
     tmp_bat = str(Path(local_path, "tmp.bat"))
     with open(tmp_bat, "w") as f:
@@ -116,13 +118,13 @@ def test_path_not_updated(pyenv_path, local_path, exec):
         print(f'@echo %PATH%', file=f)
         print(f'@call "{python}" -V>nul', file=f)
         print(f'@echo %PATH%', file=f)
-    stdout, stderr = exec("call", tmp_bat)
+    stdout, stderr = run("call", tmp_bat, env=env)
     path = os.environ['PATH']
     assert (stdout, stderr) == (f"{path}\r\n{path}", "")
 
 
-def test_many_paths(pyenv_path, pyenv):
-    stdout, stderr = pyenv.exec('python', '-c', "import os; print(os.environ['PATH'])")
+def test_many_paths(pyenv_path, env, pyenv):
+    stdout, stderr = pyenv.exec('python', '-c', "import os; print(os.environ['PATH'])", env=env)
     assert stderr == ""
     assert stdout.startswith(
         (

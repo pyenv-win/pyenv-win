@@ -1,5 +1,4 @@
 import pytest
-from tempenv import TemporaryEnvironment
 
 from test_pyenv_helpers import Native
 
@@ -59,8 +58,8 @@ def test_one_local_version(command, pyenv):
     }])
 @pytest.mark.parametrize("command", ['version-name', 'vname'])
 def test_shell_version(command, pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.2")}):
-        assert pyenv(command) == (Native("3.9.2"), "")
+    env = {"PYENV_VERSION": Native("3.9.2")}
+    assert pyenv(command, env=env) == (Native("3.9.2"), "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {

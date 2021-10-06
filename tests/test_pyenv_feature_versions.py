@@ -1,5 +1,4 @@
 import pytest
-from tempenv import TemporaryEnvironment
 
 from test_pyenv_helpers import Native
 
@@ -69,15 +68,15 @@ def test_list_current_local_many_versions(local_path, pyenv):
         'local_ver': Native("3.6.5")
     }])
 def test_list_current_shell_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.1")}):
-        assert pyenv.versions() == (
-            (
-                f"  {Native('3.6.5')}\r\n"
-                f"  {Native('3.7.7')}\r\n"
-                f"* {Native('3.9.1')} (set by %PYENV_VERSION%)"
-            ),
-            ""
-        )
+    env = {"PYENV_VERSION": Native("3.9.1")}
+    assert pyenv.versions(env=env) == (
+        (
+            f"  {Native('3.6.5')}\r\n"
+            f"  {Native('3.7.7')}\r\n"
+            f"* {Native('3.9.1')} (set by %PYENV_VERSION%)"
+        ),
+        ""
+    )
 
 
 @pytest.mark.parametrize('settings', [lambda: {
@@ -117,12 +116,12 @@ def test_list_uninstalled_local_version(pyenv):
         'local_ver': Native("3.6.5")
     }])
 def test_list_uninstalled_shell_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.2")}):
-        assert pyenv.versions() == (
-            (
-                f"  {Native('3.6.5')}\r\n"
-                f"  {Native('3.7.7')}\r\n"
-                f"  {Native('3.9.1')}"
-            ),
-            ""
-        )
+    env = {"PYENV_VERSION": Native("3.9.2")}
+    assert pyenv.versions(env=env) == (
+        (
+            f"  {Native('3.6.5')}\r\n"
+            f"  {Native('3.7.7')}\r\n"
+            f"  {Native('3.9.1')}"
+        ),
+        ""
+    )

@@ -1,9 +1,9 @@
 import subprocess
 
 
-def test_check_pyenv_install_list():
-    result = subprocess.run(['pyenv', 'install', '-l'], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result = str(result.stdout, "utf-8")
+def test_check_pyenv_install_list(pyenv):
+    result, stderr = pyenv.install('-l')
+    assert stderr == ""
     assert "Mirror: https://www.python.org/ftp/python" in result
     assert "2.7.17-win32" in result
     assert "2.7.17" in result

@@ -1,8 +1,16 @@
 import pytest
 
+import shutil
 from pathlib import Path
-from tempenv import TemporaryEnvironment
 from test_pyenv_helpers import not_installed_output, Native, Arch
+
+
+@pytest.fixture(scope="module", params=["cmd", "powershell", "pwsh"])
+def shell(request):
+    shell = request.param
+    if shutil.which(shell) is None:
+        pytest.skip(f"the shell '{shell}' was not found")
+    return shell
 
 
 def pyenv_shell_help():
@@ -21,24 +29,28 @@ def test_shell_help(pyenv):
 
 
 def test_no_shell_version(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": ""}):
-        assert pyenv.shell() == ("no shell-specific version configured", "")
+    env = {"PYENV_VERSION": ""}
+    assert pyenv.shell(env=env) == ("no shell-specific version configured", "")
 
 
 def test_shell_version_defined(pyenv):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.9.2")}):
-        assert pyenv.shell() == (Native("3.9.2"), "")
+    env = {"PYENV_VERSION": Native("3.9.2")}
+    assert pyenv.shell(env=env) == (Native("3.9.2"), "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7"), Native("3.8.9")]}])
-def test_shell_set_installed_version(pyenv_bat, local_path, exec):
-    with TemporaryEnvironment({"PYENV_VERSION": Native("3.8.9")}):
-        tmp_bat = str(Path(local_path, "tmp.bat"))
-        with open(tmp_bat, "w") as f:
-            # must chain commands because env var is lost when cmd ends
-            print(f'@call "{pyenv_bat}" shell {Arch("3.7.7")} && call "{pyenv_bat}" shell', file=f)
-        stdout, stderr = exec(tmp_bat)
-        assert (stdout, stderr) == (Native("3.7.7"), "")
+def test_shell_set_installed_version(local_path, shell, shell_ext, run):
+    env = {"PYENV_VERSION": Native("3.8.9")}
+    tmp_bat = str(Path(local_path, "tmp" + shell_ext))
+    with open(tmp_bat, "w") as f:
+        # must chain commands because env var is lost when cmd ends
+        if shell == 'cmd':
+            print(f'@call pyenv shell {Arch("3.7.7")} && call pyenv shell', file=f)
+        if shell in ['powershell', 'pwsh']:
+            tmp_bat = tmp_bat.replace(' ', '` ')
+            print(f'& pyenv shell {Arch("3.7.7")}; & pyenv shell', file=f)
+    stdout, stderr = run(tmp_bat, env=env)
+    assert (stdout, stderr) == (Native("3.7.7"), "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.8.9")]}])
