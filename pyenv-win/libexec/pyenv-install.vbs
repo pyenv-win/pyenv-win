@@ -36,7 +36,7 @@ Sub ShowHelp()
     WScript.Echo "  --dev          Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
     WScript.Echo "  --help         Help, list of options allowed on pyenv install"
     WScript.Echo ""
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub EnsureFolder(path)

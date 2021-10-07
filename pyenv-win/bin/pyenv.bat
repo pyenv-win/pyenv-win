@@ -42,6 +42,9 @@ for %%a in (%commands%) do (
     rem endlocal closed automatically with exit
     rem no need to update PATH either
     %pyenv% %*
+    if errorlevel 1 (
+      exit /b 1
+    )
     exit /b
   )
 )
@@ -54,7 +57,7 @@ if /i not [%1]==[exec] goto :plugin
 if not exist "%bindir%" (
   echo No global python version has been set yet. Please set the global version by typing:
   echo pyenv global 3.7.2
-  exit /b
+  exit /b 1
 )
 
 set "cmdline=%*"
@@ -63,6 +66,10 @@ set "cmdline=%cmdline:~5%"
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 call :remove_shims_from_path
 %cmdline%
+if errorlevel 1 (
+  endlocal
+  exit /b 1
+)
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -148,7 +155,7 @@ set "cmdline=!exe! !cmdline:~%len%!"
 :: endlocal needed to ensure exit will not automatically close setlocal
 :: otherwise PYTHON_VERSION will be lost
 endlocal && endlocal && %cmdline%
-exit /b
+exit /b %errorlevel%
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: convert path which may have relative nodes (.. or .)
 :: to its absolute value so can be used in PATH

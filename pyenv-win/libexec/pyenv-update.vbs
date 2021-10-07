@@ -25,7 +25,7 @@ Sub ShowHelp()
     WScript.Echo
     WScript.Echo "Updates the internal database of python installer URL's."
     WScript.Echo
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub EnsureBaseURL(ByRef html, ByVal URL)

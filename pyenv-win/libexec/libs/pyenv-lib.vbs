@@ -121,7 +121,7 @@ Function GetCurrentVersion()
     If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
 		WScript.echo "pyenv global 3.7.2"
-		WScript.quit
+		WScript.quit 1
 	End If
 	GetCurrentVersion = str
 End Function
@@ -142,7 +142,7 @@ Function GetCurrentVersions()
     If versions.Count = 0 Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
 		WScript.echo "pyenv global 3.7.2"
-		WScript.quit
+		WScript.quit 1
 	End If
 	Set GetCurrentVersions = versions
 End Function
@@ -201,7 +201,7 @@ Function GetBinDir(ver)
     If Not(IsVersion(ver) And objfs.FolderExists(str)) Then
 		WScript.Echo "pyenv specific python requisite didn't meet. Project is using different version of python."
 		WScript.Echo "Install python '"& ver &"' by typing: 'pyenv install "& ver &"'"
-		WScript.Quit
+		WScript.Quit 1
 	End If
     GetBinDir = str
 End Function
