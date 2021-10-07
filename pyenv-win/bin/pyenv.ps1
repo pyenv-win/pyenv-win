@@ -1,21 +1,21 @@
 
 If (($Args.Count -ge 2) -and ($Args[0] -eq "shell")) {
-    pyenv.bat $Args | Tee-Object -Variable Output
-    if (-not $?) {
+    if ($Args[1] -eq "--help") {
+        pyenv.bat @Args
         Exit $LastExitCode
-    }
-    If ($Output.length -eq 0) {
-        If ($Args[1] -eq "--unset") {
-            If (Test-Path Env:PYENV_VERSION) {
-                Remove-Item Env:PYENV_VERSION
-            }
-        } Else {
-            $Env:PYENV_VERSION = $Args[1..$Args.Count]
+    } elseif ($Args[1] -eq "--unset") {
+        If (Test-Path Env:PYENV_VERSION) {
+            Remove-Item Env:PYENV_VERSION
         }
+    } else {
+        $Output = (cscript //nologo "$PSScriptRoot\..\libexec\pyenv.vbs" @Args)
+        if ($LastExitCode -ne 0) {
+            $Output -join [Environment]::NewLine
+            Exit $LastExitCode
+        }
+        $Env:PYENV_VERSION = $Output
     }
 } Else {
-    pyenv.bat $Args
-    if (-not $?) {
-        Exit $LastExitCode
-    }
+    pyenv.bat @Args
+    Exit $LastExitCode
 }

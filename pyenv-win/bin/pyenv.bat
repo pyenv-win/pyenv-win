@@ -6,7 +6,7 @@ set "pyenv=cscript //nologo "%~dp0..\libexec\pyenv.vbs""
 
 :: if 'pyenv' called alone, then run pyenv.vbs
 if [%1]==[] (
-  %pyenv%
+  %pyenv% || goto :error
   exit /b
 )
 
@@ -25,12 +25,12 @@ for /f "%skip_arg%delims=" %%i in ('%pyenv% vname') do call :extrapath "%~dp0..\
 :: all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
 if /i [%1]==[--help] (
-  call :plugin %2 %1
+  call :plugin %2 %1 || goto :error
   exit /b
 )
 if /i [%1]==[help] (
-  if [%2]==[] call :plugin help --help
-  if not [%2]==[] call :plugin %2 --help
+  if [%2]==[] call :plugin help --help || goto :error
+  if not [%2]==[] call :plugin %2 --help || goto :error
   exit /b
 )
 
@@ -41,10 +41,7 @@ for %%a in (%commands%) do (
     rem endlocal not really needed here since above commands do not set any variable
     rem endlocal closed automatically with exit
     rem no need to update PATH either
-    %pyenv% %*
-    if errorlevel 1 (
-      exit /b 1
-    )
+    %pyenv% %* || goto :error
     exit /b
   )
 )
@@ -65,11 +62,7 @@ set "cmdline=%cmdline:~5%"
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 call :remove_shims_from_path
-%cmdline%
-if errorlevel 1 (
-  endlocal
-  exit /b 1
-)
+%cmdline% ||  goto :error
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -154,8 +147,8 @@ set "cmdline=!exe! !cmdline:~%len%!"
 :: run command (no need to update PATH for plugins)
 :: endlocal needed to ensure exit will not automatically close setlocal
 :: otherwise PYTHON_VERSION will be lost
-endlocal && endlocal && %cmdline%
-exit /b %errorlevel%
+endlocal && endlocal && %cmdline% || goto :error
+exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: convert path which may have relative nodes (.. or .)
 :: to its absolute value so can be used in PATH
@@ -180,7 +173,7 @@ for /f "%skip_arg%delims=" %%a in ('where python') do (
   call :set_python_where %%~dpfa
 )
 call :bad_path "%python_where%"
-exit /b 1
+exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: set python_where variable if empty
 :set_python_where
@@ -204,3 +197,6 @@ goto :eof
 :incrementskip
 set /a skip=%skip%+1
 goto :eof
+
+:error
+exit /b %errorlevel%

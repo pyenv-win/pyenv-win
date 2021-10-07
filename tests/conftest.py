@@ -102,7 +102,7 @@ def run(run_args, pyenv_path, bin_path, shims_path):
     environ = os.environ.copy()
     for key in ['PYENV', 'PYENV_ROOT', 'PYENV_HOME']:
         if key in environ:
-            environ[key] = str(pyenv_path) + os.sep
+            environ[key] = str(pyenv_path)
             environ['PATH'] = environ['PATH'].replace(str(Path(os.environ[key])), environ[key])
 
     def run(*args, env={}):

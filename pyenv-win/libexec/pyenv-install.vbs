@@ -297,7 +297,6 @@ Sub extract(params, register)
 
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
-        ' SetGlobalVersion params(LV_Code)
         If register Then
             registerVersion params(LV_Code), installPath
         End If

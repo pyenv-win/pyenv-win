@@ -104,6 +104,11 @@ def not_installed_output(ver):
             f"Install python '{ver}' by typing: 'pyenv install {ver}'")
 
 
+def global_python_versions(path):
+    with open(Path(path, 'version'), mode='r') as f:
+        return f.read().strip()
+
+
 def local_python_versions(path):
     with open(Path(path, '.python-version'), mode='r') as f:
         return f.read().strip()
@@ -120,6 +125,7 @@ def do_run(*args, env={}):
 
 class Arch(str):
     version = None
+
     def __new__(cls, content):
         self = super().__new__(cls, content)
         self.version = content
