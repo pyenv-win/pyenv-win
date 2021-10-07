@@ -1,17 +1,21 @@
 
-If ($Args.Count -eq 2) {
-    $Command = $Args[0]
-    $Option = $Args[1]
-    pyenv.bat $Command $Option | Tee-Object -Variable Output
+If (($Args.Count -ge 2) -and ($Args[0] -eq "shell")) {
+    pyenv.bat $Args | Tee-Object -Variable Output
+    if (-not $?) {
+        Exit $LastExitCode
+    }
     If ($Output.length -eq 0) {
-        If ($Option -eq "--unset") {
+        If ($Args[1] -eq "--unset") {
             If (Test-Path Env:PYENV_VERSION) {
                 Remove-Item Env:PYENV_VERSION
             }
         } Else {
-            $Env:PYENV_VERSION = $Option
+            $Env:PYENV_VERSION = $Args[1..$Args.Count]
         }
     }
 } Else {
     pyenv.bat $Args
+    if (-not $?) {
+        Exit $LastExitCode
+    }
 }
