@@ -222,6 +222,13 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Change Log
 
+### New in 2.64.12
+- Fix [#311](https://github.com/pyenv-win/pyenv-win/issues/311): Support many global and shell versions.
+- Fix [#318](https://github.com/pyenv-win/pyenv-win/issues/318): `pyenv global` and `pyenv local` no longer affect PYENV_VERSION, which only `pyenv shell` should affect.
+- The test suite emulates a 32 bit architecture environment.
+- The test suite now also runs tests using `powershell` and `pwsh` in addition to `cmd`.
+- `pyenv shell` now works like `pyenv global` and `pyenv local` in that, on 32-bit platforms, it adds `-win32` to every supplied version if not explicitly added.
+
 ### New in 2.64.11
 - Fix [#287](https://github.com/pyenv-win/pyenv-win/issues/287): Prevent infinite recursion by removing the shims directory from the path.
 - Fix [#259](https://github.com/pyenv-win/pyenv-win/issues/259): Correctly handle spaces in `pyenv` path.
