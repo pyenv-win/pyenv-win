@@ -136,7 +136,7 @@ Get pyenv-win via one of the following methods:
       [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
       ```
    
-   3. Refresh your environment by running RefreshEnv.cmd (or close and reopen your terminal app) and run `pyenv --version`
+   3. Run RefreshEnv.cmd (or close and reopen your terminal app) and run `pyenv --version`
       1. If the return value is the installed version of `pyenv`, then continue to Step 4
       2. If you receive a "command not found" error, ensure all environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
       3. If you receive a "command not found" error and you are using Visual Studio Code or another IDE with a built in terminal, restart it and try again
