@@ -13,6 +13,8 @@ call pyenv install 3.7.2
 call pyenv rehash 3.7.2
 call pyenv install 3.9.0
 call pyenv rehash 3.9.0
+call pyenv install 3.10.0
+call pyenv rehash 3.10.0
 
 mkdir test
 cd test

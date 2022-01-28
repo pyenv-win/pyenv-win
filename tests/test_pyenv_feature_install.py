@@ -29,7 +29,8 @@ class TestPyenvFeatureInstall(TestPyenvBase):
         assert "3.9.0" in result
         assert "3.9.1-win32" in result
         assert "3.9.1" in result
-    
+        assert "3.10.2-win32" in result
+        assert "3.10.2" in result
     def test_check_pyenv_installation(self, setup):
         # TODO: tracking the logs of installation and checking the folder
         pass

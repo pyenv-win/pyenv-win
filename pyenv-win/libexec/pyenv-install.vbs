@@ -135,8 +135,8 @@ Function deepExtract(params)
     version = params(LV_Code)
     pythonExe = installPath &"\python.exe"
     pythonwExe = installPath &"\pythonw.exe"
-    major = Left(version, 1)
-    minor = Mid(version, 3, 1)
+    major = Split(version,".")(0)
+    minor = Split(version, ".")(1)
     majorMinor = major & minor
     majorDotMinor = major &"."& minor
     objfs.CopyFile pythonExe, installPath &"\python"& major &".exe"
