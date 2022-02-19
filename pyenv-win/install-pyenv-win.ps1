@@ -20,12 +20,21 @@ Remove-Item -Path $DownloadPath
 
 # TODO: Check for errors
 
+# Update env vars
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
-# [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
-# [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\","User")
-# [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
+[System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
+[System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\","User")
+[System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
 
-# [System.Environment]::SetEnvironmentVariable('path', "${PyEnvWinDir}\bin;" + "${PyEnvWinDir}\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+$BinPath = "${PyEnvWinDir}\bin"
+$ShimsPath = "${PyEnvWinDir}\shims"
+$PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
+
+# Remove existing paths, so we don't add duplicates
+$NewPathParts = $PathParts.Where{$_ -ne $BinPath}.Where{$_ -ne $ShimsPath}
+$NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
+$NewPath = $NewPathParts -Join ";"
+[System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
 # TODO: pyenv rehash
 
