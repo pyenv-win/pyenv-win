@@ -55,6 +55,26 @@ Function Remove-PyEnv() {
     Remove-PyEnvVars
 }
 
+Function Check-NewerVersion() {
+    $VersionFilePath = "$PyEnvDir\.version"
+    If (Test-Path $VersionFilePath) {
+        $CurrentVersion = Get-Content $VersionFilePath
+        Write-Host "pyenv-win $CurrentVersion"
+    } Else {
+        $CurrentVersion = ""
+    }
+
+    $LatestVersionFilePath = "$PyEnvDir\latest.version"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version" -OutFile $LatestVersionFilePath
+    $LatestVersion = Get-Content $LatestVersionFilePath
+
+    If ($CurrentVersion -ne $LatestVersion) {
+        Write-Host "New version available: $LatestVersion"
+    }
+
+    Remove-Item -Path $LatestVersionFilePath
+}
+
 Function Main() {
     If ($Uninstall) {
         Remove-PyEnv
@@ -66,6 +86,7 @@ Function Main() {
         exit
     }
 
+    
     If (Test-Path $PyEnvDir) {
         Write-Host -NoNewLine "pyenv already installed. "
         If ($Force) {
