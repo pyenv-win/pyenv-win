@@ -32,6 +32,7 @@ If (Test-Path $PyEnvDir) {
     Write-Host -NoNewLine "pyenv already installed. "
     If ($Force) {
         Write-Host "Overwriting."
+        # TODO: Do Existing Python installations need to be preserved?
         Remove-Item -Path $PyEnvDir -Recurse
     } Else {
         Write-Host "Aborting."

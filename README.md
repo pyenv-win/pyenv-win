@@ -17,9 +17,11 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 - [Installation](#installation)
    - [Get pyenv-win](#get-pyenv-win)
    - [Finish the installation](#finish-the-installation)
+- [32bit-train Support](#32bit-train-support)
 - [Usage](#usage)
 - [How to update pyenv](#how-to-update-pyenv)
 - [FAQ](#faq)
+- [Change Log](#change-log)
 - [How to contribute](#how-to-contribute)
 - [Bug Tracker and Support](#bug-tracker-and-support)
 - [License and Copyright](#license-and-copyright)
@@ -27,14 +29,14 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 
 **Important Announcements**
 
-To keep in sync with [pyenv][1] linux/mac, pyenv-win now installs 64bit versions by default. To support compatibility with older versions of pyenv-win, we maintain a 32bit train (branch) as a separate release. 
+To keep in sync with [pyenv][1] linux/mac, pyenv-win now installs 64bit versions by default. To support compatibility with older versions of pyenv-win, we maintain a 32bit train (branch) as a separate release.
 
-Both releases can install 64bit and 32bit python versions; the difference is in version names, for example: 
+Both releases can install 64bit and 32bit python versions; the difference is in version names, for example:
 
 * 64bit-train (master), i.e. pyenv version _2.64.x_
 
 ```
-> pyenv install -l 
+> pyenv install -l
 ....
 3.8.0-win32
 3.8.0
@@ -51,7 +53,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 
 * 32bit-train, i.e. pyenv version _2.32.x_
 ```
->pyenv install -l 
+>pyenv install -l
 ....
 3.8.0
 3.8.0-amd64
@@ -81,7 +83,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
    local        Set or show the local application-specific Python version
    global       Set or show the global Python version
    shell        Set or show the shell-specific Python version
-   install      Install 1 or more versions of Python 
+   install      Install 1 or more versions of Python
    uninstall    Uninstall 1 or more versions of Python
    update       Update the cached version DB
    rehash       Rehash pyenv shims (run this after switching Python versions)
@@ -105,7 +107,7 @@ Get pyenv-win via one of the following methods:
    - cmd.exe: `pip install pyenv-win --target %USERPROFILE%\.pyenv`
 - **With zip file**
    1. Download link: [pyenv-win](https://github.com/pyenv-win/pyenv-win/archive/master.zip)
-   2. Create a `.pyenv` directory under `$HOME` or `%USERPROFILE%` if not existing 
+   2. Create a `.pyenv` directory under `$HOME` or `%USERPROFILE%` if not existing
    3. Extract and move files to
     - Powershell or Git Bash: `$HOME/.pyenv/`
     - cmd.exe: `%USERPROFILE%\.pyenv\`
@@ -115,6 +117,9 @@ Get pyenv-win via one of the following methods:
    - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git "%USERPROFILE%\.pyenv"`
 - **With [Chocolatey](https://chocolatey.org/packages/pyenv-win)**
    - `choco install pyenv-win` (this also installs all environment variables)
+ - **With Installer (experimental)**
+   - Run this in a PowerShell terminal to download and install pyenv (also installs all environment variables)
+     - TODO: Add command
 
 ### Finish the installation
 
@@ -131,11 +136,11 @@ Get pyenv-win via one of the following methods:
          ```
 
    2. Now add the following paths to your USER PATH variable in order to access the pyenv command. Run the following in PowerShell or Windows 8/above Terminal:
-      
+
       ```
       [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
       ```
-   
+
    3. Close and reopen your terminal app and run `pyenv --version`
       1. If the return value is the installed version of `pyenv`, then continue to Step 4
       2. If you receive a "command not found" error, ensure all environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
@@ -150,12 +155,12 @@ Get pyenv-win via one of the following methods:
 
 ## 32bit-train Support
 
-- **With Git**  
+- **With Git**
   - change directory to `%USERPROFILE%\.pyenv` via `cd`
   - run `git checkout -b 32bit-train origin/32bit-train`
   - then run `pyenv --version` and you should see *2.32.x*
 
-- **With pip**  
+- **With pip**
   - Powershell or Git Bash: `pip install pyenv-win==2.32.x --target $HOME\.pyenv`
    - cmd.exe: `pip install pyenv-win==2.32.x --target %USERPROFILE%\.pyenv`
 
@@ -191,7 +196,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 ## How to update pyenv
 
 - If installed via pip
-   - Add your pyenv-win installation path to `easy_install.pth` file located in site-packages. This should make pip recognise pyenv-win as installed. 
+   - Add your pyenv-win installation path to `easy_install.pth` file located in site-packages. This should make pip recognise pyenv-win as installed.
    - Get updates via pip `pip install --upgrade pyenv-win`
 - If installed via Git
    - Go to `%USERPROFILE%\.pyenv\pyenv-win` (which is your installed path) and run `git pull`
@@ -317,7 +322,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 
 ## Author and Thanks
 
-pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)  
+pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)
 Thanks for all Contributors and Supports for patience for the latest major release.
 
 [1]: https://github.com/pyenv/pyenv
