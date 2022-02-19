@@ -4,7 +4,10 @@
 
     .DESCRIPTION
     Installs pyenv-win to $HOME\.pyenv
-    If pyenv-win is already installed, this script exits.
+    If pyenv-win is already installed and `-Force` is not set, this script does nothing and exits.
+
+    .PARAMETER Force
+    If set, overwrite existing pyenv-win installation
 
     .INPUTS
     None.
@@ -14,27 +17,29 @@
 
     .EXAMPLE
     PS> install-pyenv-win.ps1
-            Directory: C:\Users\joe
-
-
-    Mode                LastWriteTime         Length Name
-    ----                -------------         ------ ----
-    d----         2/19/2022  10:46 AM                  .pyenv
-    pyenv-win is successfully installed. You may need to close and reopen your terminal before using it.
 
     .LINK
     Online version: https://pyenv-win.github.io/pyenv-win/
 #>
 
+param (
+    [switch] $Force = $False
+)
+
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 
-# TODO: Add Force parameter
 If (Test-Path $PyEnvDir) {
-    Write-Host "pyenv-win already installed. Exiting."
-    exit
-} Else {
-    New-Item -Path $PyEnvDir -ItemType Directory
+    Write-Host -NoNewLine "pyenv already installed. "
+    If ($Force) {
+        Write-Host "Overwriting."
+        Remove-Item -Path $PyEnvDir -Recurse
+    } Else {
+        Write-Host "Aborting."
+        exit
+    }
 }
+
+New-Item -Path $PyEnvDir -ItemType Directory
 
 $DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
