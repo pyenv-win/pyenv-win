@@ -117,7 +117,7 @@ Get pyenv-win via one of the following methods:
    - `choco install pyenv-win` (this also installs all environment variables)
  - **With Installer (experimental)**
    - Run this in a PowerShell terminal to download and install pyenv (also installs all environment variables)
-     - TODO: Add command
+     - `Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; "./install-pyenv-win.ps1"`
 
 ### Finish the installation
 
