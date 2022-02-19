@@ -12,7 +12,8 @@ $DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
 Invoke-WebRequest -Uri "https://github.com/pyenv-win/pyenv-win/archive/master.zip" -OutFile "$DownloadPath" -UseBasicParsing
 Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir
-
+Move-Item -Path "$PyEnvDir\pyenv-win-master\pyenv-win" -Destination "$PyEnvDir"
+Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
 Remove-Item -Path $DownloadPath
 
 # TODO: Check for errors
