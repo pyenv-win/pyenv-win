@@ -1,6 +1,8 @@
+# TODO: Add description
+
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 
-# TODO: Check for existing folder
+# TODO: Add Force parameter
 If (Test-Path $PyEnvDir) {
     Write-Host "pyenv-win already installed. Exiting."
     exit
@@ -24,3 +26,9 @@ $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 # [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
 
 # [System.Environment]::SetEnvironmentVariable('path', "${PyEnvWinDir}\bin;" + "${PyEnvWinDir}\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+
+# TODO: pyenv rehash
+
+# TODO: pyenv --version
+
+Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
