@@ -36,8 +36,8 @@ $NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
 $NewPath = $NewPathParts -Join ";"
 [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
-# TODO: pyenv rehash
+&"$BinPath\pyenv.ps1" rehash
 
-# TODO: pyenv --version
+&"$BinPath\pyenv.ps1" --version
 
 Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
