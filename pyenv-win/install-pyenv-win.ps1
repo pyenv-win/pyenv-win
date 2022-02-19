@@ -9,6 +9,9 @@
     .PARAMETER Force
     If set, overwrite existing pyenv-win installation
 
+    .PARAMETER Uninstall
+    If set, uninstall pyenv-win. Note that this does not uninstall any Python versions.
+
     .INPUTS
     None.
 
@@ -21,12 +24,46 @@
     .LINK
     Online version: https://pyenv-win.github.io/pyenv-win/
 #>
-
+    
 param (
-    [switch] $Force = $False
-)
-
+    [switch] $Force = $False,
+    [Switch] $Uninstall = $False
+    )
+    
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
+$PyEnvWinDir = "${PyEnvDir}\pyenv-win"
+$BinPath = "${PyEnvWinDir}\bin"
+$ShimsPath = "${PyEnvWinDir}\shims"
+    
+Function Remove-PyEnvVars(){
+    $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
+    $NewPathParts = $PathParts.Where{$_ -ne $BinPath}.Where{$_ -ne $ShimsPath}
+    $NewPath = $NewPathParts -Join ";"
+    [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
+
+    [System.Environment]::SetEnvironmentVariable('PYENV', $null, "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', $null, "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_HOME', $null, "User")
+}
+
+Function Remove-PyEnv() {
+    Write-Host "Removing $PyEnvDir..."
+    If (Test-Path $PyEnvDir) {
+        Remove-Item -Path $PyEnvDir -Recurse
+    }
+    Write-Host "Removing environment variables..."
+    Remove-PyEnvVars
+}
+
+If ($Uninstall) {
+    Remove-PyEnv
+    If ($LastExitCode -eq 0) {
+        Write-Host "pyenv-win successfully uninstalled."
+    } Else {
+        Write-Host "Uninstallation failed."
+    }
+    exit
+}
 
 If (Test-Path $PyEnvDir) {
     Write-Host -NoNewLine "pyenv already installed. "
@@ -51,16 +88,14 @@ Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
 Remove-Item -Path $DownloadPath
 
 # Update env vars
-$PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
 [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\","User")
 [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
 
-$BinPath = "${PyEnvWinDir}\bin"
-$ShimsPath = "${PyEnvWinDir}\shims"
 $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
 
 # Remove existing paths, so we don't add duplicates
+
 $NewPathParts = $PathParts.Where{$_ -ne $BinPath}.Where{$_ -ne $ShimsPath}
 $NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
 $NewPath = $NewPathParts -Join ";"
