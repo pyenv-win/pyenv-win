@@ -1,4 +1,30 @@
-# TODO: Add description
+<#
+    .SYNOPSIS
+    Installs pyenv-win
+
+    .DESCRIPTION
+    Installs pyenv-win to $HOME\.pyenv
+    If pyenv-win is already installed, this script exits.
+
+    .INPUTS
+    None.
+
+    .OUTPUTS
+    None.
+
+    .EXAMPLE
+    PS> install-pyenv-win.ps1
+            Directory: C:\Users\joe
+
+
+    Mode                LastWriteTime         Length Name
+    ----                -------------         ------ ----
+    d----         2/19/2022  10:46 AM                  .pyenv
+    pyenv-win is successfully installed. You may need to close and reopen your terminal before using it.
+
+    .LINK
+    Online version: https://pyenv-win.github.io/pyenv-win/
+#>
 
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 
