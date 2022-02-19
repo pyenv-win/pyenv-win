@@ -18,8 +18,6 @@ Move-Item -Path "$PyEnvDir\pyenv-win-master\*" -Destination "$PyEnvDir"
 Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
 Remove-Item -Path $DownloadPath
 
-# TODO: Check for errors
-
 # Update env vars
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
