@@ -1,24 +1,23 @@
-# $PyEnvDir = "${env:USERPROFILE}\.pyenv"
-$PyEnvDir = "C:\Users\brand\OneDrive\Desktop\.pyenv"
-$PyEnvWinDir = "${PyEnvDir}\pyenv-win"
+$PyEnvDir = "${env:USERPROFILE}\.pyenv"
 
 # TODO: Check for existing folder
-If (Test-Path $PyEnvWinDir) {
+If (Test-Path $PyEnvDir) {
     Write-Host "pyenv-win already installed. Exiting."
     exit
+} Else {
+    New-Item -Path $PyEnvDir -ItemType Directory
 }
 
-$DownloadDir = "$PyEnvDir\download"
-$DownloadPath = "$DownloadDir\pyenv-win.zip"
-
-if (-not (Test-Path $DownloadDir)) {
-    New-Item -Path $DownloadDir -ItemType Directory
-}
+$DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
 Invoke-WebRequest -Uri "https://github.com/pyenv-win/pyenv-win/archive/master.zip" -OutFile "$DownloadPath" -UseBasicParsing
+Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir
+
+Remove-Item -Path $DownloadPath
 
 # TODO: Check for errors
 
+$PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 # [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
 # [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\","User")
 # [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
