@@ -40,4 +40,8 @@ $NewPath = $NewPathParts -Join ";"
 
 &"$BinPath\pyenv.ps1" --version
 
-Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
+If ($LastExitCode -eq 0) {
+    Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
+} Else {
+    Write-Host "pyenv-win was not installed successfully. If this issue persists, please open a ticket: https://github.com/pyenv-win/pyenv-win/issues."
+}
