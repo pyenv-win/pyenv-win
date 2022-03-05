@@ -84,10 +84,10 @@ Function Main() {
         exit
     }
 
-    $CurrentVersion = Get-CurrentVersion()
+    $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
-        $LatestVersion = Get-LatestVersion()
+        $LatestVersion = Get-LatestVersion
         If ($CurrentVersion -eq $LatestVersion) {
             Write-Host "No updates available."
             exit
