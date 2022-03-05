@@ -65,6 +65,7 @@ Function Check-NewerVersion() {
     }
 
     $LatestVersionFilePath = "$PyEnvDir\latest.version"
+    # TODO: Use WebClient for faster downloads
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version" -OutFile $LatestVersionFilePath
     $LatestVersion = Get-Content $LatestVersionFilePath
 
