@@ -4,13 +4,10 @@
 
     .DESCRIPTION
     Installs pyenv-win to $HOME\.pyenv
-    If pyenv-win is already installed and `-Force` is not set, this script does nothing and exits.
-
-    .PARAMETER Force
-    If set, overwrite existing pyenv-win installation
+    If pyenv-win is already installed, try to update to the latest version.
 
     .PARAMETER Uninstall
-    If set, uninstall pyenv-win. Note that this does not uninstall any Python versions.
+    Uninstall pyenv-win. Note that this uninstalls any Python versions that were installed with pyenv-win.
 
     .INPUTS
     None.
@@ -26,7 +23,6 @@
 #>
     
 param (
-    [switch] $Force = $False,
     [Switch] $Uninstall = $False
     )
     
@@ -55,25 +51,26 @@ Function Remove-PyEnv() {
     Remove-PyEnvVars
 }
 
-Function Check-NewerVersion() {
+Function Get-CurrentVersion() {
     $VersionFilePath = "$PyEnvDir\.version"
     If (Test-Path $VersionFilePath) {
         $CurrentVersion = Get-Content $VersionFilePath
-        Write-Host "pyenv-win $CurrentVersion"
     } Else {
         $CurrentVersion = ""
     }
 
+    Return $CurrentVersion
+}
+
+Function Get-LatestVersion() {
     $LatestVersionFilePath = "$PyEnvDir\latest.version"
     # TODO: Use WebClient for faster downloads
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version" -OutFile $LatestVersionFilePath
     $LatestVersion = Get-Content $LatestVersionFilePath
 
-    If ($CurrentVersion -ne $LatestVersion) {
-        Write-Host "New version available: $LatestVersion"
-    }
-
     Remove-Item -Path $LatestVersionFilePath
+
+    Return $LatestVersion
 }
 
 Function Main() {
@@ -87,16 +84,15 @@ Function Main() {
         exit
     }
 
-    
-    If (Test-Path $PyEnvDir) {
-        Write-Host -NoNewLine "pyenv already installed. "
-        If ($Force) {
-            Write-Host "Overwriting."
-            # TODO: Do Existing Python installations need to be preserved?
-            Remove-PyEnv
-        } Else {
-            Write-Host "Aborting."
+    $CurrentVersion = Get-CurrentVersion()
+    If ($CurrentVersion) {
+        Write-Host "pyenv-win $CurrentVersion installed."
+        $LatestVersion = Get-LatestVersion()
+        If ($CurrentVersion -eq $LatestVersion) {
+            Write-Host "No updates available."
             exit
+        } Else {
+            Write-Host "New version available: $LatestVersion. Updating..."
         }
     }
 
