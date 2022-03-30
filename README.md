@@ -140,10 +140,7 @@ Get pyenv-win via one of the following methods:
       1. If the return value is the installed version of `pyenv`, then continue to Step 4
       2. If you receive a "command not found" error, ensure all environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
       3. If you receive a "command not found" error and you are using Visual Studio Code or another IDE with a built in terminal, restart it and try again
-
-   4. Now run the `pyenv rehash` from home directory
-      - If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
-   5. Run `pyenv` to see list of commands it supports. [More info...](#usage)
+   4. Run `pyenv` to see list of commands it supports. [More info...](#usage)
 
 
    Installation is done. Hurray!
