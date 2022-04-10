@@ -77,6 +77,9 @@ target/
 # pyenv
 #.python-version
 
+# pyenv-win installer
+/pyenv-win/.versions_cache.xml
+
 # celery beat schedule file
 celerybeat-schedule
 
