@@ -2435,7 +2435,7 @@
 		<file>python-3.9.4-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.4/python-3.9.4-amd64-webinstall.exe</URL>
 	</version>
-	<version x64="true" webInstall="true" msi="false">
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.9.5-win32</code>
 		<file>python-3.9.5-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.5/python-3.9.5-webinstall.exe</URL>
@@ -2445,7 +2445,7 @@
 		<file>python-3.9.5-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64-webinstall.exe</URL>
 	</version>
-	<version x64="true" webInstall="true" msi="false">
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.9.6-win32</code>
 		<file>python-3.9.6-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.9.6/python-3.9.6-webinstall.exe</URL>
@@ -2525,7 +2525,7 @@
 		<file>python-3.10.0a7-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0a7-amd64-webinstall.exe</URL>
 	</version>
-	<version x64="true" webInstall="true" msi="false">
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.10.0b1-win32</code>
 		<file>python-3.10.0b1-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0b1-webinstall.exe</URL>
@@ -2535,7 +2535,7 @@
 		<file>python-3.10.0b1-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0b1-amd64-webinstall.exe</URL>
 	</version>
-	<version x64="true" webInstall="true" msi="false">
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.10.0b2-win32</code>
 		<file>python-3.10.0b2-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0b2-webinstall.exe</URL>
@@ -2545,7 +2545,7 @@
 		<file>python-3.10.0b2-amd64-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0b2-amd64-webinstall.exe</URL>
 	</version>
-	<version x64="true" webInstall="true" msi="false">
+	<version x64="false" webInstall="true" msi="false">
 		<code>3.10.0b3-win32</code>
 		<file>python-3.10.0b3-webinstall.exe</file>
 		<URL>https://www.python.org/ftp/python/3.10.0/python-3.10.0b3-webinstall.exe</URL>
