@@ -113,7 +113,7 @@ Function Main() {
 
     $DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
-    Invoke-WebRequest -Uri "https://github.com/pyenv-win/pyenv-win/archive/master.zip" -OutFile "$DownloadPath" -UseBasicParsing
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win/archive/master.zip", $DownloadPath)
     Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir
     Move-Item -Path "$PyEnvDir\pyenv-win-master\*" -Destination "$PyEnvDir"
     Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
