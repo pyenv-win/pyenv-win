@@ -64,8 +64,7 @@ Function Get-CurrentVersion() {
 
 Function Get-LatestVersion() {
     $LatestVersionFilePath = "$PyEnvDir\latest.version"
-    # TODO: Use WebClient for faster downloads
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version" -OutFile $LatestVersionFilePath
+    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version", $LatestVersionFilePath)
     $LatestVersion = Get-Content $LatestVersionFilePath
 
     Remove-Item -Path $LatestVersionFilePath
