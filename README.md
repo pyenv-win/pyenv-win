@@ -96,7 +96,17 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 ## Installation
 
-### Get pyenv-win
+### Installer
+
+The easiest way to install pyenv-win is to run the following command in a PowerShell terminal:
+
+```pwsh
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; "./install-pyenv-win.ps1"
+```
+
+Installation is complete!
+
+### Alternate installation methods
 
 Get pyenv-win via one of the following methods:
 
@@ -115,11 +125,6 @@ Get pyenv-win via one of the following methods:
    - cmd.exe: `git clone https://github.com/pyenv-win/pyenv-win.git "%USERPROFILE%\.pyenv"`
 - **With [Chocolatey](https://chocolatey.org/packages/pyenv-win)**
    - `choco install pyenv-win` (this also installs all environment variables)
- - **With Installer (experimental)**
-   - Run this in a PowerShell terminal to download and install pyenv (also installs all environment variables)
-     - `Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; "./install-pyenv-win.ps1"`
-
-### Finish the installation
 
 **NOTE:** If you are running Windows 10 1905 or newer, you might need to disable the built-in Python launcher via Start > "Manage App Execution Aliases" and turning off the "App Installer" aliases for Python
 
@@ -201,6 +206,8 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 - If installed via zip
    - Download the latest zip and extract it
    - Go to `%USERPROFILE%\.pyenv\pyenv-win` and replace the folders `libexec` and `bin` with the new ones you just downloaded
+- If installed via the installer
+   - Run the following in a Powershell terminal: `&"${env:PYENV_HOME}\install-pyenv-win.ps1"`
 
 ## FAQ
 
