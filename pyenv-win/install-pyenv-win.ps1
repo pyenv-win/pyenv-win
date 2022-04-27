@@ -84,6 +84,8 @@ Function Main() {
         exit
     }
 
+    $BackupDir = "${env:Temp}/pyenv-win-backup"
+    
     $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
@@ -93,7 +95,19 @@ Function Main() {
             exit
         } Else {
             Write-Host "New version available: $LatestVersion. Updating..."
-        }
+            
+            Write-Host "Backing up existing Python installations..."
+            $FoldersToBackup = "install_cache", "versions"
+            ForEach ($Dir in $FoldersToBackup) {
+                If (-not (Test-Path $BackupDir)) {
+                    New-Item -ItemType Directory -Path $BackupDir
+                }
+                Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
+            }
+            
+            Write-Host "Removing $PyEnvDir..."
+            Remove-Item -Path $PyEnvDir -Recurse
+        }   
     }
 
     New-Item -Path $PyEnvDir -ItemType Directory
@@ -119,6 +133,11 @@ Function Main() {
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
+    If (Test-Path $BackupDir) {
+        Write-Host "Restoring Python installations..."
+        Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
+    }
+    
     &"$BinPath\pyenv.ps1" rehash
 
     &"$BinPath\pyenv.ps1" --version
