@@ -19,7 +19,7 @@ jobs:
     - name: Push changes to origin
       run: |
         git config user.name github-actions
-        git config user.email github-actions@github.com
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
         git add pyenv-win/.versions_cache.xml
         git commit -m 'chore: Update `.versions_cache.xml`'
         git push
