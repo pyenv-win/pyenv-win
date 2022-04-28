@@ -99,7 +99,7 @@ Function Main() {
             Write-Host "New version available: $LatestVersion. Updating..."
             
             Write-Host "Backing up existing Python installations..."
-            $FoldersToBackup = "install_cache", "versions"
+            $FoldersToBackup = "install_cache", "versions", "shims"
             ForEach ($Dir in $FoldersToBackup) {
                 If (-not (Test-Path $BackupDir)) {
                     New-Item -ItemType Directory -Path $BackupDir
@@ -140,8 +140,6 @@ Function Main() {
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
     
-    &"$BinPath\pyenv.ps1" rehash
-
     &"$BinPath\pyenv.ps1" --version
 
     If ($LastExitCode -eq 0) {
