@@ -24,16 +24,16 @@
     
 param (
     [Switch] $Uninstall = $False
-    )
+)
     
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
     
-Function Remove-PyEnvVars(){
+Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
-    $NewPathParts = $PathParts.Where{$_ -ne $BinPath}.Where{$_ -ne $ShimsPath}
+    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
@@ -55,7 +55,8 @@ Function Get-CurrentVersion() {
     $VersionFilePath = "$PyEnvDir\.version"
     If (Test-Path $VersionFilePath) {
         $CurrentVersion = Get-Content $VersionFilePath
-    } Else {
+    }
+    Else {
         $CurrentVersion = ""
     }
 
@@ -77,7 +78,8 @@ Function Main() {
         Remove-PyEnv
         If ($LastExitCode -eq 0) {
             Write-Host "pyenv-win successfully uninstalled."
-        } Else {
+        }
+        Else {
             Write-Host "Uninstallation failed."
         }
         exit
@@ -92,7 +94,8 @@ Function Main() {
         If ($CurrentVersion -eq $LatestVersion) {
             Write-Host "No updates available."
             exit
-        } Else {
+        }
+        Else {
             Write-Host "New version available: $LatestVersion. Updating..."
             
             Write-Host "Backing up existing Python installations..."
@@ -120,14 +123,14 @@ Function Main() {
     Remove-Item -Path $DownloadPath
 
     # Update env vars
-    [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\","User")
-    [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\","User")
-    [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\","User")
+    [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\", "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\", "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\", "User")
 
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
 
     # Remove existing paths, so we don't add duplicates
-    $NewPathParts = $PathParts.Where{$_ -ne $BinPath}.Where{$_ -ne $ShimsPath}
+    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
     $NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
@@ -143,7 +146,8 @@ Function Main() {
 
     If ($LastExitCode -eq 0) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
-    } Else {
+    }
+    Else {
         Write-Host "pyenv-win was not installed successfully. If this issue persists, please open a ticket: https://github.com/pyenv-win/pyenv-win/issues."
     }
 }
