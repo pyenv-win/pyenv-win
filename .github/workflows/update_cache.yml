@@ -3,7 +3,7 @@ name: Update cached versions
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 0 1 * *'
+    - cron: '5 0 * * 5'
 
 jobs:
   update_cache:
