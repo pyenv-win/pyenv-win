@@ -146,6 +146,29 @@ Get pyenv-win via one of the following methods:
 
    Installation is done. Hurray!
 
+
+### File association support
+
+If you want to file association support (double-clicking runs the file, running the file directly on terminal without `python`), run the following commands from an elevated prompt (as an administrator) to set the necessary registry keys:
+
+cmd.exe:
+```
+reg add "HKCR\.py" /t REG_SZ /d Python.Pyenv
+reg add "HKCR\Python.Pyenv" /t REG_SZ /d "Python Source File"
+reg add "HKCR\Python.Pyenv\shell\open\command" /t REG_SZ /d "\"%USERPROFILE:\=\\%\\.pyenv\\pyenv-win\\shims\\python.bat\" \"%1\""
+reg add "HKCR\Python.Pyenv\DefaultIcon" /t REG_SZ /d "%USERPROFILE:\=\\%\\.pyenv\\pyenv-win\\py.ico"
+```
+
+powershell:
+```
+reg add "HKCR\.py" /t REG_SZ /d Python.Pyenv
+reg add "HKCR\Python.Pyenv" /t REG_SZ /d "Python Source File"
+reg add "HKCR\Python.Pyenv\shell\open\command" /t REG_SZ /d "\"$($env:USERPROFILE -replace "\\", "\\")\\.pyenv\\pyenv-win\\shims\\python.bat\" \"%1\""
+reg add "HKCR\Python.Pyenv\DefaultIcon" /t REG_SZ /d "$($env:USERPROFILE -replace "\\", "\\")\\.pyenv\\pyenv-win\\py.ico"
+```
+
+**NOTE:** The file is run with the current selected Python environment, and does not respect the "shebang" line.
+
 ## 32bit-train Support
 
 - **With Git**  
