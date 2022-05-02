@@ -21,6 +21,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: pytest_ps1 bash script
+      - name: pytest_ps1 pwsh command
+        shell: pwsh
+        run : |
+          Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; "./install-pyenv-win.ps1"
+
+      - name: pytest bash script
         run: ${{ env.HOME }}/.github/scripts/ps1.sh
         shell: bash
