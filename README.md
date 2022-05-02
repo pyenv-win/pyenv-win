@@ -10,6 +10,7 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
+[![Rate this package](https://badges.openbase.com/python/rating/pyenv-win.svg?token=hjylt9qszl1DzDMCXNqMQZ6ijtlNCYzG3dKZNF+hgk4=)](https://openbase.com/python/pyenv-win?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 - [Introduction](#introduction)
 - [pyenv](#pyenv)
@@ -140,10 +141,7 @@ Get pyenv-win via one of the following methods:
       1. If the return value is the installed version of `pyenv`, then continue to Step 4
       2. If you receive a "command not found" error, ensure all environment variables are properly set via the GUI: __This PC → Properties → Advanced system settings → Advanced → Environment Variables... → PATH__
       3. If you receive a "command not found" error and you are using Visual Studio Code or another IDE with a built in terminal, restart it and try again
-
-   4. Now run the `pyenv rehash` from home directory
-      - If you are getting an error, go through the steps again. Still facing the issue? [Open a ticket](https://github.com/pyenv-win/pyenv-win/issues).
-   5. Run `pyenv` to see list of commands it supports. [More info...](#usage)
+   4. Run `pyenv` to see list of commands it supports. [More info...](#usage)
 
 
    Installation is done. Hurray!
