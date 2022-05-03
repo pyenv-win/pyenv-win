@@ -102,7 +102,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 The easiest way to install pyenv-win is to run the following command in a PowerShell terminal:
 
 ```pwsh
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; "./install-pyenv-win.ps1"
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
 ```
 
 Installation is complete!

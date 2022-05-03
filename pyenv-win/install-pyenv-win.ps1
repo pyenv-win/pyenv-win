@@ -140,8 +140,6 @@ Function Main() {
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
     
-    &"$BinPath\pyenv.ps1" --version
-
     If ($LastExitCode -eq 0) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }
