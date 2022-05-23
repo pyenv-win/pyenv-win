@@ -76,9 +76,11 @@ call :remove_shims_from_path
 
 if [%pip%]==[found] (
   %pyenv% rehash
+  call :remove_shims_from_path
 )
 if [%pip3%]==[found] (
   %pyenv% rehash
+  call :remove_shims_from_path
 )
 
 endlocal

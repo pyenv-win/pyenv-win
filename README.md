@@ -65,8 +65,8 @@ Currently we support following ways, choose any of your comfort:
 - [Pyenv-win zip](#pyenv-win-zip) - manual installation
 - [Python pip](#python-pip) - for existing users
 - [Chocolatey](#Chocolatey)
-- [How to use 32-train](#how-to-use-32-train)
-   -[check announcements](#Announcements)
+- [How to use 32-train](#how-to-use-32-train)  
+   - [check announcements](#Announcements)
 
 Hurray! When you are done here are steps to [Validate](#validate)
 
