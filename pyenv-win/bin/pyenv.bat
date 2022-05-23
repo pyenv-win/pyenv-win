@@ -52,17 +52,35 @@ if /i not [%1]==[exec] goto :plugin
 :exec
 
 if not exist "%bindir%" (
-  echo No global python version has been set yet. Please set the global version by typing:
-  echo pyenv global 3.7.2
+  echo No global/local python version has been set yet. Please set the global/local version by typing:
+  echo pyenv global 3.7.4
+  echo pyenv local 3.7.4
   exit /b
 )
 
 set "cmdline=%*"
 set "cmdline=%cmdline:~5%"
+
+set pip3=notfound
+echo %cmdline%|find "pip3 " >nul
+if errorlevel 1 (set pip3=notfound) else (set pip3=found)
+
+set pip=notfound
+echo %cmdline%|find "pip " >nul
+if errorlevel 1 (set pip=notfound) else (set pip=found)
+
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 call :remove_shims_from_path
 %cmdline%
+
+if [%pip%]==[found] (
+  %pyenv% rehash
+)
+if [%pip3%]==[found] (
+  %pyenv% rehash
+)
+
 endlocal
 exit /b
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
