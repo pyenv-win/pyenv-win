@@ -120,7 +120,7 @@ Function GetCurrentVersion()
     str = GetCurrentVersionNoError
     If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
-		WScript.echo "pyenv global 3.7.2"
+		WScript.echo "pyenv global 3.7.4"
 		WScript.quit
 	End If
 	GetCurrentVersion = str
@@ -141,7 +141,7 @@ Function GetCurrentVersions()
     Set versions = GetCurrentVersionsNoError
     If versions.Count = 0 Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
-		WScript.echo "pyenv global 3.7.2"
+		WScript.echo "pyenv global 3.7.4"
 		WScript.quit
 	End If
 	Set GetCurrentVersions = versions
