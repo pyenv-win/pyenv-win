@@ -21,9 +21,11 @@ jobs:
     - name: Checkout master
       uses: actions/checkout@v3
     - name: Create a branch
-      shell: bash
-      run: |
-        git checkout -b automated/update_cache
+      uses: peterjgrainger/action-create-branch@v2.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: 'automated/update_cache'
     - name: Invoke update
       run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update
       shell: bash
