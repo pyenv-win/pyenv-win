@@ -1,3 +1,10 @@
+echo "HOME='/d/a/pyenv-win/pyenv-win'" | Out-File -FilePath $Env:GITHUB_ENV  -Append
+echo "PYENV='$HOME/pyenv-win'" | Out-File -FilePath $Env:GITHUB_ENV  -Append
+echo "PYENV_HOME='$HOME/pyenv-win'" | Out-File -FilePath $Env:GITHUB_ENV  -Append
+echo "PYENV_ROOT='$HOME/pyenv-win'" | Out-File -FilePath $Env:GITHUB_ENV  -Append
+echo "PATH='$PYENV/bin:$PYENV/shims:$PATH'" | Out-File -FilePath $Env:GITHUB_ENV  -Append
+
+
 pyenv --version
 pyenv update
 pyenv install -q 3.7.4
