@@ -21,6 +21,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: pytest powershell script
-        run: ${{ env.HOME }}/.github/scripts/build.ps1
-        shell: powershell
+      - name: pytest bash script
+        run: ${{ env.HOME }}/.github/scripts/build.sh
+        shell: bash

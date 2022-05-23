@@ -61,26 +61,10 @@ if not exist "%bindir%" (
 set "cmdline=%*"
 set "cmdline=%cmdline:~5%"
 
-set pip_cmdline=%cmdline:\"=%
-set pip3=notfound
-echo %pip_cmdline%|find "pip3 " >nul
-if errorlevel 1 (set pip3=notfound) else (set pip3=found)
-
-set pip=notfound
-echo %pip_cmdline%|find "pip " >nul
-if errorlevel 1 (set pip=notfound) else (set pip=found)
-
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
 call :remove_shims_from_path
 %cmdline%
-
-if [%pip%]==[found] (
-  %pyenv% rehash
-)
-if [%pip3%]==[found] (
-  %pyenv% rehash
-)
 
 endlocal
 exit /b

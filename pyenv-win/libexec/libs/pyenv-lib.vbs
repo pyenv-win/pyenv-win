@@ -258,12 +258,22 @@ Sub WriteWinScript(baseName)
     Dim filespec
     filespec = strDirShims &"\"& baseName &".bat"
     If Not objfs.FileExists(filespec) Then
-        With objfs.CreateTextFile(filespec)
-            .WriteLine("@echo off")
-            .WriteLine("chcp 1250 > NUL")
-            .WriteLine("call pyenv exec %~n0 %*")
-            .Close
-        End With
+        If InStr(1, baseName, "pip") = 1 Then
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("@echo off")
+                .WriteLine("chcp 1250 > NUL")
+                .WriteLine("call pyenv exec %~n0 %*")
+                .WriteLine("call pyenv rehash")
+                .Close
+            End With
+        Else
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("@echo off")
+                .WriteLine("chcp 1250 > NUL")
+                .WriteLine("call pyenv exec %~n0 %*")
+                .Close
+            End With
+        End If
     End If
 End Sub
 
@@ -273,11 +283,21 @@ Sub WriteLinuxScript(baseName)
     Dim filespec
     filespec = strDirShims &"\"& baseName
     If Not objfs.FileExists(filespec) Then
-        With objfs.CreateTextFile(filespec)
-            .WriteLine("#!/bin/sh")
-            .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
-            .Close
-        End With
+        If InStr(1, baseName, "pip") = 1 Then
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("#!/bin/sh")
+                .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
+                .WriteLine("pyenv rehash")
+                .Close
+            End With
+        Else
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("#!/bin/sh")
+                .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
+                .Close
+            End With
+        End If
+        
     End If
 End Sub
 
