@@ -18,8 +18,12 @@ jobs:
     env:
       HOME: D:/a/pyenv-win/pyenv-win
     steps:
-    - name: Checkout
+    - name: Checkout master
       uses: actions/checkout@v3
+    - name: Create a branch
+      shell: bash
+      run: |
+        git checkout -b automated/update_cache
     - name: Invoke update
       run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update
       shell: bash
