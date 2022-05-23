@@ -70,6 +70,8 @@ Currently we support following ways, choose any of your comfort:
 
 Hurray! When you are done here are steps to [Validate](#validate)
 
+_NOTE:_ If you are running Windows 10 1905 or newer, you might need to disable the built-in Python launcher via Start > "Manage App Execution Aliases" and turning off the "App Installer" aliases for Python
+
 ***
 
 #### **Power Shell**
