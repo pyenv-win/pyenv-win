@@ -180,7 +180,7 @@ Now follow the steps to "[finish the installation](#finish-the-installation)".
 - Update the list of discoverable Python versions using: `pyenv update` command for pyenv-win `2.64.x` and `2.32.x` versions
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
 - To install a python version:  `pyenv install 3.5.2`
-   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quite installation_
+   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quiet installation_
    - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
 - To set a python version as the global version: `pyenv global 3.5.2`
    - This is the version of python that will be used by default if a local version (see below) isn't set.
