@@ -1,4 +1,4 @@
-export HOME="/d/a/pyenv-win/pyenv-win"
+export HOME="/c/Users/runneradmin/.pyenv"
 export PYENV="$HOME/pyenv-win"
 export PYENV_HOME="$HOME/pyenv-win"
 export PYENV_ROOT="$HOME/pyenv-win"

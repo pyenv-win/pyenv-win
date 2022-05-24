@@ -29,8 +29,9 @@ class TestPyenvFeatureRehash(TestPyenvBase):
             assert ctx.pyenv('rehash') == ("", "")
             assert_shims(ctx.pyenv_path, '3.8.6')
             assert_shims(ctx.pyenv_path, '3.8.7')
+            assert_shims(ctx.pyenv_path, '3.10.2')
         settings = {
-            'versions': ['3.8.6', '3.8.7'],
+            'versions': ['3.8.6', '3.8.7','3.10.2'],
             'global_ver': '3.8.6',
         }
         run_pyenv_test(settings, commands)
@@ -40,8 +41,9 @@ class TestPyenvFeatureRehash(TestPyenvBase):
             assert ctx.pyenv('rehash') == ("", "")
             assert_shims(ctx.pyenv_path, '3.8.6')
             assert_shims(ctx.pyenv_path, '3.9.1')
+            assert_shims(ctx.pyenv_path, '3.10.2')
         settings = {
-            'versions': ['3.8.6', '3.9.1'],
+            'versions': ['3.8.6', '3.9.1','3.10.2'],
             'global_ver': '3.8.6',
             'local_ver': '3.9.1'
         }

@@ -25,17 +25,17 @@ Sub ShowHelp()
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
-    WScript.Echo "  -l/--list           List all available versions"
-    WScript.Echo "  -a/--all            Installs all known version from the local version DB cache"
-    WScript.Echo "  -c/--clear          Removes downloaded installers from the cache to free space"
-    WScript.Echo "  -f/--force          Install even if the version appears to be installed already"
-    WScript.Echo "  -s/--skip-existing  Skips installation if the version appears to be installed already"
-    WScript.Echo "  -r/--register       Register version for py launcher"
-    WScript.Echo "  -q/--quiet          Install using /quiet. This does not show the UI nor does it prompt for inputs"
-    WScript.Echo "  --32only            Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --64only            Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --dev               Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
-    WScript.Echo "  --help              Help, list of options allowed on pyenv install"
+    WScript.Echo "  -l/--list              List all available versions"
+    WScript.Echo "  -a/--all               Installs all known version from the local version DB cache"
+    WScript.Echo "  -c/--clear             Removes downloaded installers from the cache to free space"
+    WScript.Echo "  -f/--force             Install even if the version appears to be installed already"
+    WScript.Echo "  -s/--skip-existing     Skip the installation if the version appears to be installed already"
+    WScript.Echo "  -r/--register          Register version for py launcher"
+    WScript.Echo "  -q/--quiet             Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only               Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only               Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --dev                  Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
+    WScript.Echo "  --help                 Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit
 End Sub
@@ -136,8 +136,8 @@ Function deepExtract(params)
     version = params(LV_Code)
     pythonExe = installPath &"\python.exe"
     pythonwExe = installPath &"\pythonw.exe"
-    major = Left(version, 1)
-    minor = Mid(version, 3, 1)
+    major = Split(version,".")(0)
+    minor = Split(version, ".")(1)
     majorMinor = major & minor
     majorDotMinor = major &"."& minor
     objfs.CopyFile pythonExe, installPath &"\python"& major &".exe"
