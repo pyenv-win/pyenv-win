@@ -83,3 +83,4 @@ def test_bad_path(local_path, pyenv_path, pyenv):
     stdout = stdout.replace('RUNNER~1', 'runneradmin')
     expected = expected.replace('RUNNER~1', 'runneradmin')
     assert (stdout, stderr) == (expected, "")
+

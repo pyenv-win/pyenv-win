@@ -168,3 +168,4 @@ def test_which_many_local_versions(pyenv_path, pyenv):
         stdout, stderr = pyenv.which(name)
         assert_paths_equal(stdout, rf'{pyenv_path}\versions\{path}')
         assert stderr == ""
+

@@ -161,8 +161,8 @@ Function GetCurrentVersion()
     str = GetCurrentVersionNoError
     If IsNull(str) Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
-		WScript.echo "pyenv global 3.7.2"
-		WScript.quit 1
+		WScript.echo "pyenv global 3.7.4"
+    WScript.quit 1
 	End If
 	GetCurrentVersion = str
 End Function
@@ -182,8 +182,8 @@ Function GetCurrentVersions()
     Set versions = GetCurrentVersionsNoError
     If versions.Count = 0 Then
 		WScript.echo "No global python version has been set yet. Please set the global version by typing:"
-		WScript.echo "pyenv global 3.7.2"
-		WScript.quit 1
+		WScript.echo "pyenv global 3.7.4"
+    WScript.quit 1
 	End If
 	Set GetCurrentVersions = versions
 End Function
@@ -294,12 +294,22 @@ Sub WriteWinScript(baseName)
     Dim filespec
     filespec = strDirShims &"\"& baseName &".bat"
     If Not objfs.FileExists(filespec) Then
-        With objfs.CreateTextFile(filespec)
-            .WriteLine("@echo off")
-            .WriteLine("chcp 1250 > NUL")
-            .WriteLine("call pyenv exec %~n0 %*")
-            .Close
-        End With
+        If InStr(1, baseName, "pip") = 1 Then
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("@echo off")
+                .WriteLine("chcp 1250 > NUL")
+                .WriteLine("call pyenv exec %~n0 %*")
+                .WriteLine("call pyenv rehash")
+                .Close
+            End With
+        Else
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("@echo off")
+                .WriteLine("chcp 1250 > NUL")
+                .WriteLine("call pyenv exec %~n0 %*")
+                .Close
+            End With
+        End If
     End If
 End Sub
 
@@ -309,11 +319,21 @@ Sub WriteLinuxScript(baseName)
     Dim filespec
     filespec = strDirShims &"\"& baseName
     If Not objfs.FileExists(filespec) Then
-        With objfs.CreateTextFile(filespec)
-            .WriteLine("#!/bin/sh")
-            .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
-            .Close
-        End With
+        If InStr(1, baseName, "pip") = 1 Then
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("#!/bin/sh")
+                .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
+                .WriteLine("pyenv rehash")
+                .Close
+            End With
+        Else
+            With objfs.CreateTextFile(filespec)
+                .WriteLine("#!/bin/sh")
+                .WriteLine("pyenv exec $(basename ""$0"") ""$@""")
+                .Close
+            End With
+        End If
+        
     End If
 End Sub
 

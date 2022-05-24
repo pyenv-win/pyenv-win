@@ -31,7 +31,7 @@ def test_no_version(command, pyenv):
         (
             "No global python version has been set yet. "
             "Please set the global version by typing:\r\n"
-            "pyenv global 3.7.2"
+            "pyenv global 3.7.4"
         ),
         ""
     )
