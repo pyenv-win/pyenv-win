@@ -20,7 +20,7 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"
-    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...] [-r|--register]"
+    WScript.Echo "Usage: pyenv install [-s] [-f] <version> [<version> ...] [-r|--register]"
     WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
@@ -313,6 +313,7 @@ Sub main(arg)
 
     Dim idx
     Dim optForce
+    Dim optSkip
     Dim optList
     Dim optQuiet
     Dim optAll
@@ -324,6 +325,7 @@ Sub main(arg)
     Dim installVersions
 
     optForce = False
+    optSkip = False
     optList = False
     optQuiet = False
     optAll = False
@@ -340,8 +342,8 @@ Sub main(arg)
             Case "--list"           optList = True
             Case "-f"               optForce = True
             Case "--force"          optForce = True
-            Case "-s"               optForce = False
-            Case "--skip-existing"  optForce = False
+            Case "-s"               optSkip = True
+            Case "--skip-existing"  optSkip = True
             Case "-q"               optQuiet = True
             Case "--quiet"          optQuiet = True
             Case "-a"               optAll = True
