@@ -29,22 +29,23 @@ def test_vname_help(pyenv):
 def test_no_version(command, pyenv):
     assert pyenv(command) == (
         (
-            "No global python version has been set yet. "
-            "Please set the global version by typing:\r\n"
-            "pyenv global 3.7.4"
+            "No global/local python version has been set yet. "
+            "Please set the global/local version by typing:\r\n"
+            "pyenv global 3.7.4\r\n"
+            "pyenv local 3.7.4\r\n"
         ),
         ""
     )
 
 
-@pytest.mark.parametrize("settings", [lambda: {'global_ver': Native("3.7.2")}])
+@pytest.mark.parametrize("settings", [lambda: {'global_ver': Native("3.7.4")}])
 @pytest.mark.parametrize("command", ['version-name', 'vname'])
 def test_global_version(command, pyenv):
-    assert pyenv(command) == (Native("3.7.2"), "")
+    assert pyenv(command) == (Native("3.7.4"), "")
 
 
 @pytest.mark.parametrize("settings", [lambda: {
-        'global_ver': Native("3.7.2"),
+        'global_ver': Native("3.7.4"),
         'local_ver': Native("3.9.1")
     }])
 @pytest.mark.parametrize("command", ['version-name', 'vname'])
@@ -63,7 +64,7 @@ def test_shell_version(command, pyenv):
 
 
 @pytest.mark.parametrize('settings', [lambda: {
-        'global_ver': Native("3.7.2"),
+        'global_ver': Native("3.7.4"),
         'local_ver': [Native("3.8.8"), Native("3.9.1")]
     }])
 @pytest.mark.parametrize("command", ['version-name', 'vname'])

@@ -145,9 +145,10 @@ def test_which_no_version_defined(pyenv):
     for name in ['python']:
         assert pyenv.which(name) == (
             (
-                "No global python version has been set yet. "
-                "Please set the global version by typing:\r\n"
-                "pyenv global 3.7.2"
+                "No global/local python version has been set yet. "
+                "Please set the global/local version by typing:\r\n"
+                "pyenv global 3.7.4\r\n"
+                "pyenv local 3.7.4\r\n"
             ),
             ""
         )
