@@ -243,6 +243,7 @@ This PC
 ## Usage
 
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
+- To filter the list: `pyenv install -l | findstr 3.8`
 - To install a python version:  `pyenv install 3.5.2`
    - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quiet installation_
    - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
@@ -281,7 +282,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 * 64bit-train (master), i.e. pyenv version _2.64.x_
 
 ```
-> pyenv install -l 
+> pyenv install -l | findstr 3.8
 ....
 3.8.0-win32
 3.8.0
@@ -298,7 +299,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 
 * 32bit-train, i.e. pyenv version _2.32.x_
 ```
->pyenv install -l 
+>pyenv install -l | findstr 3.8
 ....
 3.8.0
 3.8.0-amd64
