@@ -243,6 +243,7 @@ This PC
 ## Usage
 
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
+- To filter the list: `pyenv install -l | findstr 3.8`
 - To install a python version:  `pyenv install 3.5.2`
    - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quiet installation_
    - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
@@ -281,7 +282,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 * 64bit-train (master), i.e. pyenv version _2.64.x_
 
 ```
-> pyenv install -l 
+> pyenv install -l | findstr 3.8
 ....
 3.8.0-win32
 3.8.0
@@ -298,7 +299,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 
 * 32bit-train, i.e. pyenv version _2.32.x_
 ```
->pyenv install -l 
+>pyenv install -l | findstr 3.8
 ....
 3.8.0
 3.8.0-amd64
@@ -337,6 +338,13 @@ Support for Python versions below 2.4 have been dropped since their installers d
    - **Answer:** According to Windows, when adding a path under the User variable you need to logout and login again, in order to reflect any change. For the System variable it's not required.
 
 ## Change Log
+
+### New in 2.64.12
+- Fix [#311](https://github.com/pyenv-win/pyenv-win/issues/311): Support many global and shell versions.
+- Fix [#318](https://github.com/pyenv-win/pyenv-win/issues/318): `pyenv global` and `pyenv local` no longer affect PYENV_VERSION, which only `pyenv shell` should affect.
+- The test suite emulates a 32 bit architecture environment.
+- The test suite now also runs tests using `powershell` and `pwsh` in addition to `cmd`.
+- `pyenv shell` now works like `pyenv global` and `pyenv local` in that, on 32-bit platforms, it adds `-win32` to every supplied version if not explicitly added.
 
 ### New in 2.64.11
 - Fix [#287](https://github.com/pyenv-win/pyenv-win/issues/287): Prevent infinite recursion by removing the shims directory from the path.

@@ -1,6 +1,6 @@
-pytest-cov==2.8.1
-pytest==5.3.0
-coveralls==1.7.0
-coverage==4.5.4
+pytest-cov==2.12.1
+pytest==6.2.5
+coveralls==3.2.0
+coverage==5.5
 pathlib==1.0.1
-tempenv==0.2.0
+tempenv==1.0.0

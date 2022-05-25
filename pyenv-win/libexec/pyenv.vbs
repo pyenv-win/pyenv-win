@@ -121,7 +121,7 @@ Sub CommandWhich(arg)
     For Each version In versions
 
         If Not objfs.FolderExists(strDirVers &"\"& version) Then
-            WScript.Echo "pyenv: version `"& version &"' is not installed (set by "& version &")"
+            WScript.Echo "pyenv: version '"& version &"' is not installed (set by "& version &")"
             WScript.Quit 1
         End If
 
@@ -318,11 +318,14 @@ Sub CommandGlobal(arg)
     ' WScript.echo "kkotari: pyenv.vbs command global..!"
     Dim ver
     If arg.Count < 2 Then
-        ver = GetCurrentVersionGlobal()
-        If IsNull(ver) Then
+        Dim currentVersions
+        currentVersions = GetCurrentVersionsGlobal
+        If IsNull(currentVersions) Then
             WScript.Echo "no global version configured"
         Else
-            WScript.Echo ver(0)
+            For Each ver in currentVersions
+                WScript.Echo ver(0)
+            Next
         End If
     Else
         If arg(1) = "--unset" Then
@@ -330,9 +333,26 @@ Sub CommandGlobal(arg)
             objfs.DeleteFile strPyenvHome &"\version", True
             Exit Sub
         Else
-            ver = Check32Bit(arg(1))
-            SetGlobalVersion ver
+            Dim versionCount
+            versionCount = arg.Count - 1
+            ReDim globalVersions(versionCount - 1)
+            Dim i
+            For i = 0 To versionCount - 1
+                globalVersions(i) = Check32Bit(arg(i + 1))
+                GetBinDir(globalVersions(i))
+            Next
         End If
+
+        Dim ofile
+        If objfs.FileExists(strPyenvHome &"\version") Then
+            Set ofile = objfs.OpenTextFile(strPyenvHome &"\version", 2)
+        Else
+            Set ofile = objfs.CreateTextFile(strPyenvHome &"\version", True)
+        End If
+        For Each ver in globalVersions
+            ofile.WriteLine(ver)
+        Next
+        ofile.Close()
     End If
 End Sub
 
@@ -375,6 +395,29 @@ Sub CommandLocal(arg)
             ofile.WriteLine(ver)
         Next
         ofile.Close()
+    End If
+End Sub
+
+Sub CommandShell(arg)
+    ' WScript.echo "kkotari: pyenv.vbs command shell..!"
+    Dim ver
+    If arg.Count < 2 Then
+        WScript.Echo "Not enough parameters passed to pyenv.vbs shell"
+    Else
+        If arg(1) = "--unset" Then
+            Exit Sub
+        Else
+            Dim versionCount
+            versionCount = arg.Count - 1
+            ReDim shellVersions(versionCount - 1)
+            Dim i
+            For i = 0 To versionCount - 1
+                shellVersions(i) = Check32Bit(arg(i + 1))
+                GetBinDir(shellVersions(i))
+            Next
+        End If
+
+        WScript.Echo Join(shellVersions, " ")
     End If
 End Sub
 
@@ -464,6 +507,7 @@ Sub main(arg)
            Case "rehash"       CommandRehash(arg)
            Case "global"       CommandGlobal(arg)
            Case "local"        CommandLocal(arg)
+           Case "shell"        CommandShell(arg)
            Case "version"      CommandVersion(arg)
            Case "vname"        CommandVersionNameShort(arg)
            Case "version-name" CommandVersionName(arg)

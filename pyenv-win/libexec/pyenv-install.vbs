@@ -37,7 +37,7 @@ Sub ShowHelp()
     WScript.Echo "  --dev                  Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
     WScript.Echo "  --help                 Help, list of options allowed on pyenv install"
     WScript.Echo ""
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub EnsureFolder(path)
@@ -298,7 +298,6 @@ Sub extract(params, register)
 
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
-        ' SetGlobalVersion params(LV_Code)
         If register Then
             registerVersion params(LV_Code), installPath
         End If
