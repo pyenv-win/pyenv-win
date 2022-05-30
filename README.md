@@ -94,6 +94,8 @@ At line:1 char:173
  + FullyQualifiedErrorId : UnauthorizedAccess
 ```
 
+For more information on 'digitally signed' or 'Security warning' you can refer to following issue [#332](https://github.com/pyenv-win/pyenv-win/issues/332)
+
 Installation is complete!
 
 ***
