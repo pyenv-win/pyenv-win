@@ -319,7 +319,7 @@ Sub main(arg)
                 versPieces(VRX_Ext) _
             ))
             If installers2.Exists(fileNonWeb) Then _
-                installers2.Remove fileNonWeb
+                installers2.Remove fileName
         End If
     Next
 
