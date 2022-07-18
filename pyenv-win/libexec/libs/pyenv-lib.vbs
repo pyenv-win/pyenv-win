@@ -37,6 +37,7 @@ Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
 Dim strDirShims
+Dim strDirWiX
 Dim strDBFile
 Dim strVerFile
 strCurrent   = objfs.GetAbsolutePathName(".")
@@ -46,6 +47,7 @@ strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
 strDirShims  = strPyenvHome & "\shims"
+strDirWiX    = strPyenvHome & "\bin\WiX"
 strDBFile    = strPyenvHome & "\.versions_cache.xml"
 strVerFile   = "\.python-version"
 

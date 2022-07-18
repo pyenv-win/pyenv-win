@@ -71,30 +71,44 @@ Sub download(params)
     DownloadFile params(LV_URL), params(IP_InstallFile)
 End Sub
 
-Function deepExtract(params)
+Function deepExtract(params, web)
     ' WScript.echo "kkotari: pyenv-install.vbs deepExtract..!"
-    Dim webCachePath
+    Dim cachePath
     Dim installPath
-    webCachePath = strDirCache &"\"& params(LV_Code) &"-webinstall"
+    cachePath = strDirCache &"\"& params(LV_Code)
+    If web Then
+        cachePath = cachePath &"-webinstall"
+    End If
     installPath = params(IP_InstallPath)
     deepExtract = -1
 
-    If Not objfs.FolderExists(webCachePath) Then
-        deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& webCachePath &"""", 0, True)
+    If Not objfs.FolderExists(cachePath) Then
+        deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& cachePath &"""", 0, True)
         If deepExtract Then
-            WScript.Echo ":: [Error] :: error using web installer."
+            WScript.Echo ":: [Error] :: error extracting the web portion from the installer."
             Exit Function
+        End If
+        If Not web Then
+            deepExtract = objws.Run(""""& strDirWiX &"\dark.exe"" -x """& cachePath &""" """& params(IP_InstallFile) &"""", 0, True)
+            If deepExtract Then
+                WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
+                Exit Function
+            End If
+            deepExtract = objws.Run("cmd /D /C move """& cachePath &"""\AttachedContainer\*.msi """& cachePath &"""", 0, True)
+            If deepExtract Then
+                WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
+                Exit Function
+            End If
         End If
     End If
 
     ' Clean unused install files.
     Dim file
     Dim baseName
-    For Each file In objfs.GetFolder(webCachePath).Files
+    For Each file In objfs.GetFolder(cachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
         If LCase(objfs.GetExtensionName(file)) <> "msi" Or _
-           (Right(baseName, 2) = "_d" And params(IP_Dev) = False) Or _
-           (Right(baseName, 4) = "_pdb" And params(IP_Dev) = False) Or _
+           baseName = "appendpath" Or _
            baseName = "launcher" Or _
            baseName = "path" Or _
            baseName = "pip" _
@@ -103,9 +117,13 @@ Function deepExtract(params)
         End If
     Next
 
+    For Each file In objfs.GetFolder(cachePath).SubFolders
+        file.Delete
+    Next
+
     ' Install the remaining MSI files into our install folder.
     Dim msi
-    For Each file In objfs.GetFolder(webCachePath).Files
+    For Each file In objfs.GetFolder(cachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
         deepExtract = objws.Run("msiexec /quiet /a """& file &""" TargetDir="""& installPath & """", 0, True)
         If deepExtract Then
@@ -283,17 +301,18 @@ Sub extract(params, register)
             End If
         End If
     ElseIf params(LV_Web) Then
-        exitCode = deepExtract(params)
+        exitCode = deepExtract(params, True)
     ElseIf objfs.GetExtensionName(installFile) = "zip" Then
         exitCode = unzip(installFile, installPath, zipRootDir)
     Else
-        Dim quiet
-        Dim dev
+        exitCode = deepExtract(params, False)
+        ' Dim quiet
+        ' Dim dev
 
-        If params(IP_Quiet) Then quiet = " /quiet"
-        If params(IP_Dev) Then dev = " Include_debug=1 Include_symbols=1 Include_dev=1 "
+        ' If params(IP_Quiet) Then quiet = " /quiet"
+        ' If params(IP_Dev) Then dev = " Include_debug=1 Include_symbols=1 Include_dev=1 "
 
-        exitCode = objws.Run(qInstallFile & quiet & dev &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
+        ' exitCode = objws.Run(qInstallFile & quiet & dev &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
     End If
 
     If exitCode = 0 Then
