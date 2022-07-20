@@ -345,6 +345,11 @@ Support for Python versions below 2.4 have been dropped since their installers d
 
 ## Change Log
 
+### New in 3.1.1
+
+- Fix [#413](https://github.com/pyenv-win/pyenv-win/issues/413): bug: pyenv install failing because the system cannot find the file specified 'dark.exe'
+- Adding: python 3.8, 3.9 and 3.10 in classifiers
+
 ### New in 3.1
 - Fix [#142](https://github.com/pyenv-win/pyenv-win/issues/142): Prefer the local installer over the web based installer
 - Fix [#401](https://github.com/pyenv-win/pyenv-win/issues/401), [#396](https://github.com/pyenv-win/pyenv-win/issues/396), [#383](https://github.com/pyenv-win/pyenv-win/issues/383) and [#360](https://github.com/pyenv-win/pyenv-win/issues/360): Added the same level of support for local based installer as we have for web based installers in [#410](https://github.com/pyenv-win/pyenv-win/issues/410)
