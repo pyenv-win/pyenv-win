@@ -33,6 +33,7 @@ Const LV_ZipRootDir = 6
 Const IP_InstallPath = 7
 Const IP_InstallFile = 8
 Const IP_Quiet = 9
+Const IP_Dev = 10
 
 Dim regexVer
 Dim regexFile

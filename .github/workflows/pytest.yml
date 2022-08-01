@@ -1,9 +1,6 @@
-name: "CI - PyTest "
 
-env:
-  PYENV: "$pwd.path/pyenv-win"
-  PATH: "$PYENV/bin:$PYENV/shims:$PATH"
-  
+name: pytest
+
 on:
   push:
     branches:
@@ -16,11 +13,16 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
 
+    name: pyenv-win pytest
+    runs-on: windows-latest
+    env:
+      HOME: D:/a/pyenv-win/pyenv-win
     steps:
-      - uses: actions/checkout@v2
-      - name: Environment Setup - 2
-        run: pyenv --version
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: pytest bash script
+        run: ${{ env.HOME }}/.github/scripts/build.sh
         shell: bash
-    

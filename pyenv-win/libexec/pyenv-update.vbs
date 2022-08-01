@@ -25,7 +25,7 @@ Sub ShowHelp()
     WScript.Echo
     WScript.Echo "Updates the internal database of python installer URL's."
     WScript.Echo
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub EnsureBaseURL(ByRef html, ByVal URL)
@@ -319,7 +319,7 @@ Sub main(arg)
                 versPieces(VRX_Ext) _
             ))
             If installers2.Exists(fileNonWeb) Then _
-                installers2.Remove fileNonWeb
+                installers2.Remove fileName
         End If
     Next
 

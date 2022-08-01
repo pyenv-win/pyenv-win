@@ -1,0 +1,32 @@
+name: pytest_ps1
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: pyenv-win pytest_ps1
+    runs-on: windows-latest
+    env:
+      HOME: D:/a/pyenv-win/pyenv-win
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: pytest_ps1 pwsh command
+        shell: pwsh
+        run : |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+
+      - name: pytest bash script
+        run: ${{ env.HOME }}/.github/scripts/ps1.sh
+        shell: bash

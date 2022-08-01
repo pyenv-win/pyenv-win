@@ -27,7 +27,7 @@ Sub ShowHelp()
     WScript.Echo ""
     WScript.Echo "See `pyenv versions` for a complete list of installed versions."
     WScript.Echo ""
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub unregister(version)
@@ -71,7 +71,7 @@ Sub main(arg)
 
     If objfs.GetFolder(strDirVers).SubFolders.Count = 0 Then
         WScript.Echo "pyenv: No valid versions of python installed."
-        WScript.Quit
+        WScript.Quit 1
     End If
 
     Dim folder

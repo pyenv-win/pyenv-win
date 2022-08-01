@@ -1,4 +1,10 @@
 @echo off
+setlocal
+
+set "skip=-1"
+for /f "delims=" %%i in ('echo skip') do (call :incrementskip)
+if [%skip%]==[0] set "skip_arg="
+if not [%skip%]==[0] set "skip_arg=skip=%skip% "
 
 if "%1" == "--help" (
   echo Usage: pyenv shell ^<version^>
@@ -12,19 +18,29 @@ if "%1" == "--help" (
 )
 
 if [%1]==[] (
-  if [%PYENV_VERSION%]==[] (
+  if "%PYENV_VERSION%"=="" (
     echo no shell-specific version configured
   ) else (
     echo %PYENV_VERSION%
   )
 
 ) else if /i [%1]==[--unset] (
-  set "PYENV_VERSION="
-
-) else if exist "%~dp0..\versions\%1" (
-  set "PYENV_VERSION=%1"
+  endlocal && set "PYENV_VERSION="
 
 ) else (
-  echo pyenv specific python requisite didn't meet. Project is using different version of python.
-  echo Install python '%1' by typing: 'pyenv install %1'
+  cscript //nologo "%~dp0pyenv.vbs" shell %* 1> nul || goto :error
+  for /f "%skip_arg%delims=" %%a in ('cscript //nologo "%~dp0pyenv.vbs" shell %*') do (
+    endlocal && set "PYENV_VERSION=%%a"
+  )
 )
+
+goto :eof
+
+:incrementskip
+set /a skip=%skip%+1
+goto :eof
+
+:error
+cscript //nologo "%~dp0pyenv.vbs" shell %*
+exit /b %errorlevel%
+

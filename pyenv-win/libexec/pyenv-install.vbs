@@ -20,22 +20,24 @@ WScript.Echo ":: [Info] ::  Mirror: " & mirror
 
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"
-    WScript.Echo "Usage: pyenv install [-f] <version> [<version> ...] [-r|--register]"
+    WScript.Echo "Usage: pyenv install [-s] [-f] <version> [<version> ...] [-r|--register]"
     WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
-    WScript.Echo "  -l/--list      List all available versions"
-    WScript.Echo "  -a/--all       Installs all known version from the local version DB cache"
-    WScript.Echo "  -c/--clear     Removes downloaded installers from the cache to free space"
-    WScript.Echo "  -f/--force     Install even if the version appears to be installed already"
-    WScript.Echo "  -r/--register  Register version for py launcher"
-    WScript.Echo "  -q/--quiet     Install using /quiet. This does not show the UI nor does it prompt for inputs"
-    WScript.Echo "  --32only       Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --64only       Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --help         Help, list of options allowed on pyenv install"
+    WScript.Echo "  -l/--list              List all available versions"
+    WScript.Echo "  -a/--all               Installs all known version from the local version DB cache"
+    WScript.Echo "  -c/--clear             Removes downloaded installers from the cache to free space"
+    WScript.Echo "  -f/--force             Install even if the version appears to be installed already"
+    WScript.Echo "  -s/--skip-existing     Skip the installation if the version appears to be installed already"
+    WScript.Echo "  -r/--register          Register version for py launcher"
+    WScript.Echo "  -q/--quiet             Install using /quiet. This does not show the UI nor does it prompt for inputs"
+    WScript.Echo "  --32only               Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only               Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --dev                  Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
+    WScript.Echo "  --help                 Help, list of options allowed on pyenv install"
     WScript.Echo ""
-    WScript.Quit
+    WScript.Quit 0
 End Sub
 
 Sub EnsureFolder(path)
@@ -69,30 +71,44 @@ Sub download(params)
     DownloadFile params(LV_URL), params(IP_InstallFile)
 End Sub
 
-Function deepExtract(params)
+Function deepExtract(params, web)
     ' WScript.echo "kkotari: pyenv-install.vbs deepExtract..!"
-    Dim webCachePath
+    Dim cachePath
     Dim installPath
-    webCachePath = strDirCache &"\"& params(LV_Code) &"-webinstall"
+    cachePath = strDirCache &"\"& params(LV_Code)
+    If web Then
+        cachePath = cachePath &"-webinstall"
+    End If
     installPath = params(IP_InstallPath)
     deepExtract = -1
 
-    If Not objfs.FolderExists(webCachePath) Then
-        deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& webCachePath &"""", 0, True)
+    If Not objfs.FolderExists(cachePath) Then
+        deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& cachePath &"""", 0, True)
         If deepExtract Then
-            WScript.Echo ":: [Error] :: error using web installer."
+            WScript.Echo ":: [Error] :: error extracting the web portion from the installer."
             Exit Function
+        End If
+        If Not web Then
+            deepExtract = objws.Run(""""& strDirWiX &"\dark.exe"" -x """& cachePath &""" """& params(IP_InstallFile) &"""", 0, True)
+            If deepExtract Then
+                WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
+                Exit Function
+            End If
+            deepExtract = objws.Run("cmd /D /C move """& cachePath &"""\AttachedContainer\*.msi """& cachePath &"""", 0, True)
+            If deepExtract Then
+                WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
+                Exit Function
+            End If
         End If
     End If
 
     ' Clean unused install files.
     Dim file
     Dim baseName
-    For Each file In objfs.GetFolder(webCachePath).Files
+    For Each file In objfs.GetFolder(cachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
         If LCase(objfs.GetExtensionName(file)) <> "msi" Or _
-           Right(baseName, 2) = "_d" Or _
-           Right(baseName, 4) = "_pdb" Or _
+           baseName = "appendpath" Or _
            baseName = "launcher" Or _
            baseName = "path" Or _
            baseName = "pip" _
@@ -101,9 +117,13 @@ Function deepExtract(params)
         End If
     Next
 
+    For Each file In objfs.GetFolder(cachePath).SubFolders
+        file.Delete
+    Next
+
     ' Install the remaining MSI files into our install folder.
     Dim msi
-    For Each file In objfs.GetFolder(webCachePath).Files
+    For Each file In objfs.GetFolder(cachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
         deepExtract = objws.Run("msiexec /quiet /a """& file &""" TargetDir="""& installPath & """", 0, True)
         If deepExtract Then
@@ -134,8 +154,8 @@ Function deepExtract(params)
     version = params(LV_Code)
     pythonExe = installPath &"\python.exe"
     pythonwExe = installPath &"\pythonw.exe"
-    major = Left(version, 1)
-    minor = Mid(version, 3, 1)
+    major = Split(version,".")(0)
+    minor = Split(version, ".")(1)
     majorMinor = major & minor
     majorDotMinor = major &"."& minor
     objfs.CopyFile pythonExe, installPath &"\python"& major &".exe"
@@ -239,13 +259,11 @@ Sub extract(params, register)
     Dim installFileFolder
     Dim installPath
     Dim zipRootDir
-    Dim quiet
 
     installFile = params(IP_InstallFile)
     installFileFolder = objfs.GetParentFolderName(installFile)
     installPath = params(IP_InstallPath)
     zipRootDir = params(LV_ZipRootDir)
-    If params(IP_Quiet) Then quiet = " /quiet"
 
     If Not objfs.FolderExists(installFileFolder) Then _
         EnsureFolder(installFileFolder)
@@ -283,16 +301,22 @@ Sub extract(params, register)
             End If
         End If
     ElseIf params(LV_Web) Then
-        exitCode = deepExtract(params)
+        exitCode = deepExtract(params, True)
     ElseIf objfs.GetExtensionName(installFile) = "zip" Then
         exitCode = unzip(installFile, installPath, zipRootDir)
     Else
-        exitCode = objws.Run(qInstallFile & quiet &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
+        exitCode = deepExtract(params, False)
+        ' Dim quiet
+        ' Dim dev
+
+        ' If params(IP_Quiet) Then quiet = " /quiet"
+        ' If params(IP_Dev) Then dev = " Include_debug=1 Include_symbols=1 Include_dev=1 "
+
+        ' exitCode = objws.Run(qInstallFile & quiet & dev &" InstallAllUsers=0 Include_launcher=0 Include_test=0 SimpleInstall=1 TargetDir="& qInstallPath, 9, True)
     End If
 
     If exitCode = 0 Then
         WScript.Echo ":: [Info] :: completed! "& params(LV_Code)
-        ' SetGlobalVersion params(LV_Code)
         If register Then
             registerVersion params(LV_Code), installPath
         End If
@@ -307,41 +331,48 @@ Sub main(arg)
 
     Dim idx
     Dim optForce
+    Dim optSkip
     Dim optList
     Dim optQuiet
     Dim optAll
     Dim opt32
     Dim opt64
+    Dim optDev
     Dim optReg
     Dim optClear
     Dim installVersions
 
     optForce = False
+    optSkip = False
     optList = False
     optQuiet = False
     optAll = False
     opt32 = False
     opt64 = False
+    optDev = False
     optReg = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
-            Case "--help"   ShowHelp
-            Case "-l"       optList = True
-            Case "--list"   optList = True
-            Case "-f"       optForce = True
-            Case "--force"  optForce = True
-            Case "-q"       optQuiet = True
-            Case "--quiet"  optQuiet = True
-            Case "-a"       optAll = True
-            Case "--all"    optAll = True
-            Case "-c"       optClear = True
-            Case "--clear"  optClear = True
-            Case "--32only" opt32 = True
-            Case "--64only" opt64 = True
-            Case "-r" optReg = True
-            Case "--register" optReg = True
+            Case "--help"           ShowHelp
+            Case "-l"               optList = True
+            Case "--list"           optList = True
+            Case "-f"               optForce = True
+            Case "--force"          optForce = True
+            Case "-s"               optSkip = True
+            Case "--skip-existing"  optSkip = True
+            Case "-q"               optQuiet = True
+            Case "--quiet"          optQuiet = True
+            Case "-a"               optAll = True
+            Case "--all"            optAll = True
+            Case "-c"               optClear = True
+            Case "--clear"          optClear = True
+            Case "--32only"         opt32 = True
+            Case "--64only"         opt64 = True
+            Case "--dev"            optDev = True
+            Case "-r"               optReg = True
+            Case "--register"       optReg = True
             Case Else
                 installVersions.Item(Check32Bit(arg(idx))) = Empty
         End Select
@@ -464,7 +495,8 @@ Sub main(arg)
                 verDef(LV_ZipRootDir), _
                 strDirVers &"\"& verDef(LV_Code), _
                 strDirCache &"\"& verDef(LV_FileName), _
-                optQuiet _
+                optQuiet, _
+                optDev _
             )
             If optForce Then clear(installParams)
             extract installParams, optReg
