@@ -2716,6 +2716,16 @@
 		<URL>https://www.python.org/ftp/python/3.10.5/python-3.10.5-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.10.6-win32</code>
+		<file>python-3.10.6.exe</file>
+		<URL>https://www.python.org/ftp/python/3.10.6/python-3.10.6.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.10.6</code>
+		<file>python-3.10.6-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.10.6/python-3.10.6-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0a1-win32</code>
 		<file>python-3.11.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a1.exe</URL>
