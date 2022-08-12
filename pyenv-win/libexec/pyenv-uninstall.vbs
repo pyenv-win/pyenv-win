@@ -121,7 +121,7 @@ Sub main(arg)
             If IsVersion(folder) And objfs.FolderExists(uninstallPath) Then
                 objfs.DeleteFolder uninstallPath, optForce
                 If Err.Number <> 0 Then
-                    WScript.Echo "pyenv: Error ("& Err.Number &") uninstalling version "& folder.Name &": "& Err.Description
+                    WScript.Echo "pyenv: Error ("& Err.Number &") uninstalling version "& folder &": "& Err.Description
                     Err.Clear
                     delError = 1
                 Else
