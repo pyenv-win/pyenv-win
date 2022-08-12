@@ -2845,4 +2845,14 @@
 		<file>python-3.11.0b5-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b5-amd64.exe</URL>
 	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.11.0rc1-win32</code>
+		<file>python-3.11.0rc1.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0rc1</code>
+		<file>python-3.11.0rc1-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1-amd64.exe</URL>
+	</version>
 </versions>
