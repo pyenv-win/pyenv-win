@@ -37,6 +37,27 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 [pyenv][1] is a simple python version management tool. It lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
 
+## Quick start
+1. Install pyenv-win by PowerShell.
+   ``` powershell
+   > Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+   ```
+2. Reopen PowerShell
+3. Run `pyenv --version` to check the installation done
+4. Run `pyenv install -l` to check a list of Python versions supported by pyenv-win
+5. Run `pyenv install <version>` to install the supported version
+6. Run `pyenv global <version>` to set a Python version as the global version
+7. Check which Python version you are using and its path
+   ``` powershell
+   > pyenv version
+   <version> (set by \path\to\.pyenv\pyenv-win\.python-version)
+   ```
+8. Check that Python is working 
+   ``` powershell
+   > python -c "import sys; print(sys.executable)"
+   \path\to\.pyenv\pyenv-win\versions\<version>\python.exe
+   ```
+
 ## pyenv-win commands
 
 ```yml
