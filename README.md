@@ -64,7 +64,7 @@ Currently we support following ways, choose any of your comfort:
 - [Git Commands](#git-commands) - default way + adding manual settings
 - [Pyenv-win zip](#pyenv-win-zip) - manual installation
 - [Python pip](#python-pip) - for existing users
-- [Chocolatey](#Chocolatey)
+- [Chocolatey](#chocolatey)
 - [How to use 32-train](#how-to-use-32-train)  
    - [check announcements](#Announcements)
 
