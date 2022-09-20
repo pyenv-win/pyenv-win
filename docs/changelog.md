@@ -26,7 +26,7 @@
 - Fix [#305](https://github.com/pyenv-win/pyenv-win/issues/305): Fix `exec` preferring the last version listed in `.python-version` instead of the first.
   - **Note:** `pyenv rehash` must be called after upgrading. Expect the following error message if you don't:
 
-    ``` plaintext
+    ```plaintext
     'Scripts' is not recognized as an internal or external command,
     operable program or batch file.
     ```

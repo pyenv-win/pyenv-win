@@ -41,7 +41,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 1. Install pyenv-win in PowerShell.
 
-   ``` pwsh
+   ```pwsh
    > Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
    ```
 
@@ -52,14 +52,14 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 6. Run `pyenv global <version>` to set a Python version as the global version
 7. Check which Python version you are using and its path
 
-   ``` pwsh
+   ```pwsh
    > pyenv version
    <version> (set by \path\to\.pyenv\pyenv-win\.python-version)
    ```
 
 8. Check that Python is working
 
-   ``` pwsh
+   ```pwsh
    > python -c "import sys; print(sys.executable)"
    \path\to\.pyenv\pyenv-win\versions\<version>\python.exe
    ```
@@ -103,7 +103,7 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 
 Ensure all environment variables are properly set via the GUI:
 
-``` planetext
+```plaintext
 This PC 
    → Properties
       → Advanced system settings 
