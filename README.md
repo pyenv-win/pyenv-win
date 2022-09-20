@@ -52,14 +52,14 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 6. Run `pyenv global <version>` to set a Python version as the global version
 7. Check which Python version you are using and its path
 
-   ```pwsh
+   ```plaintext
    > pyenv version
    <version> (set by \path\to\.pyenv\pyenv-win\.python-version)
    ```
 
 8. Check that Python is working
 
-   ```pwsh
+   ```plaintext
    > python -c "import sys; print(sys.executable)"
    \path\to\.pyenv\pyenv-win\versions\<version>\python.exe
    ```
@@ -154,7 +154,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 
 - 64bit-train (master), i.e. pyenv version _2.64.x_
 
-```pwsh
+```plaintext
 > pyenv install -l | findstr 3.8
 ....
 3.8.0-win32
@@ -172,7 +172,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 
 - 32bit-train, i.e. pyenv version _2.32.x_
 
-```pwsh
+```plaintext
 > pyenv install -l | findstr 3.8
 ....
 3.8.0
