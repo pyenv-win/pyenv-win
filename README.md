@@ -86,7 +86,17 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 ## Installation
 
-Please see the [Installation](./docs/installation.md) page.
+Currently we support following ways, choose any of your comfort:
+
+- [PowerShell](docs/installation.md#powershell) - easiest way
+- [Git Commands](docs/installation.md#git-commands) - default way + adding manual settings
+- [Pyenv-win zip](docs/installation.md#pyenv-win-zip) - manual installation
+- [Python pip](docs/installation.md#python-pip) - for existing users
+- [Chocolatey](docs/installation.md#chocolatey)
+- [How to use 32-train](docs/installation.md#how-to-use-32-train)
+  - [check announcements](#announcements)
+
+Please see the [Installation](./docs/installation.md) page for more details.
 
 ## Validate installation
 
