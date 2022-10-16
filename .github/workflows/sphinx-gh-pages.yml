@@ -31,8 +31,10 @@ jobs:
       - name: Build with Sphinx
         uses: seanzhengw/sphinx-pages@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          create_readme: true
+          source: ./
+          destination: ./_site
+          # github_token: ${{ secrets.GITHUB_TOKEN }}
+          # create_readme: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
 
