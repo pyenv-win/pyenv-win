@@ -125,8 +125,8 @@ This PC
 
 ## Usage
 
-- To view a list of python versions supported by pyenv windows: `pyenv install -l`
-- To filter the list: `pyenv install -l | findstr 3.8`
+- To view a list of python versions supported by pyenv windows: `pyenv install --list`
+- To filter the list: `pyenv install --list | findstr 3.8`
 - To install a python version:  `pyenv install 3.5.2`
   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quiet installation_
   - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
