@@ -36,6 +36,8 @@ Dim strPyenvParent
 Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
+Dim strDirHelp
+Dim strDirAction
 Dim strDirShims
 Dim strDirWiX
 Dim strDBFile
@@ -46,6 +48,8 @@ strPyenvParent = objfs.getParentFolderName(strPyenvHome)
 strDirCache  = strPyenvHome & "\install_cache"
 strDirVers   = strPyenvHome & "\versions"
 strDirLibs   = strPyenvHome & "\libexec"
+strDirHelp   = strPyenvHome & "\help"
+strDirAction = strPyenvHome & "\action"
 strDirShims  = strPyenvHome & "\shims"
 strDirWiX    = strPyenvHome & "\bin\WiX"
 strDBFile    = strPyenvHome & "\.versions_cache.xml"

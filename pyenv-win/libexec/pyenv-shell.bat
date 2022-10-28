@@ -6,17 +6,6 @@ for /f "delims=" %%i in ('echo skip') do (call :incrementskip)
 if [%skip%]==[0] set "skip_arg="
 if not [%skip%]==[0] set "skip_arg=skip=%skip% "
 
-if "%1" == "--help" (
-  echo Usage: pyenv shell ^<version^>
-  echo        pyenv shell --unset
-  echo.
-  echo Sets a shell-specific Python version by setting the `PYENV_VERSION'
-  echo environment variable in your shell. This version overrides local
-  echo application-specific versions and the global version.
-  echo.
-  EXIT /B
-)
-
 if [%1]==[] (
   if "%PYENV_VERSION%"=="" (
     echo no shell-specific version configured

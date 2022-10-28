@@ -1,7 +1,6 @@
 @echo off
 setlocal
 
-if "%1" == "--help" (
 echo Usage: pyenv local ^<version^> ^<version2^> ^<..^>
 echo        pyenv local --unset
 echo.
@@ -24,7 +23,8 @@ echo Example: To enable the python2.7 and python3.7 shims to find their
 echo          respective executables you could set both versions with:
 echo.
 echo 'pyenv local 3.7.0 2.7.15'
+echo 'pyenv local 3.7.4'
 EXIT /B
-)
+
 
 :: Implementation of this command is in the pyenv.vbs file

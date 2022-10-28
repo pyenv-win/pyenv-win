@@ -1,12 +1,12 @@
 @echo off
 setlocal
 
-if "%1" == "--help" (
-echo Usage: pyenv commands
+echo Usage: pyenv shims
+echo        pyenv shims --short
 echo.
-echo List all available pyenv commands
+echo List the existing pyenv shims
 echo.
 EXIT /B
-)
+
 
 :: Implementation of this command is in the pyenv.vbs file

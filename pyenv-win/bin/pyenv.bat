@@ -35,6 +35,20 @@ for /F "tokens=1,2 delims=-" %%i in ('%pyenv% vname') do (
   )
 )
 
+:: bat help implementation
+set "commands=commands duplicate exec export global local rehash shell shims version-name version versions vname whence which --version"
+for %%a in (%commands%) do (
+  if /i [%1]==[%%a] && /i [%2]==[--help](
+    set "exe=%~dp0..\help\pyenv-%1"
+    call :normalizepath %exe% exe
+    if exist "%exe%.bat" (
+      set "exe=call "%exe%.bat""
+      %exe% || goto :error
+      exit /b
+    )
+  )
+)
+
 :: all help implemented as plugin
 if /i [%2]==[--help] goto :plugin
 if /i [%1]==[--help] (
@@ -45,6 +59,20 @@ if /i [%1]==[help] (
   if [%2]==[] call :plugin help --help || goto :error
   if not [%2]==[] call :plugin %2 --help || goto :error
   exit /b
+)
+
+:: pyenv bat actions
+set "commands=duplicate export --version"
+for %%a in (%commands%) do (
+  if /i [%1]==[%%a] (
+    set "exe=%~dp0..\action\pyenv-%1"
+    call :normalizepath %exe% exe
+    if exist "%exe%.bat" (
+      set "exe=call "%exe%.bat""
+      %exe% %* || goto :error
+      exit /b
+    )
+  )
 )
 
 :: let pyenv.vbs handle these

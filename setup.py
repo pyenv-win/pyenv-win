@@ -48,8 +48,10 @@ setup(
     package_data = {
         'pyenv-win': 
         [
+            'action/*'
             'bin/*', 
             'bin/WiX/*',
+            'help/*'
             'libexec/*', 
             'libexec/libs/*', 
             '../.version', 
