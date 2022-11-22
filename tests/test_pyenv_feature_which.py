@@ -147,7 +147,9 @@ def test_which_no_version_defined(pyenv):
             (
                 "No global/local python version has been set yet. "
                 "Please set the global/local version by typing:\r\n"
+                "pyenv global <python-version>\r\n"
                 "pyenv global 3.7.4\r\n"
+                "pyenv local <python-version>\r\n"
                 "pyenv local 3.7.4"
             ),
             ""
