@@ -296,6 +296,23 @@ Function GetExtensionsNoPeriod(addPy)
     Next
 End Function
 
+' pyenv - bin - exe files
+Sub LinkExeFiles(baseName, file)
+    ' WScript.echo "kkotari: pyenv-lib.vbs link exe files..!"
+    Dim filespec
+    Dim link
+    link = strDirShims &"\"& baseName &".lnk"
+    If Not objfs.FileExists(link) Then
+        Set filespec = objws.CreateShortcut(link)
+        filespec.TargetPath = file
+        filespec.Description = baseName
+        filespec.IconLocation = file &", 2"
+        filespec.WindowStyle = "1"
+        filespec.WorkingDirectory = objfs.getParentFolderName(file)
+        filespec.Save
+    End If
+End Sub
+
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
@@ -369,8 +386,12 @@ Sub Rehash()
             ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName
-                WriteLinuxScript baseName
+                If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                    LinkExeFiles baseName, file
+                Else
+                    WriteWinScript baseName
+                    WriteLinuxScript baseName
+                End If
             End If
         Next
 
@@ -379,8 +400,12 @@ Sub Rehash()
                 ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
                 If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                     baseName = objfs.GetBaseName(file)
-                    WriteWinScript baseName
-                    WriteLinuxScript baseName
+                    If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                        LinkExeFiles baseName, file
+                    Else
+                        WriteWinScript baseName
+                        WriteLinuxScript baseName
+                    End If
                 End If
             Next
         End If
