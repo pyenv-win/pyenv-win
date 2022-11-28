@@ -239,7 +239,7 @@ Sub SaveVersionsXML(xmlPath, versArray)
         doc.documentElement.appendChild versElem
 
         With versElem
-            .setAttribute "x64",        LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_x64)) AND Len(versRow(SFV_Version)(VRX_ARM))))
+            .setAttribute "x64",        LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_x64)) OR Len(versRow(SFV_Version)(VRX_ARM))))
             .setAttribute "webInstall", LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_Web))))
             .setAttribute "msi",        LocaleIndependantCStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi")
         End With
