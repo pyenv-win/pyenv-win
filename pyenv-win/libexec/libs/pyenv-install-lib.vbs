@@ -17,8 +17,9 @@ Const VRX_Patch = 2
 Const VRX_Release = 3
 Const VRX_RelNumber = 4
 Const VRX_x64 = 5
-Const VRX_Web = 6
-Const VRX_Ext = 7
+Const VRX_ARM = 6
+Const VRX_Web = 7
+Const VRX_Ext = 8
 
 ' Version definition array from LoadVersionsXML.
 Const LV_Code = 0
@@ -28,6 +29,7 @@ Const LV_x64 = 3
 Const LV_Web = 4
 Const LV_MSI = 5
 Const LV_ZipRootDir = 6
+' Const LV_ARM = 7 # need to validate what number is this
 
 ' Installation parameters used for clear/extract, extension of LV.
 Const IP_InstallPath = 7
@@ -45,7 +47,7 @@ With regexVer
     .IgnoreCase = True
 End With
 With regexFile
-    .Pattern = "^python-(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-]amd64)?(-webinstall)?\.(exe|msi)$"
+    .Pattern = "^python-(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-]amd64)?([\.-]arm64)?(-webinstall)?\.(exe|msi)$"
     .Global = True
     .IgnoreCase = True
 End With
@@ -59,7 +61,11 @@ Function JoinWin32String(pieces)
     If Len(pieces(VRX_Patch))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Patch)
     If Len(pieces(VRX_Release))   Then JoinWin32String = JoinWin32String & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinWin32String = JoinWin32String & pieces(VRX_RelNumber)
-    If Len(pieces(VRX_x64)) = 0   Then JoinWin32String = JoinWin32String & "-win32"
+    If Len(pieces(VRX_ARM)) Then
+        JoinWin32String = JoinWin32String & "-arm"
+    ElseIf Len(pieces(VRX_x64)) = 0 Then
+        JoinWin32String = JoinWin32String & "-win32"
+    End If
 End Function
 
 ' For x64 Arch
@@ -72,6 +78,7 @@ Function JoinInstallString(pieces)
     If Len(pieces(VRX_Release))   Then JoinInstallString = JoinInstallString & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinInstallString = JoinInstallString & pieces(VRX_RelNumber)
     If Len(pieces(VRX_x64))       Then JoinInstallString = JoinInstallString & pieces(VRX_x64)
+    If Len(pieces(VRX_ARM))       Then JoinInstallString = JoinInstallString & pieces(VRX_ARM)
     If Len(pieces(VRX_Web))       Then JoinInstallString = JoinInstallString & pieces(VRX_Web)
     If Len(pieces(VRX_Ext))       Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Ext)
 End Function
@@ -232,7 +239,7 @@ Sub SaveVersionsXML(xmlPath, versArray)
         doc.documentElement.appendChild versElem
 
         With versElem
-            .setAttribute "x64",        LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_x64))))
+            .setAttribute "x64",        LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_x64)) OR Len(versRow(SFV_Version)(VRX_ARM))))
             .setAttribute "webInstall", LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_Web))))
             .setAttribute "msi",        LocaleIndependantCStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi")
         End With

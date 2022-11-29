@@ -293,15 +293,15 @@ Sub main(arg)
             UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
     Next
 
-    ' Now remove any duplicate versions that have the web installer (it's prefered)
+    ' Now remove any duplicate versions that have the offline installer (it's prefered)
     Dim minVers
     Dim fileName, fileNonWeb
     Dim versPieces
     Dim installers2
     Set installers2 = CopyDictionary(installers1) ' Use a copy because "For Each" and .Remove don't play nice together.
-    minVers = Array("2", "4", "", "", "", "", "", "")
+    minVers = Array("2", "4", "", "", "", "", "", "", "")
     For Each fileName In installers1.Keys()
-        ' Array([filename], [url], Array([major], [minor], [path], [rel], [rel_num], [x64], [webinstall], [ext]))
+        ' Array([filename], [url], Array([major], [minor], [path], [rel], [rel_num], [x64], [ARM], [webinstall], [ext]))
         versPieces = installers1(fileName)(SFV_Version)
 
         ' Ignore versions <2.4, Wise Installer's command line is unusable.
@@ -315,6 +315,7 @@ Sub main(arg)
                 versPieces(VRX_Release), _
                 versPieces(VRX_RelNumber), _
                 versPieces(VRX_x64), _
+                versPieces(VRX_ARM), _
                 Empty, _
                 versPieces(VRX_Ext) _
             ))
