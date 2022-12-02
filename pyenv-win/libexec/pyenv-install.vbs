@@ -472,7 +472,8 @@ Sub main(arg)
         If Not versions.Exists(version) Then
             WScript.Echo "pyenv-install: definition not found: "& version
             WScript.Echo
-            WScript.Echo "See all available versions with `pyenv install --list'."
+            WScript.Echo "See all available versions with `pyenv install --list`."
+            WScript.Echo "Does the list seem out of date? Update it using `pyenv update`."
             WScript.Quit 1
         End If
     Next
