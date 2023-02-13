@@ -2756,6 +2756,16 @@
 		<URL>https://www.python.org/ftp/python/3.10.9/python-3.10.9-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.10.10-win32</code>
+		<file>python-3.10.10.exe</file>
+		<URL>https://www.python.org/ftp/python/3.10.10/python-3.10.10.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.10.10</code>
+		<file>python-3.10.10-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.10.10/python-3.10.10-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0a1-win32</code>
 		<file>python-3.11.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a1.exe</URL>
@@ -2810,20 +2820,25 @@
 		<file>python-3.11.0a5-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a5-amd64.exe</URL>
 	</version>
-	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0a6-arm</code>
-		<file>python-3.11.0a6-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a6-arm64.exe</URL>
-	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0a6-win32</code>
 		<file>python-3.11.0a6.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a6.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0a6-arm</code>
+		<file>python-3.11.0a6-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a6-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0a6</code>
 		<file>python-3.11.0a6-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a6-amd64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0a7-arm</code>
+		<file>python-3.11.0a7-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a7-arm64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0a7-win32</code>
@@ -2831,14 +2846,14 @@
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a7.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0a7-arm</code>
-		<file>python-3.11.0a7-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a7-arm64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0a7</code>
 		<file>python-3.11.0a7-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0a7-amd64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0b1-arm</code>
+		<file>python-3.11.0b1-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b1-arm64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0b1-win32</code>
@@ -2846,14 +2861,14 @@
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b1.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0b1-arm</code>
-		<file>python-3.11.0b1-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b1-arm64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0b1</code>
 		<file>python-3.11.0b1-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b1-amd64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0b2-arm</code>
+		<file>python-3.11.0b2-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b2-arm64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0b2-win32</code>
@@ -2861,24 +2876,19 @@
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b2.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0b2-arm</code>
-		<file>python-3.11.0b2-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b2-arm64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0b2</code>
 		<file>python-3.11.0b2-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b2-amd64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0b3-arm</code>
-		<file>python-3.11.0b3-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b3-arm64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0b3-win32</code>
 		<file>python-3.11.0b3.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b3.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0b3-arm</code>
+		<file>python-3.11.0b3-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b3-arm64.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0b3</code>
@@ -2915,30 +2925,30 @@
 		<file>python-3.11.0b5-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0b5-amd64.exe</URL>
 	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.0rc1-arm</code>
+		<file>python-3.11.0rc1-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1-arm64.exe</URL>
+	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.0rc1-win32</code>
 		<file>python-3.11.0rc1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.0rc1-arm</code>
-		<file>python-3.11.0rc1-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1-arm64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0rc1</code>
 		<file>python-3.11.0rc1-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc1-amd64.exe</URL>
-	</version>
-	<version x64="false" webInstall="false" msi="false">
-		<code>3.11.0rc2-win32</code>
-		<file>python-3.11.0rc2.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc2.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0rc2-arm</code>
 		<file>python-3.11.0rc2-arm64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc2-arm64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.11.0rc2-win32</code>
+		<file>python-3.11.0rc2.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0rc2.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.0rc2</code>
@@ -2960,20 +2970,35 @@
 		<file>python-3.11.0-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe</URL>
 	</version>
-	<version x64="true" webInstall="false" msi="false">
-		<code>3.11.1-arm</code>
-		<file>python-3.11.1-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.11.1/python-3.11.1-arm64.exe</URL>
-	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.11.1-win32</code>
 		<file>python-3.11.1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.1/python-3.11.1.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.1-arm</code>
+		<file>python-3.11.1-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.1/python-3.11.1-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
 		<code>3.11.1</code>
 		<file>python-3.11.1-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.11.1/python-3.11.1-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.11.2-win32</code>
+		<file>python-3.11.2.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.2/python-3.11.2.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.2-arm</code>
+		<file>python-3.11.2-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.2/python-3.11.2-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.11.2</code>
+		<file>python-3.11.2-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.11.2/python-3.11.2-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.12.0a1-win32</code>
@@ -3005,19 +3030,49 @@
 		<file>python-3.12.0a2-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a2-amd64.exe</URL>
 	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.0a3-arm</code>
+		<file>python-3.12.0a3-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a3-arm64.exe</URL>
+	</version>
 	<version x64="false" webInstall="false" msi="false">
 		<code>3.12.0a3-win32</code>
 		<file>python-3.12.0a3.exe</file>
 		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a3.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>3.12.0a3-arm</code>
-		<file>python-3.12.0a3-arm64.exe</file>
-		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a3-arm64.exe</URL>
-	</version>
-	<version x64="true" webInstall="false" msi="false">
 		<code>3.12.0a3</code>
 		<file>python-3.12.0a3-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a3-amd64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.0a4-arm</code>
+		<file>python-3.12.0a4-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a4-arm64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.12.0a4-win32</code>
+		<file>python-3.12.0a4.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a4.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.0a4</code>
+		<file>python-3.12.0a4-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a4-amd64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.0a5-arm</code>
+		<file>python-3.12.0a5-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a5-arm64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.12.0a5-win32</code>
+		<file>python-3.12.0a5.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a5.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.0a5</code>
+		<file>python-3.12.0a5-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.0/python-3.12.0a5-amd64.exe</URL>
 	</version>
 </versions>
