@@ -18,3 +18,6 @@
 
 - **Question:** pyenv-win is not recognised, but I have set the ENV PATH?
   - **Answer:** According to Windows, when adding a path under the User variable you need to logout and login again, in order to reflect any change. For the System variable it's not required.
+
+  **Question:** How do I configure my company proxy in pyenv for windows?
+  - **Answer:** Set the `http_proxy` or `https_proxy` environment variable with the hostname or IP address of the proxy server in URL format, for example: `http://username:password@hostname:port/` or `http://hostname:port/`
