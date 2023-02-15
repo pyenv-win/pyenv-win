@@ -142,6 +142,8 @@ if exist "%exe%.bat" (
 ) else if exist "%exe%.vbs" (
   set "exe=cscript //nologo "%exe%.vbs""
 
+) else if exist "%exe%.lnk" (
+  set "exe=start '' "%exe%.bat""
 ) else (
   echo pyenv: no such command '%1'
   exit /b 1
