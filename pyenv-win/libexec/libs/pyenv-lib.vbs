@@ -397,6 +397,8 @@ Sub Rehash()
                 baseName = objfs.GetBaseName(file)
                 If LCase(objfs.GetExtensionName(file)) <> "exe" Then
                     LinkExeFiles baseName, file
+                    WriteWinScript baseName
+                    WriteLinuxScript baseName
                 Else
                     WriteWinScript baseName
                     WriteLinuxScript baseName
