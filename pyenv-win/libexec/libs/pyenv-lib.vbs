@@ -16,16 +16,25 @@ Sub SetProxy()
     Dim proxyArr
 
     httpProxy = objws.Environment("Process")("http_proxy")
-    If httpProxy <> "" Then
-        If InStr(1, httpProxy, "@") > 0 Then
-            ' The http_proxy environment variable is set with basic authentication
-            ' WinHttp seems to work fine without the credentials, so we should be
-            ' okay with just the hostname/port part
-            proxyArr = Split(httpProxy, "@")
-            objweb.setProxy 2, proxyArr(1)
-        Else
-            objweb.setProxy 2, httpProxy
-        End If
+    If httpProxy = "" Then
+        httpProxy = objws.Environment("Process")("https_proxy")
+    End If
+
+    If httpProxy = "" Then Exit Sub
+
+    httpProxy = Replace(Replace(httpProxy, "http://", ""), "https://", "")
+    If Right(httpProxy, 1) = "/" Then
+        httpProxy = Left(httpProxy, Len(httpProxy) - 1)
+    End If
+
+    If InStr(1, httpProxy, "@") > 0 Then
+        ' The http_proxy environment variable is set with basic authentication
+        ' WinHttp seems to work fine without the credentials, so we should be
+        ' okay with just the hostname/port part
+        proxyArr = Split(httpProxy, "@")
+        objweb.setProxy 2, proxyArr(1)
+    Else
+        objweb.setProxy 2, httpProxy
     End If
 End Sub
 SetProxy
