@@ -90,19 +90,23 @@ Return to [README](../README.md#installation)
 
 For existing python users
 
-If you are using PowerShell or Git Bash use `$HOME` instead of `%USERPROFILE%`
+### Command prompt
 
-installation command via command prompt  
 `pip install pyenv-win --target %USERPROFILE%\\.pyenv`  
 
-if you having an error on above command use the folllowing to resolve it. ref. link [#303](https://github.com/pyenv-win/pyenv-win/issues/303)  
+If you run into an error with the above command use the folllowing instead ([#303](https://github.com/pyenv-win/pyenv-win/issues/303)):
+
 `pip install pyenv-win --target %USERPROFILE%\\.pyenv --no-user --upgrade`
 
-steps to [add System Settings](#add-system-settings)
+### PowerShell or Git Bash
 
-_Note:_ Don't forget the check above link, it contains final steps to complete.
+Use the same command as above, but replace `%USERPROFILE%` with `$HOME`.
 
-Installation is complete!
+### Final steps
+
+Proceed to [adding System Settings](#add-system-settings).
+
+Installation should then be complete!
 
 Return to [README](../README.md#installation)
 
