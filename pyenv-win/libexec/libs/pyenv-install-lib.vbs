@@ -20,6 +20,7 @@ Const VRX_x64 = 5
 Const VRX_ARM = 6
 Const VRX_Web = 7
 Const VRX_Ext = 8
+Const VRX_Arch = 5
 
 ' Version definition array from LoadVersionsXML.
 Const LV_Code = 0
@@ -38,11 +39,18 @@ Const IP_Quiet = 9
 Const IP_Dev = 10
 
 Dim regexVer
+Dim regexVerArch
 Dim regexFile
 Set regexVer = New RegExp
+Set regexVerArch = New RegExp
 Set regexFile = New RegExp
 With regexVer
     .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
+    .Global = True
+    .IgnoreCase = True
+End With
+With regexVerArch
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|win32))?$"
     .Global = True
     .IgnoreCase = True
 End With
@@ -278,3 +286,104 @@ Sub SaveVersionsXML(xmlPath, versArray)
         .Close
     End With
 End Sub
+
+Function SymanticComparePatch(ver1, ver2)
+    ' Check if ver1 < ver2
+    Dim comp1, comp2
+
+    ' Major
+    comp1 = ver1(VRX_Major)
+    comp2 = ver2(VRX_Major)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticComparePatch = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Minor
+    comp1 = ver1(VRX_Minor)
+    comp2 = ver2(VRX_Minor)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticComparePatch = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Patch
+    comp1 = ver1(VRX_Patch)
+    comp2 = ver2(VRX_Patch)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticComparePatch = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+End Function
+
+Function JoinVersionString(pieces)
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinVersionString..!"
+    JoinVersionString = ""
+    If Len(pieces(VRX_Major))     Then JoinVersionString = JoinVersionString & pieces(VRX_Major)
+    If Len(pieces(VRX_Minor))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Minor)
+    If Len(pieces(VRX_Patch))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Release))   Then JoinVersionString = JoinVersionString & pieces(VRX_Release)
+    If Len(pieces(VRX_RelNumber)) Then JoinVersionString = JoinVersionString & pieces(VRX_RelNumber)
+    If Len(pieces(VRX_Arch))      Then JoinVersionString = JoinVersionString & pieces(VRX_Arch)
+End Function
+
+Function FindLatestVersion(prefix, known)
+    Dim candidates
+
+    if known Then
+        Dim cachedVersions
+        Set cachedVersions = LoadVersionsXML(strDBFile)
+
+        Dim cachedVersion
+
+        Dim convertor()
+        ReDim Preserve convertor(-1)
+
+        For Each cachedVersion In cachedVersions.Keys
+            ReDim Preserve convertor(UBound(convertor) + 1)
+            convertor(UBound(convertor)) = cachedVersion
+        Next
+
+        candidates = convertor
+    else
+        candidates = GetInstalledVersions()
+    end if
+
+    Dim x
+    Dim matches
+
+    Dim bestMatch
+    Dim arch
+
+    arch = GetArchPostfix()
+
+    For x = 0 To UBound(candidates) Step 1
+        If InStr(candidates(x), prefix) = 1 Then
+            ' To avoid edge cases like prefix="3.1" resulting in "3.11"/"3.11.x"...
+            ' 3.1.1-win32 = len(3.1.1) + len(-win32) Or 3.1.1-win32[len(3.1)] = '.'
+            If Len(candidates(x)) = (Len(prefix) + Len(arch)) Or Mid(candidates(x), Len(prefix) + 1, 1) = "." Then
+                Set matches = regexVerArch.Execute(candidates(x))
+
+                if matches.Count = 1 Then
+                    ' Skip dev builds, releases and so on
+                    ' Comparing each version by <major>.<minor>.<patch>
+                    If matches(0).SubMatches(VRX_Release) = "" And matches(0).SubMatches(VRX_Arch) = arch Then
+                        If IsEmpty(bestMatch) Then
+                            Set bestMatch = matches(0).SubMatches
+                        Else
+                            If SymanticComparePatch(bestMatch, matches(0).SubMatches) Then
+                                Set bestMatch = matches(0).SubMatches
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        End If
+    Next
+
+    if IsEmpty(bestMatch) Then
+        FindLatestVersion = ""
+    else
+        FindLatestVersion = JoinVersionString(bestMatch)
+    end if
+End Function

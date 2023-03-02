@@ -69,9 +69,10 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 ```yml
    commands     List all available pyenv commands
    local        Set or show the local application-specific Python version
+   latest       Print the latest installed or known version with the given prefix
    global       Set or show the global Python version
    shell        Set or show the shell-specific Python version
-   install      Install 1 or more versions of Python 
+   install      Install 1 or more versions of Python
    uninstall    Uninstall 1 or more versions of Python
    update       Update the cached version DB
    rehash       Rehash pyenv shims (run this after switching Python versions)
@@ -105,7 +106,7 @@ Please see the [Installation](./docs/installation.md) page for more details.
 
 If you are getting "**command not found**" error, check the below note and [manually check the settings](#manually-check-the-settings)
 
-For Visual Studio Code or another IDE with a built in terminal, restart it and check again  
+For Visual Studio Code or another IDE with a built in terminal, restart it and check again
 
 ***
 
@@ -114,10 +115,10 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 Ensure all environment variables are properly set via the GUI:
 
 ```plaintext
-This PC 
+This PC
    → Properties
-      → Advanced system settings 
-         → Advanced → Environment Variables... 
+      → Advanced system settings
+         → Advanced → Environment Variables...
             → PATH
 ```
 
@@ -195,7 +196,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 3.8.2-amd64
 ....
 ```
-  
+
 Support for Python versions below 2.4 have been dropped since their installers don't install "cleanly" like versions from 2.4 onward and they're predominantly out of use/support in most environments now.
 
 ## FAQ
@@ -228,7 +229,7 @@ Please see the [Changelog](./docs/changelog.md) page.
 
 ## Author and Thanks
 
-pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)  
+pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)
 Thanks for all Contributors and Supports for patience for the latest major release.
 
 [1]: https://github.com/pyenv/pyenv
