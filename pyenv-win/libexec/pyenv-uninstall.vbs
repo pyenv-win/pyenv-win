@@ -14,6 +14,7 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+Import "libs\pyenv-install-lib.vbs"
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv uninstall [-f|--force] <version> [<version> ...]"
@@ -48,10 +49,12 @@ Sub main(arg)
     Dim optForce
     Dim optAll
     Dim uninstallVersions
+    Dim fixedVersion
 
     optForce = False
     optAll = False
     Set uninstallVersions = CreateObject("Scripting.Dictionary")
+
 
     For idx = 0 To arg.Count - 1
         Select Case arg(idx)
@@ -61,11 +64,15 @@ Sub main(arg)
             Case "-a"      optAll = True
             Case "--all"   optAll = True
             Case Else
-                If Not IsVersion(arg(idx)) Then
-                    WScript.Echo "pyenv: Unrecognized python version: "& arg(idx)
+                fixedVersion = FindLatestVersion(arg(idx), False)
+
+                If fixedVersion = "" Then fixedVersion = arg(idx)
+
+                If Not IsVersion(fixedVersion) Then
+                    WScript.Echo "pyenv: Unrecognized python version: "& fixedVersion
                     WScript.Quit 1
                 End If
-                uninstallVersions.Item(arg(idx)) = Empty
+                uninstallVersions.Item(fixedVersion) = Empty
         End Select
     Next
 

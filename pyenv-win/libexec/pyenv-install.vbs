@@ -351,6 +351,7 @@ Sub main(arg)
     Dim optReg
     Dim optClear
     Dim installVersions
+    Dim fixedVersion
 
     optForce = False
     optSkip = False
@@ -384,13 +385,17 @@ Sub main(arg)
             Case "-r"               optReg = True
             Case "--register"       optReg = True
             Case Else
-                installVersions.Item(Check32Bit(arg(idx))) = Empty
+                fixedVersion = FindLatestVersion(arg(idx), True)
+
+                If fixedVersion = "" Then fixedVersion = arg(idx)
+
+                installVersions.Item(Check32Bit(fixedVersion)) = Empty
         End Select
     Next
     If Is32Bit Then
         opt32 = False
         opt64 = False
-    End If    
+    End If
     If opt32 And opt64 Then
         WScript.Echo "pyenv-install: only --32only or --64only may be specified, not both."
         WScript.Quit 1
@@ -473,7 +478,7 @@ Sub main(arg)
                 installVersions.Item(ary(0)) = Empty
             Else
                 ShowHelp
-            End If    
+            End If
         End If
     End If
 

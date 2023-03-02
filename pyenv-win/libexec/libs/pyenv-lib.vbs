@@ -238,7 +238,7 @@ End Function
 Function GetInstalledVersions()
     ' WScript.echo "kkotari: pyenv-lib.vbs get installed versions..!"
     Dim rootBinDir, winBinDir, version, versions()
-    ReDim Preserve versions(0)
+    ReDim Preserve versions(-1)
     If objfs.FolderExists(strDirVers) Then
         Set rootBinDir = objfs.GetFolder(strDirVers)
         For Each winBinDir in rootBinDir.SubFolders
@@ -367,7 +367,7 @@ Sub WriteLinuxScript(baseName)
                 .Close
             End With
         End If
-        
+
     End If
 End Sub
 
@@ -422,6 +422,17 @@ Sub Rehash()
         End If
     Next
 End Sub
+
+Function GetArchPostfix()
+    Dim arch
+
+    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
+    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+
+    If UCase(arch) = "AMD64" Then GetArchPostfix = ""
+    If UCase(arch) = "X86"   Then GetArchPostfix = "-win32"
+    If UCase(arch) = "ARM64" Then GetArchPostfix = "-arm64"  ' NOT TESTED
+End Function
 
 ' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()

@@ -18,6 +18,7 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+Import "libs\pyenv-install-lib.vbs"
 ' WScript.echo "kkotari: pyenv.vbs Import called..!"
 
 Function GetCommandList()
@@ -262,6 +263,7 @@ Sub ShowHelp()
      WScript.Echo "   commands     List all available pyenv commands"
      WScript.Echo "   duplicate    Creates a duplicate python environment"
      WScript.Echo "   local        Set or show the local application-specific Python version"
+     WScript.Echo "   latest       Print the latest installed or known version with the given prefix"
      WScript.Echo "   global       Set or show the global Python version"
      WScript.Echo "   shell        Set or show the shell-specific Python version"
      WScript.Echo "   install      Install a Python version using python-build"
@@ -334,11 +336,15 @@ Sub CommandGlobal(arg)
             Exit Sub
         Else
             Dim versionCount
+            Dim fixedVersion
             versionCount = arg.Count - 1
             ReDim globalVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                globalVersions(i) = Check32Bit(arg(i + 1))
+                fixedVersion = FindLatestVersion(arg(i + 1), False)
+                If fixedVersion = "" Then fixedVersion = arg(i + 1)
+
+                globalVersions(i) = Check32Bit(fixedVersion)
                 GetBinDir(globalVersions(i))
             Next
         End If
@@ -376,11 +382,15 @@ Sub CommandLocal(arg)
             Exit Sub
         Else
             Dim versionCount
+            Dim fixedVersion
             versionCount = arg.Count - 1
             ReDim localVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                localVersions(i) = Check32Bit(arg(i + 1))
+                fixedVersion = FindLatestVersion(arg(i + 1), False)
+                If fixedVersion = "" Then fixedVersion = arg(i + 1)
+
+                localVersions(i) = Check32Bit(fixedVersion)
                 GetBinDir(localVersions(i))
             Next
         End If
