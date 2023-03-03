@@ -309,7 +309,7 @@ Sub CommandRehash(arg)
 
     Dim versions
     versions = GetInstalledVersions()
-    If UBound(versions) = 0 Then
+    If UBound(versions) = -1 Then
         WScript.Echo "No version installed. Please install one with 'pyenv install <version>'."
     Else
         Rehash
