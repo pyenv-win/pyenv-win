@@ -47,7 +47,7 @@ def shims_path(pyenv_path):
     return pyenv_path / 'shims'
 
 @pytest.fixture()
-def arch():
+def current_arch():
     return os.environ['PYENV_FORCE_ARCH']
 
 

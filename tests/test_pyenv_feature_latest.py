@@ -31,8 +31,8 @@ def test_latest_edge_cases(pyenv):
 @pytest.mark.parametrize('settings', [lambda: {
         'versions': [X86("3.1.0"), Arch("3.1.4")]
     }])
-def test_latest_arch_cases(pyenv, arch):
-    if arch == 'X86':
+def test_latest_arch_cases(pyenv, current_arch):
+    if current_arch == 'X86':
         assert pyenv.latest("3.1") == (X86("3.1.0"), "")
     else:
         assert pyenv.latest("3.1") == (Native("3.1.4"), "")
