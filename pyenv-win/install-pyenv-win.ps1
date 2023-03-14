@@ -76,7 +76,7 @@ Function Get-LatestVersion() {
 Function Main() {
     If ($Uninstall) {
         Remove-PyEnv
-        If ($LastExitCode -eq 0) {
+        If ($? -eq $True) {
             Write-Host "pyenv-win successfully uninstalled."
         }
         Else {
@@ -140,7 +140,7 @@ Function Main() {
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
     
-    If ($LastExitCode -eq 0) {
+    If ($? -eq $True) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }
     Else {
