@@ -214,13 +214,13 @@ Function GetCurrentVersionsNoError()
     str = GetCurrentVersionsShell
     If Not(IsNull(str)) Then
         For Each v1 in str
-            versions.Add v1(0), v1(1)
+            versions.Item(v1(0)) = v1(1)
         Next
     Else
         str = GetCurrentVersionsLocal(strCurrent)
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Add v1(0), v1(1)
+                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
             Next
         End If
     End If
@@ -228,7 +228,7 @@ Function GetCurrentVersionsNoError()
         str = GetCurrentVersionsGlobal
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Add v1(0), v1(1)
+                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
             Next
         End If
     End If

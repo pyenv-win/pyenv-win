@@ -336,16 +336,12 @@ Sub CommandGlobal(arg)
             Exit Sub
         Else
             Dim versionCount
-            Dim fixedVersion
             versionCount = arg.Count - 1
             ReDim globalVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                fixedVersion = FindLatestVersion(arg(i + 1), False)
-                If fixedVersion = "" Then fixedVersion = arg(i + 1)
-
-                globalVersions(i) = Check32Bit(fixedVersion)
-                GetBinDir(globalVersions(i))
+                globalVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(globalVersions(i), False))
             Next
         End If
 
@@ -382,16 +378,12 @@ Sub CommandLocal(arg)
             Exit Sub
         Else
             Dim versionCount
-            Dim fixedVersion
             versionCount = arg.Count - 1
             ReDim localVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                fixedVersion = FindLatestVersion(arg(i + 1), False)
-                If fixedVersion = "" Then fixedVersion = arg(i + 1)
-
-                localVersions(i) = Check32Bit(fixedVersion)
-                GetBinDir(localVersions(i))
+                localVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(localVersions(i), False))
             Next
         End If
 
