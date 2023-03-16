@@ -475,3 +475,13 @@ Function FindLatestVersion(prefix, known)
         FindLatestVersion = JoinVersionString(bestMatch)
     end if
 End Function
+
+Function TryResolveVersion(prefix, known)
+    Dim resolved
+
+    resolved = FindLatestVersion(prefix, known)
+
+    If resolved = "" Then resolved = prefix
+
+    TryResolveVersion = resolved
+End Function
