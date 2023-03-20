@@ -1,5 +1,8 @@
 # FAQ
 
+- **Question:** python --version is showing different version than expected?
+  - **Answer:** Check your **Environment Variables** where pyenv path need to be in priority. You can manually move them up, save it and restart your prompt (cmd/powershell/git-bash/etc)
+
 - **Question:** Does pyenv for windows support python2?
   - **Answer:** Yes, We support python2 from version 2.4+ until python.org officially removes it.
   - Versions below 2.4 use outdated Wise installers and have issues installing multiple patch versions, unlike Windows MSI and the new Python3 installers that support "extraction" installations.
