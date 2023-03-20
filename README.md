@@ -111,7 +111,7 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 
 ### Manually check the settings
 
-Ensure all environment variables are properly set via the GUI:
+Ensure all environment variables are properly set with high priority via the GUI:
 
 ```plaintext
 This PC 
