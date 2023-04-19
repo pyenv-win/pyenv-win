@@ -150,10 +150,11 @@ Function deepExtract(params, web)
     ' Windows try to execute pythonX.Y file (considers Y as en extension)
     ' It requires explicit .bat extension to work (pythonX.Y.bat)
     ' That's why we also use the pattern pythonXY
-    Dim version, pythonExe, pythonwExe, major, minor, majorMinor, majorDotMinor
+    Dim version, pythonExe, pythonwExe, venvlauncherExe, major, minor, majorMinor, majorDotMinor
     version = params(LV_Code)
     pythonExe = installPath &"\python.exe"
     pythonwExe = installPath &"\pythonw.exe"
+    venvlauncherExe = installPath &"\Lib\venv\scripts\nt\python.exe"
     major = Split(version,".")(0)
     minor = Split(version, ".")(1)
     majorMinor = major & minor
@@ -164,6 +165,14 @@ Function deepExtract(params, web)
     objfs.CopyFile pythonwExe, installPath &"\pythonw"& major &".exe"
     objfs.CopyFile pythonwExe, installPath &"\pythonw"& majorMinor &".exe"
     objfs.CopyFile pythonwExe, installPath &"\pythonw"& majorDotMinor &".exe"
+    If objfs.FileExists(venvlauncherExe) Then
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\python"& major &".exe"
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\python"& majorMinor &".exe"
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\python"& majorDotMinor &".exe"
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\pythonw"& major &".exe"
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\pythonw"& majorMinor &".exe"
+        objfs.CopyFile venvlauncherExe, installPath &"\Lib\venv\scripts\nt\pythonw"& majorDotMinor &".exe"
+    End If
 End Function
 
 Function unzip(installFile, installPath, zipRootDir)
