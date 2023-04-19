@@ -89,7 +89,7 @@ Function deepExtract(params, web)
                 WScript.Echo ":: [Error] :: error extracting the web portion from the installer."
                 Exit Function
             End If
-        Else If Not web Then
+        ElseIf Not web Then
             deepExtract = objws.Run(""""& strDirWiX &"\dark.exe"" -x """& cachePath &""" """& params(IP_InstallFile) &"""", 0, True)
             If deepExtract Then
                 WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
