@@ -21,6 +21,7 @@ def env(pyenv_path):
     env = {"PATH": f"{os.path.dirname(sys.executable)};" \
                      f"{str(Path(pyenv_path, 'bin'))};" \
                      f"{str(Path(pyenv_path, 'shims'))};" \
+                     f"{str(Path(pyenv_path, 'bare_shims'))};" \
                      f"{os.environ['PATH']}"}
     environment = TemporaryEnvironment(env)
     with environment:
