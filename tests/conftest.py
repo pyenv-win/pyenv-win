@@ -58,11 +58,11 @@ def pyenv_file(shell, bin_path, shell_ext):
 @pytest.fixture(scope='session', autouse=True, params=['AMD64', 'X86'],
                 ids=['PYENV_FORCE_ARCH=AMD64', 'PYENV_FORCE_ARCH=X86'])
 def arch(request):
-    arch = request.param
+    value = request.param
     if request.session.testsfailed:
-        pytest.skip(f'Skipping PYENV_FORCE_ARCH={arch} since at lease one test failed for PYENV_FORCE_ARCH=AMD64')
-    with(TemporaryEnvironment({'PYENV_FORCE_ARCH': arch})):
-        yield arch
+        pytest.skip(f'Skipping PYENV_FORCE_ARCH={value} since at lease one test failed for PYENV_FORCE_ARCH=AMD64')
+    with(TemporaryEnvironment({'PYENV_FORCE_ARCH': value})):
+        yield value
 
 
 @pytest.fixture()
@@ -105,10 +105,22 @@ def run(run_args, pyenv_path, bin_path, shims_path):
             environ[key] = str(pyenv_path)
             environ['PATH'] = environ['PATH'].replace(str(Path(os.environ[key])), environ[key])
 
-    def run(*args, env={}):
-        env = {**environ, **env}
+    def remove_python_paths(path):
+        path = Path(path)
+        if path.joinpath("python.exe").exists():
+            return False
+        if path.parent.name.lower() == "scripts" and path.parent.joinpath("python.exe").exists():
+            return False
+        return True
+
+    environ["PATH"] = os.pathsep.join(filter(remove_python_paths, environ["PATH"].split(os.pathsep)))
+    environ.pop("VIRTUAL_ENV", None)
+
+    def run(*args, **kwargs):
+        env = {**environ, **kwargs.pop("env", {})}
+        env.pop("PYTHONPATH", None)
         args = run_args + list(args)
-        return do_run(*args, env=env)
+        return do_run(*args, env=env, **kwargs)
 
     with TemporaryEnvironment({'PATH': environ['PATH']}):
         return run
