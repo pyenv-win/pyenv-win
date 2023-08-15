@@ -12,20 +12,23 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
 [![Rate this package](https://badges.openbase.com/python/rating/pyenv-win.svg?token=hjylt9qszl1DzDMCXNqMQZ6ijtlNCYzG3dKZNF+hgk4=)](https://openbase.com/python/pyenv-win?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
-- [Introduction](#introduction)
-- [pyenv](#pyenv)
-- [pyenv-win commands](#pyenv-win-commands)
-- [Installation](#installation)
-- [Validate installation](#validate-installation)
-- [Usage](#usage)
-- [How to update pyenv](#how-to-update-pyenv)
-- [Announcements](#announcements)
-- [FAQ](#faq)
-- [Changelog](#changelog)
-- [How to contribute](#how-to-contribute)
-- [Bug Tracker and Support](#bug-tracker-and-support)
-- [License and Copyright](#license-and-copyright)
-- [Author and Thanks](#author-and-thanks)
+- [pyenv for Windows](#pyenv-for-windows)
+  - [Introduction](#introduction)
+  - [pyenv](#pyenv)
+  - [Quick start](#quick-start)
+  - [pyenv-win commands](#pyenv-win-commands)
+  - [Installation](#installation)
+  - [Validate installation](#validate-installation)
+    - [Manually check the settings](#manually-check-the-settings)
+  - [Usage](#usage)
+  - [How to update pyenv](#how-to-update-pyenv)
+  - [Announcements](#announcements)
+  - [FAQ](#faq)
+  - [Changelog](#changelog)
+  - [How to contribute](#how-to-contribute)
+  - [Bug Tracker and Support](#bug-tracker-and-support)
+  - [License and Copyright](#license-and-copyright)
+  - [Author and Thanks](#author-and-thanks)
 
 ## Introduction
 
@@ -41,9 +44,17 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 1. Install pyenv-win in PowerShell.
 
-   ```pwsh
-   Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-   ```
+   - Default Path
+
+      ```pwsh
+      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+      ```
+
+   - Custom Path
+
+      ```pwsh
+      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1 -InstallDirectory "D:\Python"
+      ```
 
 2. Reopen PowerShell
 3. Run `pyenv --version` to check if the installation was successful.
@@ -71,7 +82,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
    local        Set or show the local application-specific Python version
    global       Set or show the global Python version
    shell        Set or show the shell-specific Python version
-   install      Install 1 or more versions of Python 
+   install      Install 1 or more versions of Python
    uninstall    Uninstall 1 or more versions of Python
    update       Update the cached version DB
    rehash       Rehash pyenv shims (run this after switching Python versions)
@@ -105,7 +116,7 @@ Please see the [Installation](./docs/installation.md) page for more details.
 
 If you are getting "**command not found**" error, check the below note and [manually check the settings](#manually-check-the-settings)
 
-For Visual Studio Code or another IDE with a built in terminal, restart it and check again  
+For Visual Studio Code or another IDE with a built in terminal, restart it and check again
 
 ***
 
@@ -114,10 +125,10 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 Ensure all environment variables are properly set with high priority via the GUI:
 
 ```plaintext
-This PC 
+This PC
    → Properties
-      → Advanced system settings 
-         → Advanced → Environment Variables... 
+      → Advanced system settings
+         → Advanced → Environment Variables...
             → PATH
 ```
 
@@ -195,7 +206,7 @@ Both releases can install 64bit and 32bit python versions; the difference is in 
 3.8.2-amd64
 ....
 ```
-  
+
 Support for Python versions below 2.4 have been dropped since their installers don't install "cleanly" like versions from 2.4 onward and they're predominantly out of use/support in most environments now.
 
 ## FAQ
@@ -228,7 +239,7 @@ Please see the [Changelog](./docs/changelog.md) page.
 
 ## Author and Thanks
 
-pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)  
+pyenv-win was developed by [Kiran Kumar Kotari](https://github.com/kirankotari) and [Contributors](https://github.com/pyenv-win/pyenv-win/graphs/contributors)
 Thanks for all Contributors and Supports for patience for the latest major release.
 
 [1]: https://github.com/pyenv/pyenv
