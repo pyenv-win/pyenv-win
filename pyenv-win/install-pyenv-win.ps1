@@ -27,6 +27,7 @@ param (
     [string] $InstallDirectory = $env:USERPROFILE
 )
 
+$InstallDirectory = $(Resolve-Path -LiteralPath $InstallDirectory)
 
 function Test-Directory {
     param (
