@@ -88,6 +88,14 @@ Function DownloadFile(strUrl, strFile)
     ' WScript.echo "kkotari: pyenv-install-lib.vbs DownloadFile..!"
     On Error Resume Next
 
+    Dim skipWrite
+    Dim msg
+    Dim cmd
+    Dim shell
+    Dim result
+    Set shell = CreateObject("WScript.Shell")
+    skipWrite = False
+
     objweb.Open "GET", strUrl, False
     If Err.Number <> 0 Then
         WScript.Echo ":: [ERROR] :: "& Err.Description
@@ -96,23 +104,37 @@ Function DownloadFile(strUrl, strFile)
 
     objweb.Send
     If Err.Number <> 0 Then
-        WScript.Echo ":: [ERROR] :: "& Err.Description
-        WScript.Quit 1
-    End If
-    On Error GoTo 0
-
-    If objweb.Status <> 200 Then
+        msg = ":: [ERROR] :: "& Err.Description
+        Err.clear
+        cmd = "cmd /c curl -L --output "& strFile &" "& strUrl
+        Set result = shell.Exec(cmd)
+        Do While result.Status = 0
+            ' Note that the status is 0 during execution, and 1 when done.
+            ' https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/windows-scripting/443b45a5(v=vs.84)
+            WScript.Sleep 100
+        Loop
+        WScript.Echo "    Downloaded via cURL: "& strUrl &" to "& strFile
+        If Err.Number = 0 Then
+            skipWrite = True
+        Else
+            WScript.Echo msg & ", and attempting to fall back to a system cURL call failed ("& Err.number &"): "& Err.Description
+            WScript.Quit 1
+        End If
+        On Error GoTo 0
+    ElseIf (objweb.Status <> 200) And Not(skipWrite) Then
         WScript.Echo ":: [ERROR] :: "& objweb.Status &" :: "& objweb.StatusText
         WScript.Quit 1
     End If
 
-    With CreateObject("ADODB.Stream")
-        .Open
-        .Type = 1
-        .Write objweb.responseBody
-        .SaveToFile strFile, 2
-        .Close
-    End With
+    If Not(skipWrite) Then
+        With CreateObject("ADODB.Stream")
+            .Open
+            .Type = 1
+            .Write objweb.responseBody
+            .SaveToFile strFile, 2
+            .Close
+        End With
+    End If
 End Function
 
 Sub clear(params)
