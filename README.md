@@ -123,6 +123,11 @@ This PC
 
 **NOTE:** If you are running Windows 10 1905 or newer, you might need to disable the built-in Python launcher via Start > "Manage App Execution Aliases" and turning off the "App Installer" aliases for Python
 
+### `WinHTTP` errors in certain environments
+
+There may be cases, such as on a corporate network, that communications via [`WinHTTPRequest`](https://learn.microsoft.com/en-us/windows/win32/winhttp/winhttprequest) may fail. 
+In that case, if [cURL](https://curl.se/windows/) is in your `PATH`, pyenv can use it as a fallback.
+
 ## Usage
 
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
