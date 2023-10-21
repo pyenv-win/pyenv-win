@@ -16,16 +16,25 @@ Sub SetProxy()
     Dim proxyArr
 
     httpProxy = objws.Environment("Process")("http_proxy")
-    If httpProxy <> "" Then
-        If InStr(1, httpProxy, "@") > 0 Then
-            ' The http_proxy environment variable is set with basic authentication
-            ' WinHttp seems to work fine without the credentials, so we should be
-            ' okay with just the hostname/port part
-            proxyArr = Split(httpProxy, "@")
-            objweb.setProxy 2, proxyArr(1)
-        Else
-            objweb.setProxy 2, httpProxy
-        End If
+    If httpProxy = "" Then
+        httpProxy = objws.Environment("Process")("https_proxy")
+    End If
+
+    If httpProxy = "" Then Exit Sub
+
+    httpProxy = Replace(Replace(httpProxy, "http://", ""), "https://", "")
+    If Right(httpProxy, 1) = "/" Then
+        httpProxy = Left(httpProxy, Len(httpProxy) - 1)
+    End If
+
+    If InStr(1, httpProxy, "@") > 0 Then
+        ' The http_proxy environment variable is set with basic authentication
+        ' WinHttp seems to work fine without the credentials, so we should be
+        ' okay with just the hostname/port part
+        proxyArr = Split(httpProxy, "@")
+        objweb.setProxy 2, proxyArr(1)
+    Else
+        objweb.setProxy 2, httpProxy
     End If
 End Sub
 SetProxy
@@ -162,12 +171,14 @@ Function GetCurrentVersion()
     Dim str
     str = GetCurrentVersionNoError
     If IsNull(str) Then
-		WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
-		WScript.echo "pyenv global 3.7.4"
-        WScript.echo "pyenv local 3.7.4"
-    WScript.quit 1
-	End If
-	GetCurrentVersion = str
+        WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
+        WScript.echo "pyenv global <python-version>"
+        WScript.echo "pyenv global 3.7.4"
+        WScript.echo "pyenv global <python-version>"
+        WScript.echo "pyenv global 3.7.4"
+        WScript.quit 1
+    End If
+    GetCurrentVersion = str
 End Function
 
 Function GetCurrentVersionNoError()
@@ -184,12 +195,14 @@ Function GetCurrentVersions()
     Dim versions
     Set versions = GetCurrentVersionsNoError
     If versions.Count = 0 Then
-		WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
-		WScript.echo "pyenv global 3.7.4"
+        WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
+        WScript.echo "pyenv global <python-version>"
+        WScript.echo "pyenv global 3.7.4"
+        WScript.echo "pyenv local <python-version>"
         WScript.echo "pyenv local 3.7.4"
-    WScript.quit 1
-	End If
-	Set GetCurrentVersions = versions
+        WScript.quit 1
+    End If
+    Set GetCurrentVersions = versions
 End Function
 
 Function GetCurrentVersionsNoError()
@@ -292,6 +305,23 @@ Function GetExtensionsNoPeriod(addPy)
     Next
 End Function
 
+' pyenv - bin - exe files
+Sub LinkExeFiles(baseName, file)
+    ' WScript.echo "kkotari: pyenv-lib.vbs link exe files..!"
+    Dim filespec
+    Dim link
+    link = strDirShims &"\"& baseName &".lnk"
+    If Not objfs.FileExists(link) Then
+        Set filespec = objws.CreateShortcut(link)
+        filespec.TargetPath = file
+        filespec.Description = baseName
+        filespec.IconLocation = file &", 2"
+        filespec.WindowStyle = "1"
+        filespec.WorkingDirectory = objfs.getParentFolderName(file)
+        filespec.Save
+    End If
+End Sub
+
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
@@ -365,8 +395,14 @@ Sub Rehash()
             ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                WriteWinScript baseName
-                WriteLinuxScript baseName
+                If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                    LinkExeFiles baseName, file
+                    WriteWinScript baseName
+                    WriteLinuxScript baseName
+                Else
+                    WriteWinScript baseName
+                    WriteLinuxScript baseName
+                End If
             End If
         Next
 
@@ -375,8 +411,12 @@ Sub Rehash()
                 ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
                 If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                     baseName = objfs.GetBaseName(file)
-                    WriteWinScript baseName
-                    WriteLinuxScript baseName
+                    If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                        LinkExeFiles baseName, file
+                    Else
+                        WriteWinScript baseName
+                        WriteLinuxScript baseName
+                    End If
                 End If
             Next
         End If

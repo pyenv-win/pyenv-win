@@ -19,7 +19,7 @@ jobs:
     steps:
 
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: pytest bash script
         run: ${{ env.HOME }}/.github/scripts/build.sh
