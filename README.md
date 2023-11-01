@@ -79,7 +79,8 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
    version      Show the current Python version and its origin
    version-name Show the current Python version
    versions     List all Python versions available to pyenv
-   exec         Runs an executable by first preparing PATH so that the selected Python version's `bin' directory is at the front
+   exec         Runs an executable by first preparing PATH so that the selected 
+                Python version's `bin' directory is at the front
    which        Display the full path to an executable
    whence       List all Python versions that contain the given executable
 ```
