@@ -343,6 +343,12 @@ Function SymanticCompare(ver1, ver2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
+    ' ARM
+    comp1 = ver1(VRX_ARM)
+    comp2 = ver2(VRX_ARM)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
     ' webinstall
     comp1 = ver1(VRX_Web)
     comp2 = ver2(VRX_Web)
