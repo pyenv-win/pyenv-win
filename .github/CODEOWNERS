@@ -1,7 +1,7 @@
 # This is a comment. the last matching pattern takes the most precedence.
 
 # default global owners
-* @active-pyenv-win
+* @pyenv-win/active-pyenv-win 
 
 # file-type based
 # *.py @user
