@@ -48,6 +48,11 @@ def shims_path(pyenv_path):
 
 
 @pytest.fixture()
+def bare_shims_path(pyenv_path):
+    return pyenv_path / 'bare_shims'
+
+
+@pytest.fixture()
 def pyenv_file(shell, bin_path, shell_ext):
     pyenv_file = str(Path(bin_path, 'pyenv' + shell_ext))
     if shell in ['powershell', 'pwsh']:
@@ -73,7 +78,7 @@ def settings(arch):
 
 
 @pytest.fixture(autouse=True)
-def tmp_pyenv(tmp_path, pyenv_path, local_path, bin_path, shims_path, settings, arch):
+def tmp_pyenv(tmp_path, pyenv_path, local_path, bin_path, shims_path, bare_shims_path, settings, arch):
     settings = settings()
     touch(tmp_path / '.python-version')
     settings['pyenv_path'] = pyenv_path
@@ -98,7 +103,7 @@ def run_args(shell):
 
 
 @pytest.fixture()
-def run(run_args, pyenv_path, bin_path, shims_path):
+def run(run_args, pyenv_path, bin_path, shims_path, bare_shims_path):
     environ = os.environ.copy()
     for key in ['PYENV', 'PYENV_ROOT', 'PYENV_HOME']:
         if key in environ:

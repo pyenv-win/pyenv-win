@@ -52,7 +52,7 @@ def pyenv_setup(settings):
     if isinstance(local_ver, list):
         local_ver = '\n'.join(local_ver)
     src_path = Path(__file__).resolve().parents[1].joinpath('pyenv-win')
-    dirs = [r'bin', r'bin\WiX', r'libexec\libs', r'shims', r'versions']
+    dirs = [r'bin', r'bin\WiX', r'libexec\libs', r'shims', r'bare_shims', r'versions']
     for d in dirs:
         os.makedirs(Path(pyenv_path, d))
     _, _, libexec_files = next(os.walk(src_path.joinpath('libexec')))

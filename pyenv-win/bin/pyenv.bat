@@ -85,6 +85,8 @@ exit /b
 :remove_shims_from_path
 set "python_shims=%~dp0..\shims"
 call :normalizepath "%python_shims%" python_shims
+set "python_bare_shims=%~dp0..\bare_shims"
+call :normalizepath "%python_bare_shims%" python_bare_shims
 set "_path=%path%"
 set "path=%extrapaths%"
 
@@ -118,7 +120,9 @@ for %%a in ("!_path:"S"S=";"!") do (
     endlocal
   )
   if %%a neq "" (
-    if /i not "%%~dpfa"=="%python_shims%" call :append_to_path %%~dpfa
+    if /i not "%%~dpfa"=="%python_shims%" (
+      if /i not "%%~dpfa"=="%python_bare_shims%" call :append_to_path %%~dpfa
+    )
   )
 )
 

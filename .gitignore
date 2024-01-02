@@ -117,3 +117,6 @@ exec.bat
 # git
 *.orig
 
+# pyenv-win installation files
+/pyenv-win/shims/
+/pyenv-win/bare_shims/

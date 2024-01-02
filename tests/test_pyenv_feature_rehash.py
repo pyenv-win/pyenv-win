@@ -6,12 +6,16 @@ from test_pyenv_helpers import python_exes, script_exes, Native
 
 def assert_shims(pyenv_path, ver):
     shims_path = Path(pyenv_path, 'shims')
+    bare_shims_path = Path(pyenv_path, 'bare_shims')
     ver = version.parse(ver.version)
     suffixes = [f'{ver.major}', f'{ver.major}{ver.minor}', f'{ver.major}.{ver.minor}']
     all_exes = [Path(n).stem for n in list(python_exes(suffixes)) + list(script_exes(ver))]
-    all_shims = [n + s for n in all_exes for s in ['', '.bat']]
+    all_shims = [n + s for n in all_exes for s in ['.bat']]
+    all_bare_shims = [n for n in all_exes]
     for s in all_shims:
         assert shims_path.joinpath(s).is_file()
+    for s in all_bare_shims:
+        assert bare_shims_path.joinpath(s).is_file()
 
 
 def test_rehash_no_version(pyenv):

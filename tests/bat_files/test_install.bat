@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set PATH=%~dp0..\bin;%~dp0..\shims;%PATH%
+set PATH=%~dp0..\bin;%~dp0..\shims;%~dp0..\bare_shims;%PATH%
 
 echo :install: test
 call pyenv install -l

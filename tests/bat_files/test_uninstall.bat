@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set PATH=%~dp0..\bin;%~dp0..\shims;%PATH%
+set PATH=%~dp0..\bin;%~dp0..\bare_shims;%~dp0..\shims;%PATH%
 
 echo :uninstall: test
 call pyenv versions

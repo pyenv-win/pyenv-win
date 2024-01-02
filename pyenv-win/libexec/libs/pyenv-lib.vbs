@@ -46,19 +46,21 @@ Dim strDirCache
 Dim strDirVers
 Dim strDirLibs
 Dim strDirShims
+Dim strDirBareShims
 Dim strDirWiX
 Dim strDBFile
 Dim strVerFile
-strCurrent   = objfs.GetAbsolutePathName(".")
-strPyenvHome = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
-strPyenvParent = objfs.getParentFolderName(strPyenvHome)
-strDirCache  = strPyenvHome & "\install_cache"
-strDirVers   = strPyenvHome & "\versions"
-strDirLibs   = strPyenvHome & "\libexec"
-strDirShims  = strPyenvHome & "\shims"
-strDirWiX    = strPyenvHome & "\bin\WiX"
-strDBFile    = strPyenvHome & "\.versions_cache.xml"
-strVerFile   = "\.python-version"
+strCurrent      = objfs.GetAbsolutePathName(".")
+strPyenvHome    = objfs.getParentFolderName(objfs.getParentFolderName(WScript.ScriptFullName))
+strPyenvParent  = objfs.getParentFolderName(strPyenvHome)
+strDirCache     = strPyenvHome & "\install_cache"
+strDirVers      = strPyenvHome & "\versions"
+strDirLibs      = strPyenvHome & "\libexec"
+strDirShims     = strPyenvHome & "\shims"
+strDirBareShims = strPyenvHome & "\bare_shims"
+strDirWiX       = strPyenvHome & "\bin\WiX"
+strDBFile       = strPyenvHome & "\.versions_cache.xml"
+strVerFile      = "\.python-version"
 
 Function GetCurrentVersionsGlobal()
     ' WScript.echo "kkotari: pyenv-lib.vbs get current versions global..!"
@@ -351,7 +353,7 @@ End Sub
 Sub WriteLinuxScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write linux script..!"
     Dim filespec
-    filespec = strDirShims &"\"& baseName
+    filespec = strDirBareShims &"\"& baseName
     If Not objfs.FileExists(filespec) Then
         If InStr(1, baseName, "pip") = 1 Then
             With objfs.CreateTextFile(filespec)
@@ -378,6 +380,11 @@ Sub Rehash()
 
     If Not objfs.FolderExists(strDirShims) Then objfs.CreateFolder(strDirShims)
     For Each file In objfs.GetFolder(strDirShims).Files
+        file.Delete True
+    Next
+
+    If Not objfs.FolderExists(strDirBareShims) Then objfs.CreateFolder(strDirBareShims)
+    For Each file In objfs.GetFolder(strDirBareShims).Files
         file.Delete True
     Next
 
