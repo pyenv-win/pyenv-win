@@ -7,6 +7,7 @@ echo.
 echo Some useful pyenv commands are:
 echo    commands    List all available pyenv commands
 echo    local       Set or show the local application-specific Python version
+echo    latest      Print the latest installed or known version with the given prefix
 echo    global      Set or show the global Python version
 echo    shell       Set or show the shell-specific Python version
 echo    install     Install a Python version using python-build

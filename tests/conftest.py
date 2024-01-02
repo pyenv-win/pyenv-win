@@ -48,6 +48,11 @@ def shims_path(pyenv_path):
 
 
 @pytest.fixture()
+def current_arch():
+    return os.environ['PYENV_FORCE_ARCH']
+
+
+@pytest.fixture()
 def pyenv_file(shell, bin_path, shell_ext):
     pyenv_file = str(Path(bin_path, 'pyenv' + shell_ext))
     if shell in ['powershell', 'pwsh']:

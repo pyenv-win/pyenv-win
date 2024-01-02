@@ -32,7 +32,13 @@ def test_global_version_defined(pyenv):
         'global_ver': Native("3.8.9")
     }])
 def test_global_set_installed_version(pyenv):
+    assert pyenv("global", Arch("3.7")) == ("", "")
+    assert pyenv("global") == (Arch("3.7"), "")
+
     assert pyenv("global", Arch("3.7.7")) == ("", "")
+    assert pyenv("global") == (Arch("3.7.7"), "")
+
+    assert pyenv("global", Native("3.7.7")) == ("", "")
     assert pyenv("global") == (Native("3.7.7"), "")
 
 
@@ -41,7 +47,9 @@ def test_global_set_installed_version(pyenv):
         'global_ver': Native("3.8.9"),
     }])
 def test_global_set_unknown_version(pyenv):
-    assert pyenv("global", Arch("3.7.8")) == (not_installed_output(Native("3.7.8")), "")
+    assert pyenv("global", Arch("3.7")) == (not_installed_output(Arch("3.7")), "")
+    assert pyenv("global", Arch("3.7.8")) == (not_installed_output(Arch("3.7.8")), "")
+    assert pyenv("global", Native("3.7.8")) == (not_installed_output(Native("3.7.8")), "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {
@@ -56,12 +64,15 @@ def test_global_unset(pyenv):
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7"), Native("3.8.9")]}])
 def test_global_set_many_versions(pyenv_path, pyenv):
     assert pyenv('global', Arch("3.7.7"), Arch("3.8.9")) == ("", "")
-    assert global_python_versions(pyenv_path) == "\n".join([Native('3.7.7'), Native('3.8.9')])
+    assert global_python_versions(pyenv_path) == "\n".join([Arch('3.7.7'), Arch('3.8.9')])
+
+    assert pyenv('global', Arch("3.7.7"), Arch("3.8.9")) == ("", "")
+    assert global_python_versions(pyenv_path) == "\n".join([Arch('3.7.7'), Arch('3.8.9')])
 
 
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7")]}])
 def test_global_set_many_versions_one_not_installed(pyenv):
-    assert pyenv('global', Arch("3.7.7"), Arch("3.8.9")) == (not_installed_output(Native("3.8.9")), "")
+    assert pyenv('global', Arch("3.7.7"), Arch("3.8.9")) == (not_installed_output(Arch("3.8.9")), "")
 
 
 @pytest.mark.parametrize('settings', [lambda: {'global_ver': [Native('3.7.7'), Native('3.8.9')]}])
