@@ -10,9 +10,12 @@ set TMP_FILE=pyenv_requirements_%T: =%.tmp
 if not exist "%PYENV%versions\%1\" echo Python %1 does not exist & exit /b
 if not exist "%PYENV%versions\%2\" echo Python %2 does not exist & exit /b
 
+setlocal
+set PIP_REQUIRE_VIRTUALENV=0
 cmd /c "pyenv shell %1 & pip freeze > "%TMP%\%TMP_FILE%""
 cmd /c "pyenv shell %2 & pip install -r "%TMP%\%TMP_FILE%""
 cmd /c "pyenv rehash & del "%TMP%\%TMP_FILE%""
+endlocal
 exit /b
 
 :help_menu
