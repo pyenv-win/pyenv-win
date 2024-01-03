@@ -39,7 +39,7 @@ function Test-Directory {
 }
 
 try {
-   Test-Directory -Path $InstallDirectory
+    Test-Directory -Path $InstallDirectory
 }
 catch {
     Write-Host "$($_.Exception.Message)" -Foreground Red
@@ -95,10 +95,18 @@ Function Get-LatestVersion() {
     Return $LatestVersion
 }
 
+Function Test-Uninstall {
+    $pyenvExists = Test-Path -Path $PyEnvDir
+    $envVarsRemoved = (-not [System.Environment]::GetEnvironmentVariable('PYENV', "User")) -and
+                      (-not [System.Environment]::GetEnvironmentVariable('PYENV_ROOT', "User")) -and
+                      (-not [System.Environment]::GetEnvironmentVariable('PYENV_HOME', "User"))
+    return -not $pyenvExists -and $envVarsRemoved
+}
+
 Function Main() {
     If ($Uninstall) {
         Remove-PyEnv
-        If ($? -eq $True) {
+        If (($? -eq $True) -and (Test-Uninstall)) {
             Write-Host "pyenv-win successfully uninstalled."
         }
         Else {
