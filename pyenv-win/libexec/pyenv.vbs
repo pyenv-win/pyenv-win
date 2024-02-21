@@ -267,6 +267,7 @@ Sub ShowHelp()
      WScript.Echo "   install      Install a Python version using python-build"
      WScript.Echo "   uninstall    Uninstall a specific Python version"
      WScript.Echo "   update       Update the cached version DB"
+     WScript.Echo "   migrate      Migrate PIP packages from one Python version to another"
      WScript.echo "   rehash       Rehash pyenv shims (run this after installing executables)"
      WScript.Echo "   vname        Show the current Python version"
      WScript.Echo "   version      Show the current Python version and its origin"
@@ -491,6 +492,63 @@ Sub CommandCommands(arg)
     Next
 End Sub
 
+' Migrate all PIP packages from one Python version to another
+Sub CommandMigrate(arg)
+    If arg.Count < 3 Then
+        WScript.Echo "Error: Not enough arguments"
+        WScript.Echo "Usage: pyenv migrate <source-version> <destination-version>"
+        Exit Sub
+    End If
+
+    Dim sourceVersion, destVersion, versions, version
+    sourceVersion = arg(1)
+    destVersion = arg(2)
+    versions = GetInstalledVersions()
+
+    ' Check for source version
+    If Not Ubound(Filter(versions, sourceVersion)) > -1 Then
+        WScript.Echo "Error: source version '" & sourceVersion & "' is not installed."
+        Exit Sub
+    End If
+
+    ' Check for destination version
+    If Not Ubound(Filter(versions, destVersion)) > -1 Then
+        WScript.Echo "Error: destination version '" & destVersion & "' is not installed."
+        Exit Sub
+    End If
+    
+    ' Set up shell to run pip
+    Dim shell, env, pyenvCmd, requirements, process
+    Set shell = WScript.CreateObject("WScript.Shell")
+    Set env = shell.Environment("PROCESS")
+    pyenvCmd = "cmd /C pyenv"
+    requirements = ""
+
+    ' Get source package listing
+    env("PYENV_VERSION") = sourceVersion
+    requirements = Execute(pyenvCmd & " exec python -m pip freeze", true, shell)
+   
+    ' Create temporary requirements file
+    Dim fs, tempDir, tempName, tempFile
+    Set fs = WScript.CreateObject("Scripting.FileSystemObject")
+    Set tempDir = fs.GetSpecialFolder(2)
+    tempName = fs.GetTempName()
+    Set tempFile = tempDir.CreateTextFile(tempName)
+    tempFile.Write(requirements)
+    tempFile.Close()
+    set tempFile = Nothing
+
+    ' Install packages in destination version
+    env("PYENV_VERSION") = destVersion
+    Execute pyenvCmd & " exec python -m pip install --no-input --no-color --requirement """ & tempDir & "\" & tempName & """", true, shell
+    
+    ' Delete temporary requirements file
+    fs.DeleteFile(tempDir & "\" & tempName)
+    
+    ' Rehash
+    Execute pyenvCmd & " rehash", true, shell
+End Sub
+
 Sub Dummy()
      WScript.Echo "command not implement"
 End Sub
@@ -516,6 +574,7 @@ Sub main(arg)
            Case "shims"        CommandShims(arg)
            Case "which"        CommandWhich(arg)
            Case "whence"       CommandWhence(arg)
+           Case "migrate"      CommandMigrate(arg)
            Case "help"         CommandHelp(arg)
            Case "--help"       CommandHelp(arg)
            ' Case Else           WScript.Echo "main Case Else"

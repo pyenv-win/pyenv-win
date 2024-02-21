@@ -48,7 +48,7 @@ if /i [%1]==[help] (
 )
 
 :: let pyenv.vbs handle these
-set "commands=rehash global local version vname version-name versions commands shims which whence help --help"
+set "commands=rehash global local migrate version vname version-name versions commands shims which whence help --help"
 for %%a in (%commands%) do (
   if /i [%1]==[%%a] (
     rem endlocal not really needed here since above commands do not set any variable
