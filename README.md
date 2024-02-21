@@ -139,6 +139,7 @@ This PC
   - _Note: The version must first be installed._
 - After (un)installing any libraries using pip or modifying the files in a version's folder, you must run `pyenv rehash` to update pyenv with new shims for the python and libraries' executables.
   - _Note: This must be run outside of the `.pyenv` folder._
+- After installing a clean new Python version you may install a copy of all PIP packages used in earler Python versions by running `pyenv migrate <source-version> <destination-version>`.
 - To uninstall a python version: `pyenv uninstall 3.5.2`
 - To view which python you are using and its path: `pyenv version`
 - To view all the python versions installed on this system: `pyenv versions`

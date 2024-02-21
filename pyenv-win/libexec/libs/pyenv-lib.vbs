@@ -371,6 +371,40 @@ Sub WriteLinuxScript(baseName)
     End If
 End Sub
 
+' Run external process
+' Param command: string, command to be executed
+' Param printOutput: optional bool, Print process output to console
+' Param shell: optional WScript.Shell, The shell object to be used to run the command
+' Return stdout of the process
+Function Execute(command, printOutput, shell)
+    Dim process, output, fullOutput
+    fullOutput = ""
+    output = ""
+
+    If IsNull(printOutput) Then
+        printOutput = true
+    End If
+    If IsNull(shell) Then
+        Set shell = WScript.CreateObject("WScript.Shell")
+    End If
+    
+    Set process = shell.Exec(command)
+    Do While True
+        If Not process.StdOut.AtEndOfStream Then
+            output = process.StdOut.Read(1024)
+            If printOutput Then
+                WScript.Echo output
+            End If
+            fullOutput = fullOutput & output
+        End If
+        If process.Status = 1 Then
+            Exit Do
+        End If
+        WScript.Sleep 100
+    Loop
+    Execute = fullOutput
+End Function
+
 ' pyenv rehash
 Sub Rehash()
     ' WScript.echo "kkotari: pyenv-lib.vbs pyenv rehash..!"
