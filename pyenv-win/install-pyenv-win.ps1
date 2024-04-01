@@ -141,8 +141,8 @@ Function Main() {
     }
     
     If ($? -eq $True) {
-        . $PROFILE
         Write-Host "pyenv-win is successfully installed."
+        pwsh -noLogo
     }
     Else {
         Write-Host "pyenv-win was not installed successfully. If this issue persists, please open a ticket: https://github.com/pyenv-win/pyenv-win/issues."
