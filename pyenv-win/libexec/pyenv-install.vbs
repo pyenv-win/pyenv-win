@@ -126,6 +126,8 @@ Function deepExtract(params, web)
     Dim msi
     For Each file In objfs.GetFolder(cachePath).Files
         baseName = LCase(objfs.GetBaseName(file))
+        file = getRealPath(file) ' Get the real path to the file.
+        installPath = getRealPath(installPath) ' Get the real path to the install path.
         deepExtract = objws.Run("msiexec /quiet /a """& file &""" TargetDir="""& installPath & """", 0, True)
         If deepExtract Then
             WScript.Echo ":: [Error] :: error installing """& baseName &""" component MSI."
