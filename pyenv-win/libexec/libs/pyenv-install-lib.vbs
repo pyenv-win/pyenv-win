@@ -278,3 +278,43 @@ Sub SaveVersionsXML(xmlPath, versArray)
         .Close
     End With
 End Sub
+
+'Function to get the real path of a junction point
+
+Dim sh
+Set sh = CreateObject("WScript.Shell")
+
+Function getRealPath(path)
+    Dim junctionPoints, junctionPoint, junctionPointPos
+    Dim cutPath, realPath
+    Dim fsutil
+
+    junctionPoints = Array("current", "install_cache", "versions")
+    Do While true
+        For Each junctionPoint In junctionPoints
+            junctionPointPos = InStrRev(path, junctionPoint)
+            If junctionPointPos > 0 Then
+                Exit For    
+            End If
+        Next
+
+        if junctionPointPos = 0 Then
+            getRealPath = path
+            Exit Function
+        End If
+        junctionPoints = filter(junctionPoints, junctionPoint, False)
+        cutPath = Left(path, junctionPointPos + Len(junctionPoint) - 1)
+        Set fsutil = sh.Exec("powershell -command  (get-item """ & cutPath & """).target")
+
+        Do While fsutil.Status = 0
+            WScript.Sleep 100
+        Loop
+
+        If fsutil.ExitCode = 0 Then
+            realPath = Replace(fsutil.StdOut.ReadAll, vbCrlf, "")
+            if Len(realPath) > 0 Then
+                path = realPath & "\" & Mid(path, junctionPointPos + Len(junctionPoint) + 1)
+            End If
+        End If
+    Loop
+End Function
