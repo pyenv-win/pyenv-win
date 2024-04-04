@@ -30,10 +30,11 @@ $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
+$BareShimsPath = "${PyEnvWinDir}\bare_shims"
     
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
-    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
+    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }.Where{ $_ -ne $BareShimsPath }
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 
@@ -99,7 +100,7 @@ Function Main() {
             Write-Host "New version available: $LatestVersion. Updating..."
             
             Write-Host "Backing up existing Python installations..."
-            $FoldersToBackup = "install_cache", "versions", "shims"
+            $FoldersToBackup = "install_cache", "versions", "shims", "bare_shims"
             ForEach ($Dir in $FoldersToBackup) {
                 If (-not (Test-Path $BackupDir)) {
                     New-Item -ItemType Directory -Path $BackupDir
@@ -135,8 +136,8 @@ Function Main() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
 
     # Remove existing paths, so we don't add duplicates
-    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
-    $NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
+    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }.Where{ $_ -ne $BareShimsPath }
+    $NewPathParts = ($BinPath, $ShimsPath, $BareShimsPath) + $NewPathParts
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
 

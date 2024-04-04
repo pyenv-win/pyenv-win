@@ -71,9 +71,9 @@ Sub CommandShims(arg)
      If arg.Count < 2 Then
      ' WScript.Echo join(arg.ToArray(), ", ")
      ' if --short passed then remove /s from cmd
-        shims_files = getCommandOutput("cmd /c dir "& strDirShims &"/s /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &" "& strDirBareShims &"/s /b")
      ElseIf arg(1) = "--short" Then
-        shims_files = getCommandOutput("cmd /c dir "& strDirShims &" /b")
+        shims_files = getCommandOutput("cmd /c dir "& strDirShims &" "& strDirBareShims &" /b")
      Else
         shims_files = getCommandOutput("cmd /c "& strDirLibs &"\pyenv-shims.bat --help")
      End IF

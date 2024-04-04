@@ -145,7 +145,7 @@ It's a easy way to use PowerShell here
 2. Now adding the following paths to your USER PATH variable in order to access the pyenv command
 
    ```pwsh
-   [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+   [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + $env:USERPROFILE + "\.pyenv\pyenv-win\bare_shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
    ```
 
 If for some reason you cannot execute PowerShell command(likely on an organization managed device), type "environment variables for you account" in Windows search bar and open Environment Variables dialog.
