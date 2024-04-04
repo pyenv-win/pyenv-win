@@ -18,6 +18,7 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+Import "libs\pyenv-install-lib.vbs"
 ' WScript.echo "kkotari: pyenv.vbs Import called..!"
 
 Function GetCommandList()
@@ -262,6 +263,7 @@ Sub ShowHelp()
      WScript.Echo "   commands     List all available pyenv commands"
      WScript.Echo "   duplicate    Creates a duplicate python environment"
      WScript.Echo "   local        Set or show the local application-specific Python version"
+     WScript.Echo "   latest       Print the latest installed or known version with the given prefix"
      WScript.Echo "   global       Set or show the global Python version"
      WScript.Echo "   shell        Set or show the shell-specific Python version"
      WScript.Echo "   install      Install a Python version using python-build"
@@ -307,7 +309,7 @@ Sub CommandRehash(arg)
 
     Dim versions
     versions = GetInstalledVersions()
-    If UBound(versions) = 0 Then
+    If UBound(versions) = -1 Then
         WScript.Echo "No version installed. Please install one with 'pyenv install <version>'."
     Else
         Rehash
@@ -338,8 +340,8 @@ Sub CommandGlobal(arg)
             ReDim globalVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                globalVersions(i) = Check32Bit(arg(i + 1))
-                GetBinDir(globalVersions(i))
+                globalVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(globalVersions(i), False))
             Next
         End If
 
@@ -380,8 +382,8 @@ Sub CommandLocal(arg)
             ReDim localVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                localVersions(i) = Check32Bit(arg(i + 1))
-                GetBinDir(localVersions(i))
+                localVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(localVersions(i), False))
             Next
         End If
 

@@ -20,6 +20,7 @@ Const VRX_x64 = 5
 Const VRX_ARM = 6
 Const VRX_Web = 7
 Const VRX_Ext = 8
+Const VRX_Arch = 5
 
 ' Version definition array from LoadVersionsXML.
 Const LV_Code = 0
@@ -38,11 +39,18 @@ Const IP_Quiet = 9
 Const IP_Dev = 10
 
 Dim regexVer
+Dim regexVerArch
 Dim regexFile
 Set regexVer = New RegExp
+Set regexVerArch = New RegExp
 Set regexFile = New RegExp
 With regexVer
     .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
+    .Global = True
+    .IgnoreCase = True
+End With
+With regexVerArch
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|win32))?$"
     .Global = True
     .IgnoreCase = True
 End With
@@ -278,3 +286,208 @@ Sub SaveVersionsXML(xmlPath, versArray)
         .Close
     End With
 End Sub
+
+' Test if ver1 < ver2
+Function SymanticCompare(ver1, ver2)
+    Dim comp1, comp2
+
+    ' Major
+    comp1 = ver1(VRX_Major)
+    comp2 = ver2(VRX_Major)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Minor
+    comp1 = ver1(VRX_Minor)
+    comp2 = ver2(VRX_Minor)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Patch
+    comp1 = ver1(VRX_Patch)
+    comp2 = ver2(VRX_Patch)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Release
+    comp1 = ver1(VRX_Release)
+    comp2 = ver2(VRX_Release)
+    If Len(comp1) = 0 And Len(comp2) Then
+        SymanticCompare = False
+        Exit Function
+    ElseIf Len(comp1) And Len(comp2) = 0 Then
+        SymanticCompare = True
+        Exit Function
+    Else
+        SymanticCompare = comp1 < comp2
+    End If
+    If comp1 <> comp2 Then Exit Function
+
+    ' Release Number
+    comp1 = ver1(VRX_RelNumber)
+    comp2 = ver2(VRX_RelNumber)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' x64
+    comp1 = ver1(VRX_x64)
+    comp2 = ver2(VRX_x64)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' ARM
+    comp1 = ver1(VRX_ARM)
+    comp2 = ver2(VRX_ARM)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' webinstall
+    comp1 = ver1(VRX_Web)
+    comp2 = ver2(VRX_Web)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' ext
+    comp1 = ver1(VRX_Ext)
+    comp2 = ver2(VRX_Ext)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+End Function
+
+' Modified from code by "Reverend Jim" at:
+' https://www.daniweb.com/programming/code/515601/vbscript-implementation-of-quicksort
+Sub SymanticQuickSort(arr, arrMin, arrMax)
+    Dim middle  ' value of the element in the middle of the range
+    Dim swap    ' temporary item for the swapping of two elements
+    Dim arrFrst ' index of the first element in the range to check
+    Dim arrLast ' index of the last element in the range to check
+    Dim arrMid  ' index of the element in the middle of the range
+    If arrMax <= arrMin Then Exit Sub
+
+    ' Start the checks at the lower and upper limits of the Array
+    arrFrst = arrMin
+    arrLast = arrMax
+
+    ' Find the midpoint of the region to sort and the value of that element
+    arrMid = (arrMin + arrMax) \ 2
+    middle = arr(arrMid)
+    Do While (arrFrst <= arrLast)
+        ' Find the first element > the element at the midpoint
+        Do While SymanticCompare(arr(arrFrst)(SFV_Version), middle(SFV_Version))
+            arrFrst = arrFrst + 1
+            If arrFrst = arrMax Then Exit Do
+        Loop
+
+        ' Find the last element < the element at the midpoint
+        Do While SymanticCompare(middle(SFV_Version), arr(arrLast)(SFV_Version))
+            arrLast = arrLast - 1
+            If arrLast = arrMin Then Exit Do
+        Loop
+
+        ' Pivot the two elements around the midpoint if they are out of order
+        If (arrFrst <= arrLast) Then
+            swap = arr(arrFrst)
+            arr(arrFrst) = arr(arrLast)
+            arr(arrLast) = swap
+            arrFrst = arrFrst + 1
+            arrLast = arrLast - 1
+        End If
+    Loop
+
+    ' Sort sub-regions (recurse) if necessary
+    If arrMin  < arrLast Then SymanticQuickSort arr, arrMin,  arrLast
+    If arrFrst < arrMax  Then SymanticQuickSort arr, arrFrst, arrMax
+End Sub
+
+Function JoinVersionString(pieces)
+    ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinVersionString..!"
+    JoinVersionString = ""
+    If Len(pieces(VRX_Major))     Then JoinVersionString = JoinVersionString & pieces(VRX_Major)
+    If Len(pieces(VRX_Minor))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Minor)
+    If Len(pieces(VRX_Patch))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Release))   Then JoinVersionString = JoinVersionString & pieces(VRX_Release)
+    If Len(pieces(VRX_RelNumber)) Then JoinVersionString = JoinVersionString & pieces(VRX_RelNumber)
+    If Len(pieces(VRX_Arch))      Then JoinVersionString = JoinVersionString & pieces(VRX_Arch)
+End Function
+
+' Resolves latest python version by given prefix
+' known=False to find latest _installed_ version
+' See `pyenv latest --help`
+Function FindLatestVersion(prefix, known)
+    Dim candidates
+
+    if known Then
+        Dim cachedVersions
+        Set cachedVersions = LoadVersionsXML(strDBFile)
+
+        Dim cachedVersion
+
+        Dim convertor()
+        ReDim Preserve convertor(-1)
+
+        For Each cachedVersion In cachedVersions.Keys
+            ReDim Preserve convertor(UBound(convertor) + 1)
+            convertor(UBound(convertor)) = cachedVersion
+        Next
+
+        candidates = convertor
+    else
+        candidates = GetInstalledVersions()
+    end if
+
+    Dim x
+    Dim matches
+
+    Dim bestMatch
+    Dim arch
+
+    arch = GetArchPostfix()
+
+    For x = 0 To UBound(candidates) Step 1
+        ' startswith
+        If Left(candidates(x), Len(prefix)) = prefix Then
+            ' Full match OR prefix plus '.'
+            If candidates(x) = prefix & arch Or Mid(candidates(x), Len(prefix) + 1, 1) = "." Then
+                Set matches = regexVerArch.Execute(candidates(x))
+
+                if matches.Count = 1 Then
+                    ' Skip dev builds, releases and so on
+                    ' Comparing each version by <major>.<minor>.<patch>
+                    If matches(0).SubMatches(VRX_Release) = "" And matches(0).SubMatches(VRX_Arch) = arch Then
+                        If IsEmpty(bestMatch) Then
+                            Set bestMatch = matches(0).SubMatches
+                        Else
+                            If SymanticCompare(bestMatch, matches(0).SubMatches) Then
+                                Set bestMatch = matches(0).SubMatches
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        End If
+    Next
+
+    if IsEmpty(bestMatch) Then
+        FindLatestVersion = ""
+    else
+        FindLatestVersion = JoinVersionString(bestMatch)
+    end if
+End Function
+
+Function TryResolveVersion(prefix, known)
+    Dim resolved
+
+    resolved = FindLatestVersion(prefix, known)
+
+    If resolved = "" Then resolved = prefix
+
+    TryResolveVersion = resolved
+End Function
