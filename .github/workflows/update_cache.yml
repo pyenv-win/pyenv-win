@@ -33,7 +33,7 @@ jobs:
       uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: ${{ env.DEPLOY_COMMIT_MESSAGE }}
+        commit-message: ${{ env.DEPLOY_COMMIT_MESSAGE }} [skip ci]
         author: '${{ env.DEPLOY_USER }} <${{ env.DEPLOY_EMAIL }}>'
         title: '[Automated] ${{ env.DEPLOY_COMMIT_MESSAGE }}'
         body: |
