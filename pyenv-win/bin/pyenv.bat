@@ -1,6 +1,6 @@
 @echo off
 setlocal
-chcp 1250 >nul
+chcp 65001 >nul 2>&1
 
 set "pyenv=cscript //nologo "%~dp0..\libexec\pyenv.vbs""
 
