@@ -152,9 +152,9 @@ If for some reason you cannot execute PowerShell command(likely on an organizati
 You will need create those 3 new variables in User Variables section(top half). Let's assume username is `my_pc`.
 |Variable|Value|
 |---|---|
-|PYENV|C:\Users\my_pc\.pyenv\pyenv-win\
-|PYENV_HOME|C:\Users\my_pc\.pyenv\pyenv-win\
-|PYENV_ROOT|C:\Users\my_pc\.pyenv\pyenv-win\
+|PYENV|C:\Users\my_pc\\.pyenv\pyenv-win\
+|PYENV_HOME|C:\Users\my_pc\\.pyenv\pyenv-win\
+|PYENV_ROOT|C:\Users\my_pc\\.pyenv\pyenv-win\
 
 And add two more lines to user variable `Path`.
 ```
