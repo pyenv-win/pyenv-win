@@ -12,20 +12,23 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
 [![Rate this package](https://badges.openbase.com/python/rating/pyenv-win.svg?token=hjylt9qszl1DzDMCXNqMQZ6ijtlNCYzG3dKZNF+hgk4=)](https://openbase.com/python/pyenv-win?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
-- [Introduction](#introduction)
-- [pyenv](#pyenv)
-- [pyenv-win commands](#pyenv-win-commands)
-- [Installation](#installation)
-- [Validate installation](#validate-installation)
-- [Usage](#usage)
-- [How to update pyenv](#how-to-update-pyenv)
-- [Announcements](#announcements)
-- [FAQ](#faq)
-- [Changelog](#changelog)
-- [How to contribute](#how-to-contribute)
-- [Bug Tracker and Support](#bug-tracker-and-support)
-- [License and Copyright](#license-and-copyright)
-- [Author and Thanks](#author-and-thanks)
+- [pyenv for Windows](#pyenv-for-windows)
+  - [Introduction](#introduction)
+  - [pyenv](#pyenv)
+  - [Quick start](#quick-start)
+  - [pyenv-win commands](#pyenv-win-commands)
+  - [Installation](#installation)
+  - [Validate installation](#validate-installation)
+    - [Manually check the settings](#manually-check-the-settings)
+  - [Usage](#usage)
+  - [How to update pyenv](#how-to-update-pyenv)
+  - [Announcements](#announcements)
+  - [FAQ](#faq)
+  - [Changelog](#changelog)
+  - [How to contribute](#how-to-contribute)
+  - [Bug Tracker and Support](#bug-tracker-and-support)
+  - [License and Copyright](#license-and-copyright)
+  - [Author and Thanks](#author-and-thanks)
 
 ## Introduction
 
@@ -119,7 +122,7 @@ Ensure all environment variables are properly set with high priority via the GUI
 This PC
    → Properties
       → Advanced system settings
-         → Advanced → Environment Variables...
+         → Advanced → System Environment Variables...
             → PATH
 ```
 
