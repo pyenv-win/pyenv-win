@@ -21,16 +21,16 @@
     .LINK
     Online version: https://pyenv-win.github.io/pyenv-win/
 #>
-    
+
 param (
     [Switch] $Uninstall = $False
 )
-    
+
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
-    
+
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
     $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
@@ -86,7 +86,7 @@ Function Main() {
     }
 
     $BackupDir = "${env:Temp}/pyenv-win-backup"
-    
+
     $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
@@ -97,7 +97,7 @@ Function Main() {
         }
         Else {
             Write-Host "New version available: $LatestVersion. Updating..."
-            
+
             Write-Host "Backing up existing Python installations..."
             $FoldersToBackup = "install_cache", "versions", "shims"
             ForEach ($Dir in $FoldersToBackup) {
@@ -106,10 +106,10 @@ Function Main() {
                 }
                 Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
             }
-            
+
             Write-Host "Removing $PyEnvDir..."
             Remove-Item -Path $PyEnvDir -Recurse
-        }   
+        }
     }
 
     New-Item -Path $PyEnvDir -ItemType Directory
@@ -118,7 +118,7 @@ Function Main() {
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win/archive/master.zip", $DownloadPath)
 
-    Start-Process -FilePath "powershell.exe" -ArgumentList @(
+    Start-Process -FilePath "pwsh.exe" -ArgumentList @(
         "-NoProfile",
         "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir`""
     ) -NoNewWindow -Wait
@@ -144,7 +144,7 @@ Function Main() {
         Write-Host "Restoring Python installations..."
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
-    
+
     If ($? -eq $True) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }
