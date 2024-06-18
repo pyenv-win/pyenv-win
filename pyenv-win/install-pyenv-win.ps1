@@ -26,11 +26,11 @@ param (
     [Switch] $Uninstall = $False
 )
     
-$PyEnvDir = "${env:USERPROFILE}\.pyenv"
-$PyEnvWinDir = "${PyEnvDir}\pyenv-win"
-$BinPath = "${PyEnvWinDir}\bin"
-$ShimsPath = "${PyEnvWinDir}\shims"
-$LibsPath = "${PyEnvWinDir}\libexec\libs"
+$PyEnvDir = Join-Path ([System.IO.Path]::GetFullPath($env:USERPROFILE)) ".pyenv"
+$PyEnvWinDir = Join-Path  ${PyEnvDir} "pyenv-win"
+$BinPath = Join-Path  ${PyEnvWinDir} "bin"
+$ShimsPath = Join-Path  ${PyEnvWinDir} "shims"
+$LibsPath = Join-Path  ${PyEnvWinDir} "libexec\libs"
     
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
@@ -81,7 +81,7 @@ Function GenerateShim() {
     $PythonArch = "win32"
     $PythonVersion = "3.12.3"
     $PythonVer = $PythonVersion.Split(".")[0..1] -join ""
-    $TempFolder = Join-Path $Env:Temp $(New-Guid)
+    $TempFolder = Join-Path ([System.IO.Path]::GetFullPath($env:Temp)) $(New-Guid)
 
     Push-Location
     New-Item -Type Directory -Path $TempFolder | Out-Null
@@ -90,9 +90,16 @@ Function GenerateShim() {
     Expand-Archive -Path python.zip -DestinationPath python
     (Get-Content "python\python$PythonVer._pth") -replace "#import site", "import site" | Set-Content "python\python$PythonVer._pth"
     Invoke-WebRequest https://bootstrap.pypa.io/get-pip.py -OutFile python\get-pip.py
-    python\python python\get-pip.py
-    python\Scripts\pip install pyinstaller
-    python\Scripts\pyinstaller "$LibsPath\shim.py" --onedir --contents-directory shim --debug noarchive --noupx
+    try
+    {
+        $ReqVenv = $env:PIP_REQUIRE_VIRTUALENV
+        $env:PIP_REQUIRE_VIRTUALENV = "0"
+        & .\python\python python\get-pip.py
+        & .\python\Scripts\pip install pyinstaller
+        & .\python\Scripts\pyinstaller "$LibsPath\shim.py" --onedir --contents-directory shim --debug noarchive --noupx
+    } finally {
+        $env:PIP_REQUIRE_VIRTUALENV = $ReqVenv
+    }
     Pop-Location
 
     Get-ChildItem -Path "$TempFolder\dist\shim\*" | Copy-Item -Destination $LibsPath -Recurse -Container -Force
