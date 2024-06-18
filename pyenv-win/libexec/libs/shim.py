@@ -16,29 +16,28 @@ if __name__ == "__main__":
         sys.stderr.write(result.stdout)
         sys.exit(result.returncode)
 
-    ver = result.stdout.strip()
-    bin_dir = os.path.join(pyenv_root, "versions", ver)
-    scripts_dir = os.path.join(bin_dir, "Scripts")
+    versions = result.stdout.strip().splitlines()
 
     python_shim = os.path.normcase(os.path.join(pyenv_root, "shims", "python.exe"))
-    python_bin = os.path.normcase(os.path.join(pyenv_root, "versions", ver, "python.exe"))
+    python_binaries = [os.path.normcase(os.path.join(pyenv_root, "versions", ver, "python.exe")) for ver in versions]
     python_in_path = shutil.which("python.exe")
     if python_in_path:
         python_in_path = os.path.normcase(python_in_path)
-    if python_in_path and python_in_path not in [python_shim, python_bin]:
+    if python_in_path and python_in_path not in [python_shim] + python_binaries:
         sys.stderr.write(f"Wrong {python_in_path} is in the PATH\n")
         sys.exit(1)
 
     exe = os.path.basename(sys.executable)
-    exe_path = None
-    for dir in [bin_dir, scripts_dir]:
-        path = os.path.join(dir, exe)
-        if os.path.exists(path):
-            exe_path = path
-    if not exe_path:
-        sys.stderr.write(f"{exe} is not found")
-        sys.exit(1)
+    for ver in versions:
+        bin_dir = os.path.join(pyenv_root, "versions", ver)
+        scripts_dir = os.path.join(bin_dir, "Scripts")
 
-    os.environ["PATH"] = os.pathsep.join([bin_dir, scripts_dir, os.environ["PATH"]])
-    result = subprocess.run([exe_path] + sys.argv[1:])
-    sys.exit(result.returncode)
+        for dir in [bin_dir, scripts_dir]:
+            exe_path = os.path.join(dir, exe)
+            if os.path.exists(exe_path):
+                os.environ["PATH"] = os.pathsep.join([bin_dir, scripts_dir, os.environ["PATH"]])
+                result = subprocess.run([exe_path] + sys.argv[1:])
+                sys.exit(result.returncode)
+
+    sys.stderr.write(f"{exe} is not found")
+    sys.exit(1)
