@@ -82,26 +82,48 @@ End Sub
 
 Function ScanForVersions(URL, optIgnore, ByRef pageCount)
     Dim objHTML
+    Dim shell
+    Dim cmd
+    Dim msg
+    Dim result
     Set objHTML = CreateObject("htmlfile")
+    Set shell = CreateObject("WScript.Shell")
     Set ScanForVersions = CreateObject("Scripting.Dictionary")
 
     With objweb
-        .open "GET", URL, False
         On Error Resume Next
+        .open "GET", URL, False
+        .Option(WinHttpRequestSslErrorFlags_SslErrorFlag_Ignore_All) = true
         .send
         If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror page """& URL &""""& vbCrLf &"Error(0x"& Hex(Err.Number) &"): "& Err.Description
+            msg = "HTTP Error downloading on send from mirror page """& URL &""""& vbCrLf &"Error(0x"& Hex(Err.Number) &"): "& Err.Description
+            Err.clear
+            cmd = "cmd /c curl -L " & URL
+            'WScript.Echo "    Failed to download via WinHTTP, attempting cURL"
+            'WScript.Echo "    cURL command: """& cmd &""""
+            Set result = shell.Exec(cmd)
+            If Err.number = 0 Then
+                'WScript.Echo "    cURL did not error, using cURL's output"
+                'WScript.Echo "    cURL output: "
+                'WScript.Echo result.stdOut.ReadAll
+                'WScript.Echo "^^^ cURL output ^^^"
+                objHTML.write result.StdOut.ReadAll
+                'WScript.Echo "    cURL succeeded getting """& objHTML.title &""""
+            End If
+            If Err.number <> 0 Then
+                WScript.Echo msg & ", and attempting to fall back to a system cURL call failed ("& Err.number &"): "& Err.Description
+                If optIgnore Then Exit Function
+                WScript.Quit 1
+            End If
+            On Error GoTo 0
+        ElseIf .Status <> 200 Then
+            WScript.Echo "HTTP Status Error downloading from version page """& URL &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
             If optIgnore Then Exit Function
             WScript.Quit 1
-        End If
-        On Error GoTo 0
-        If .status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror page """& URL &""""& vbCrLf &"Error("& .status &"): "& .statusText
-            If optIgnore Then Exit Function
-            WScript.Quit 1
+        Else
+            objHTML.write .responseText
         End If
 
-        objHTML.write .responseText
         pageCount = pageCount + 1
     End With
     EnsureBaseURL objHTML, URL
@@ -136,35 +158,58 @@ Sub main(arg)
 
     Dim objHTML
     Dim pageCount
+    Dim shell
+    Dim cmd
+    Dim msg
+    Dim result
     Set objHTML = CreateObject("htmlfile")
+    Set shell = CreateObject("WScript.Shell")
     pageCount = 0
-
     With objweb
         On Error Resume Next
         .Open "GET", mirror, False
         If Err.number <> 0 Then
+            WScript.Echo "Raw open err != 0 "& Err.number
             WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
             If optIgnore Then Exit Sub
             WScript.Quit 1
         End If
+
+        .Option(WinHttpRequestSslErrorFlags_SslErrorFlag_Ignore_All) = true
 
         .Send
         If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-        On Error GoTo 0
-
-        If .Status <> 200 Then
+            msg = "HTTP Error (send) downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+            Err.clear
+            cmd = "cmd /c curl -L " & mirror
+            'WScript.Echo "    Failed to update from WinHTTP, attempting cURL"
+            'WScript.Echo "    cURL command: """& cmd &""""
+            Set result = shell.Exec(cmd)
+            If Err.number = 0 Then
+                'WScript.Echo "    cURL did not error, using cURL's output"
+                'WScript.Echo "    cURL output: "
+                'WScript.Echo result.stdOut.ReadAll
+                'WScript.Echo "^^^ cURL output ^^^"
+                objHTML.write result.StdOut.ReadAll
+                WScript.Echo "    cURL succeeded getting """& objHTML.title &""""
+            End If
+            If Err.number <> 0 Then
+                WScript.Echo msg & ", and attempting to fall back to a system cURL call failed ("& Err.number &"): "& Err.Description
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+            On Error GoTo 0
+        ElseIf .Status <> 200 Then
             WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
             If optIgnore Then Exit Sub
             WScript.Quit 1
+        Else
+            objHTML.write .responseText
         End If
 
-        objHTML.write .responseText
         pageCount = pageCount + 1
     End With
+
     EnsureBaseURL objHTML, mirror
 
     Dim link
