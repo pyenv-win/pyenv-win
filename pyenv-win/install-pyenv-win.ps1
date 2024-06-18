@@ -120,7 +120,7 @@ Function Main() {
 
     Start-Process -FilePath "powershell.exe" -ArgumentList @(
         "-NoProfile",
-        "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir`""
+        "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path \`"$DownloadPath\`" -DestinationPath \`"$PyEnvDir\`"`""
     ) -NoNewWindow -Wait
 
     Move-Item -Path "$PyEnvDir\pyenv-win-master\*" -Destination "$PyEnvDir"
