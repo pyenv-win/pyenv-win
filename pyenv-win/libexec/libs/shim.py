@@ -16,7 +16,7 @@ if __name__ == "__main__":
         sys.stderr.write(result.stdout)
         sys.exit(result.returncode)
 
-    versions = result.stdout.strip().splitlines()
+    versions = [ver.strip() for ver in result.stdout.splitlines()]
 
     python_shim = os.path.normcase(os.path.join(pyenv_root, "shims", "python.exe"))
     python_binaries = [os.path.normcase(os.path.join(pyenv_root, "versions", ver, "python.exe")) for ver in versions]
@@ -34,10 +34,10 @@ if __name__ == "__main__":
 
         for dir in [bin_dir, scripts_dir]:
             exe_path = os.path.join(dir, exe)
-            if os.path.exists(exe_path):
-                os.environ["PATH"] = os.pathsep.join([bin_dir, scripts_dir, os.environ["PATH"]])
-                result = subprocess.run([exe_path] + sys.argv[1:])
-                sys.exit(result.returncode)
+            os.environ["PATH"] = os.pathsep.join([bin_dir, scripts_dir, os.environ["PATH"]])
+
+    result = subprocess.run([exe_path] + sys.argv[1:])
+    sys.exit(result.returncode)
 
     sys.stderr.write(f"{exe} is not found")
     sys.exit(1)
