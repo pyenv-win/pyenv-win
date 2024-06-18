@@ -146,7 +146,8 @@ Function Main() {
     }
     
     If ($? -eq $True) {
-        Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
+        Write-Host "pyenv-win is successfully installed."
+        powershell -noLogo
     }
     Else {
         Write-Host "pyenv-win was not installed successfully. If this issue persists, please open a ticket: https://github.com/pyenv-win/pyenv-win/issues."
