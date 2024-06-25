@@ -16,7 +16,10 @@ End Sub
 Import "libs\pyenv-lib.vbs"
 Import "libs\pyenv-install-lib.vbs"
 
-WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Dim mirror
+For Each mirror In mirrors
+    WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Next
 
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"

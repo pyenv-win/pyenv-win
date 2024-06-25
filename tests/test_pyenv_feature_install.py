@@ -30,6 +30,8 @@ def test_check_pyenv_install_list(pyenv):
     assert "3.9.0" in result
     assert "3.9.1-win32" in result
     assert "3.9.1" in result
+    assert "graalpy" in result
+    assert "pypy" in result
 
 
 def test_check_pyenv_installation():

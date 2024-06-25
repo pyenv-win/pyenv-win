@@ -3,9 +3,15 @@ Option Explicit
 ' Make sure to Import "pyenv-lib.vbs" before this file in a command. (for objfs/objweb variables)
 ' WScript.echo "kkotari: pyenv-install-lib.vbs..!"
 
-Dim mirror
-mirror = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
-If mirror = "" Then mirror = "https://www.python.org/ftp/python"
+Dim mirrors()
+ReDim mirrors(0)
+mirrors(0) = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
+If mirrors(0) = "" Then
+    ReDim Preserve mirrors(2)
+    mirrors(0) = "https://www.python.org/ftp/python"
+    mirrors(1) = "https://downloads.python.org/pypy/versions.json"
+    mirrors(2) = "https://api.github.com/repos/oracle/graalpython/releases"
+End If
 
 Const SFV_FileName = 0
 Const SFV_URL = 1
@@ -21,6 +27,7 @@ Const VRX_ARM = 6
 Const VRX_Web = 7
 Const VRX_Ext = 8
 Const VRX_Arch = 5
+Const VRX_ZipRoot = 9
 
 ' Version definition array from LoadVersionsXML.
 Const LV_Code = 0
@@ -41,9 +48,11 @@ Const IP_Dev = 10
 Dim regexVer
 Dim regexVerArch
 Dim regexFile
+Dim regexJsonUrl
 Set regexVer = New RegExp
 Set regexVerArch = New RegExp
 Set regexFile = New RegExp
+Set regexJsonUrl = New RegExp
 With regexVer
     .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
     .Global = True
@@ -56,6 +65,13 @@ With regexVerArch
 End With
 With regexFile
     .Pattern = "^python-(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-]amd64)?([\.-]arm64)?(-webinstall)?\.(exe|msi)$"
+    .Global = True
+    .IgnoreCase = True
+End With
+With regexJsonUrl
+    ' example for graalpy: graalpy-24.0.1-windows-amd64.zip
+    ' example for pypy: pypy3.7-v7.3.4-win64.zip
+    .Pattern = "download_url"": ?""(https://[^\s""]+/(((?:pypy\d+\.\d+-v|graalpy-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(win64|windows-amd64)?(windows-aarch64)?).zip))"""
     .Global = True
     .IgnoreCase = True
 End With
@@ -251,9 +267,16 @@ Sub SaveVersionsXML(xmlPath, versArray)
             .setAttribute "webInstall", LocaleIndependantCStr(CBool(Len(versRow(SFV_Version)(VRX_Web))))
             .setAttribute "msi",        LocaleIndependantCStr(LCase(versRow(SFV_Version)(VRX_Ext)) = "msi")
         End With
-        AppendElement doc, versElem, "code", JoinWin32String(versRow(SFV_Version))
+        If versRow(SFV_Version)(VRX_Ext) = "zip" Then
+            AppendElement doc, versElem, "code", versRow(SFV_Version)(VRX_ZipRoot)
+        Else
+            AppendElement doc, versElem, "code", JoinWin32String(versRow(SFV_Version))
+        End If
         AppendElement doc, versElem, "file", versRow(0)
         AppendElement doc, versElem, "URL", versRow(1)
+        If versRow(SFV_Version)(VRX_Ext) = "zip" Then
+            AppendElement doc, versElem, "zipRootDir", versRow(SFV_Version)(VRX_ZipRoot)
+        End If
     Next
 
     ' Use SAXXMLReader/MXXMLWriter to "pretty print" the XML data.
