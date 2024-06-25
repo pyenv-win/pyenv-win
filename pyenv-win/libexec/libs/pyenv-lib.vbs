@@ -406,20 +406,23 @@ Sub Rehash()
             End If
         Next
 
-        If objfs.FolderExists(winBinDir & "\Scripts") Then
-            For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
-                ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
-                If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
-                    baseName = objfs.GetBaseName(file)
-                    If LCase(objfs.GetExtensionName(file)) <> "exe" Then
-                        LinkExeFiles baseName, file
-                    Else
-                        WriteWinScript baseName
-                        WriteLinuxScript baseName
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If objfs.FolderExists(winBinDir & subDir) Then
+                For Each file In objfs.GetFolder(winBinDir & subDir).Files
+                    ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+                    If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
+                        baseName = objfs.GetBaseName(file)
+                        If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                            LinkExeFiles baseName, file
+                        Else
+                            WriteWinScript baseName
+                            WriteLinuxScript baseName
+                        End If
                     End If
-                End If
-            Next
-        End If
+                Next
+            End If
+        Next
     Next
 End Sub
 

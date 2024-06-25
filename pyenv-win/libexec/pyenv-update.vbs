@@ -16,7 +16,10 @@ End Sub
 Import "libs\pyenv-lib.vbs"
 Import "libs\pyenv-install-lib.vbs"
 
-WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Dim mirror
+For Each mirror In mirrors
+    WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Next
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv update [--ignore]"
@@ -136,47 +139,65 @@ Sub main(arg)
 
     Dim objHTML
     Dim pageCount
-    Set objHTML = CreateObject("htmlfile")
     pageCount = 0
 
-    With objweb
-        On Error Resume Next
-        .Open "GET", mirror, False
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-
-        .Send
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-        On Error GoTo 0
-
-        If .Status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-
-        objHTML.write .responseText
-        pageCount = pageCount + 1
-    End With
-    EnsureBaseURL objHTML, mirror
-
-    Dim link
-    Dim version
-    Dim matches
     Dim installers1
     Set installers1 = CreateObject("Scripting.Dictionary")
-    For Each link In objHTML.links
-        version = objfs.GetFileName(link.pathname)
-        Set matches = regexVer.Execute(version)
-        If matches.Count = 1 Then _
-            UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+
+    For Each mirror In mirrors
+        Set objHTML = CreateObject("htmlfile")
+        With objweb
+            On Error Resume Next
+            .Open "GET", mirror, False
+            If Err.number <> 0 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+
+            .Send
+            If Err.number <> 0 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+            On Error GoTo 0
+
+            If .Status <> 200 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+
+            objHTML.write .responseText
+            pageCount = pageCount + 1
+        End With
+        EnsureBaseURL objHTML, mirror
+
+        Dim link
+        Dim version
+        Dim matches
+        If objHTML.links.Length = 0 Then
+            ' Assume we're dealing with JSON
+            Dim match
+            Set matches = regexJsonUrl.Execute(objHTML.body.innerHTML)
+            For Each match in matches
+                ' we matched: Array([url], [filename], [ziproot], [major], [minor], [patch], [x64], [ARM])
+                ' we need: Array([filename], [url], Array([major], [minor], [patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
+                installers1(match.SubMatches(1)) = Array( _
+                    match.SubMatches(1), _
+                    match.SubMatches(0), _
+                    Array(match.SubMatches(3), match.SubMatches(4), match.SubMatches(5), "", "", match.SubMatches(6), match.SubMatches(7), "", "zip", match.SubMatches(2)) _
+                )
+            Next
+        Else
+            For Each link In objHTML.links
+                version = objfs.GetFileName(link.pathname)
+                Set matches = regexVer.Execute(version)
+                If matches.Count = 1 Then _
+                    UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+            Next
+        End If
     Next
 
     ' Now remove any duplicate versions that have the offline installer (it's prefered)

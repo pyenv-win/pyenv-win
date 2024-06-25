@@ -138,19 +138,22 @@ Sub CommandWhich(arg)
             End If
         Next
 
-        If objfs.FolderExists(strDirVers &"\"& version & "\Scripts") Then
-            If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program) Then
-                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program).Path
-                WScript.Quit 0
-            End If
-
-            For Each ext In exts.Keys
-                If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
-                    WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If objfs.FolderExists(strDirVers &"\"& version & subDir) Then
+                If objfs.FileExists(strDirVers &"\"& version & subDir &"\"& program) Then
+                    WScript.Echo objfs.GetFile(strDirVers &"\"& version & subDir &"\"& program).Path
                     WScript.Quit 0
                 End If
-            Next
-        End If
+
+                For Each ext In exts.Keys
+                    If objfs.FileExists(strDirVers &"\"& version & subDir &"\"& program & ext) Then
+                        WScript.Echo objfs.GetFile(strDirVers &"\"& version & subDir &"\"& program & ext).Path
+                        WScript.Quit 0
+                    End If
+                Next
+            End If
+        Next
     Next
 
     WScript.Echo "pyenv: "& arg(1) &": command not found"
@@ -224,31 +227,34 @@ Sub CommandWhence(arg)
             Next
         End If
 
-        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            If objfs.FileExists(dir & "\Scripts\" & program) Then
-                found = True
-                foundAny = 0
-                If isPath Then
-                    WScript.Echo objfs.GetFile(dir & "\Scripts\" & program).Path
-                Else
-                    WScript.Echo objfs.GetFileName( dir )
-                End If
-            End If
-        End If
-
-        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            For Each ext In exts.Keys
-                If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If Not found Or isPath And objfs.FolderExists(dir & subDir) Then
+                If objfs.FileExists(dir & subDir &"\" & program) Then
+                    found = True
                     foundAny = 0
                     If isPath Then
-                        WScript.Echo objfs.GetFile(dir & "\Scripts\" & program & ext).Path
+                        WScript.Echo objfs.GetFile(dir & subDir & "\" & program).Path
                     Else
                         WScript.Echo objfs.GetFileName( dir )
                     End If
-                    Exit For
                 End If
-            Next
-        End If
+            End If
+
+            If Not found Or isPath And objfs.FolderExists(dir & subDir) Then
+                For Each ext In exts.Keys
+                    If objfs.FileExists(dir & subDir & "\" & program & ext) Then
+                        foundAny = 0
+                        If isPath Then
+                            WScript.Echo objfs.GetFile(dir & subDir & "\" & program & ext).Path
+                        Else
+                            WScript.Echo objfs.GetFileName( dir )
+                        End If
+                        Exit For
+                    End If
+                Next
+            End If
+        Next
     Next
 
     WScript.Quit foundAny
