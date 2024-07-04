@@ -134,16 +134,16 @@ rem TODO needed?
 call :normalizepath %exe% exe
 
 if exist "%exe%.bat" (
-  set "exe=call "%exe%.bat""
+  set exe=call "%exe%.bat"
 
 ) else if exist "%exe%.cmd" (
-  set "exe=call "%exe%.cmd""
+  set exe=call "%exe%.cmd"
 
 ) else if exist "%exe%.vbs" (
-  set "exe=cscript //nologo "%exe%.vbs""
+  set exe=cscript //nologo "%exe%.vbs"
 
 ) else if exist "%exe%.lnk" (
-  set "exe=start '' "%exe%.bat""
+  set exe=start '' "%exe%.bat"
 ) else (
   echo pyenv: no such command '%1'
   exit /b 1
