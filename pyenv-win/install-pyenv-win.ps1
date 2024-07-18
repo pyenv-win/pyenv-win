@@ -21,16 +21,38 @@
     .LINK
     Online version: https://pyenv-win.github.io/pyenv-win/
 #>
-    
+
 param (
-    [Switch] $Uninstall = $False
+    [Switch] $Uninstall = $False,
+    [string] $InstallDirectory = $env:USERPROFILE
 )
-    
-$PyEnvDir = "${env:USERPROFILE}\.pyenv"
+
+$InstallDirectory = $(Resolve-Path -LiteralPath $InstallDirectory)
+
+function Test-Directory {
+    param (
+        [string]$Path
+    )
+    if (-not (Test-Path -PathType Container -Path $Path)) {
+        throw "Invalid location: $Path"
+    }
+}
+
+try {
+    Test-Directory -Path $InstallDirectory
+}
+catch {
+    Write-Host "$($_.Exception.Message)" -Foreground Red
+    exit
+}
+
+Write-Host "Installing to: $InstallDirectory"
+
+$PyEnvDir = "${InstallDirectory}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
-    
+
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
     $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
@@ -73,10 +95,18 @@ Function Get-LatestVersion() {
     Return $LatestVersion
 }
 
+Function Test-Uninstall {
+    $pyenvExists = Test-Path -Path $PyEnvDir
+    $envVarsRemoved = (-not [System.Environment]::GetEnvironmentVariable('PYENV', "User")) -and
+                      (-not [System.Environment]::GetEnvironmentVariable('PYENV_ROOT', "User")) -and
+                      (-not [System.Environment]::GetEnvironmentVariable('PYENV_HOME', "User"))
+    return -not $pyenvExists -and $envVarsRemoved
+}
+
 Function Main() {
     If ($Uninstall) {
         Remove-PyEnv
-        If ($? -eq $True) {
+        If (($? -eq $True) -and (Test-Uninstall)) {
             Write-Host "pyenv-win successfully uninstalled."
         }
         Else {
@@ -86,7 +116,7 @@ Function Main() {
     }
 
     $BackupDir = "${env:Temp}/pyenv-win-backup"
-    
+
     $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
@@ -97,7 +127,7 @@ Function Main() {
         }
         Else {
             Write-Host "New version available: $LatestVersion. Updating..."
-            
+
             Write-Host "Backing up existing Python installations..."
             $FoldersToBackup = "install_cache", "versions", "shims"
             ForEach ($Dir in $FoldersToBackup) {
@@ -106,10 +136,10 @@ Function Main() {
                 }
                 Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
             }
-            
+
             Write-Host "Removing $PyEnvDir..."
             Remove-Item -Path $PyEnvDir -Recurse
-        }   
+        }
     }
 
     New-Item -Path $PyEnvDir -ItemType Directory
@@ -144,7 +174,7 @@ Function Main() {
         Write-Host "Restoring Python installations..."
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
-    
+
     If ($? -eq $True) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }

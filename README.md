@@ -14,9 +14,11 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 
 - [Introduction](#introduction)
 - [pyenv](#pyenv)
+- [Quick start](#quick-start)
 - [pyenv-win commands](#pyenv-win-commands)
 - [Installation](#installation)
 - [Validate installation](#validate-installation)
+  - [Manually check the settings](#manually-check-the-settings)
 - [Usage](#usage)
 - [How to update pyenv](#how-to-update-pyenv)
 - [Announcements](#announcements)
@@ -41,9 +43,17 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
 1. Install pyenv-win in PowerShell.
 
-   ```pwsh
-   Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-   ```
+   - Default Path
+
+      ```pwsh
+      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+      ```
+
+   - Custom Path
+
+      ```pwsh
+      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1" -InstallDirectory 'Custom:\Path\here'
+      ```
 
 2. Reopen PowerShell
 3. Run `pyenv --version` to check if the installation was successful.
