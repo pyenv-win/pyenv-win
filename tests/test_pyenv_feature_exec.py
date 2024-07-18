@@ -130,8 +130,10 @@ def test_many_paths(pyenv_path, env, pyenv):
         (
             rf"{pyenv_path}\versions\{Native('3.7.7')};"
             rf"{pyenv_path}\versions\{Native('3.7.7')}\Scripts;"
+            rf"{pyenv_path}\versions\{Native('3.7.7')}\bin;"
             rf"{pyenv_path}\versions\{Native('3.8.9')};"
             rf"{pyenv_path}\versions\{Native('3.8.9')}\Scripts;"
+            rf"{pyenv_path}\versions\{Native('3.8.9')}\bin;"
         )
     )
     assert pyenv.exec('version.bat') == ("3.7.7", "")

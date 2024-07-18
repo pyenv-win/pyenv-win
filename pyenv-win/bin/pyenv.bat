@@ -177,7 +177,7 @@ goto :eof
 :: compute list of paths to add for all activated python versions
 :extrapath
 call :normalizepath %1 bindir
-set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;"
+set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;%bindir%\bin;"
 goto :eof
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: check pyenv python shim is first in PATH

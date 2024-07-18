@@ -3520,4 +3520,262 @@
 		<file>python-3.13.0b2-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.13.0/python-3.13.0b2-amd64.exe</URL>
 	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.4-win64</code>
+		<file>pypy3.7-v7.3.4-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.4-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.4-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.4-win64</code>
+		<file>pypy2.7-v7.3.4-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.4-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.4-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.5-win64</code>
+		<file>pypy3.7-v7.3.5-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.5-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.5-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.5-win64</code>
+		<file>pypy2.7-v7.3.5-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.5-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.5-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.6-win64</code>
+		<file>pypy3.8-v7.3.6-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.6-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.6-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.6-win64</code>
+		<file>pypy3.7-v7.3.6-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.6-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.6-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.6-win64</code>
+		<file>pypy2.7-v7.3.6-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.6-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.6-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.7-win64</code>
+		<file>pypy3.8-v7.3.7-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.7-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.7-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.7-win64</code>
+		<file>pypy3.7-v7.3.7-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.7-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.7-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.8-win64</code>
+		<file>pypy3.8-v7.3.8-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.8-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.8-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.8-win64</code>
+		<file>pypy3.9-v7.3.8-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.8-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.8-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.8-win64</code>
+		<file>pypy2.7-v7.3.8-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.8-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.8-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.8-win64</code>
+		<file>pypy3.7-v7.3.8-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.8-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.8-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.9-win64</code>
+		<file>pypy3.8-v7.3.9-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.9-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.9-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.9-win64</code>
+		<file>pypy3.9-v7.3.9-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.9-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.9-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.9-win64</code>
+		<file>pypy2.7-v7.3.9-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.9-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.9-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.7-v7.3.9-win64</code>
+		<file>pypy3.7-v7.3.9-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.9-win64.zip</URL>
+		<zipRootDir>pypy3.7-v7.3.9-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.10-win64</code>
+		<file>pypy3.8-v7.3.10-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.10-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.10-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.10-win64</code>
+		<file>pypy3.9-v7.3.10-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.10-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.10-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.10-win64</code>
+		<file>pypy2.7-v7.3.10-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.10-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.10-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.11-win64</code>
+		<file>pypy3.9-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.11-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.8-v7.3.11-win64</code>
+		<file>pypy3.8-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.8-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy3.8-v7.3.11-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.11-win64</code>
+		<file>pypy2.7-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.11-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.12-win64</code>
+		<file>pypy3.10-v7.3.12-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.12-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.12-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.12-win64</code>
+		<file>pypy3.9-v7.3.12-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.12-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.12-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.12-win64</code>
+		<file>pypy2.7-v7.3.12-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.12-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.12-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.13-win64</code>
+		<file>pypy3.10-v7.3.13-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.13-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.13-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.13-win64</code>
+		<file>pypy3.9-v7.3.13-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.13-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.13-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.13-win64</code>
+		<file>pypy2.7-v7.3.13-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.13-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.13-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.14-win64</code>
+		<file>pypy3.10-v7.3.14-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.14-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.14-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.14-win64</code>
+		<file>pypy3.9-v7.3.14-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.14-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.14-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.14-win64</code>
+		<file>pypy2.7-v7.3.14-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.14-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.14-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.15-win64</code>
+		<file>pypy3.10-v7.3.15-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.15-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.15-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.15-win64</code>
+		<file>pypy3.9-v7.3.15-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.15-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.15-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.15-win64</code>
+		<file>pypy2.7-v7.3.15-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.15-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.15-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.16-win64</code>
+		<file>pypy3.10-v7.3.16-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.16-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.16-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.9-v7.3.16-win64</code>
+		<file>pypy3.9-v7.3.16-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.16-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.16-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.16-win64</code>
+		<file>pypy2.7-v7.3.16-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.16-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.16-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-23.1.0-windows-amd64</code>
+		<file>graalpy-23.1.0-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-23.1.0/graalpy-23.1.0-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-23.1.0-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-23.1.1-windows-amd64</code>
+		<file>graalpy-23.1.1-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-23.1.1/graalpy-23.1.1-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-23.1.1-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-23.1.2-windows-amd64</code>
+		<file>graalpy-23.1.2-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-23.1.2/graalpy-23.1.2-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-23.1.2-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-24.0.0-windows-amd64</code>
+		<file>graalpy-24.0.0-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-24.0.0/graalpy-24.0.0-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-24.0.0-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-24.0.1-windows-amd64</code>
+		<file>graalpy-24.0.1-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-24.0.1/graalpy-24.0.1-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-24.0.1-windows-amd64</zipRootDir>
+	</version>
 </versions>
