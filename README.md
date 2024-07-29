@@ -10,7 +10,6 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
-[![Rate this package](https://badges.openbase.com/python/rating/pyenv-win.svg?token=hjylt9qszl1DzDMCXNqMQZ6ijtlNCYzG3dKZNF+hgk4=)](https://openbase.com/python/pyenv-win?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 - [Introduction](#introduction)
 - [pyenv](#pyenv)
