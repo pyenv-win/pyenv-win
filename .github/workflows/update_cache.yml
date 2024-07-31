@@ -21,7 +21,7 @@ jobs:
     - name: Checkout master
       uses: actions/checkout@v3
     - name: Create a branch
-      uses: peterjgrainger/action-create-branch@v2.0.1
+      uses: peterjgrainger/action-create-branch@v2.2.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
