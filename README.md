@@ -112,13 +112,20 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 
 ### Manually check the settings
 
+The environment variables to be set:
+
+```plaintext
+C:\Users\<replace with your actual username>\.pyenv\pyenv-win\bin
+C:\Users\<replace with your actual username>\.pyenv\pyenv-win\shims
+```
+
 Ensure all environment variables are properly set with high priority via the GUI:
 
 ```plaintext
 This PC
    → Properties
       → Advanced system settings
-         → Advanced → Environment Variables...
+         → Advanced → System Environment Variables...
             → PATH
 ```
 
