@@ -325,25 +325,12 @@ End Sub
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
+    Dim shim
     Dim filespec
-    filespec = strDirShims &"\"& baseName &".bat"
+    shim = strDirLibs &"\libs\shim.exe"
+    filespec = strDirShims &"\"& baseName &".exe"
     If Not objfs.FileExists(filespec) Then
-        If InStr(1, baseName, "pip") = 1 Then
-            With objfs.CreateTextFile(filespec)
-                .WriteLine("@echo off")
-                .WriteLine("chcp 1250 > NUL")
-                .WriteLine("call pyenv exec %~n0 %*")
-                .WriteLine("call pyenv rehash")
-                .Close
-            End With
-        Else
-            With objfs.CreateTextFile(filespec)
-                .WriteLine("@echo off")
-                .WriteLine("chcp 1250 > NUL")
-                .WriteLine("call pyenv exec %~n0 %*")
-                .Close
-            End With
-        End If
+        objfs.CopyFile shim, filespec
     End If
 End Sub
 
@@ -380,6 +367,13 @@ Sub Rehash()
     For Each file In objfs.GetFolder(strDirShims).Files
         file.Delete True
     Next
+
+    Dim shimSrc
+    Dim shimDst
+    shimSrc = strDirLibs &"\libs\shim"
+    shimDst = strDirShims &"\shim"
+    If objfs.FolderExists(shimDst) Then objfs.DeleteFolder(shimDst)
+    objfs.CopyFolder shimSrc, shimDst
 
     Dim version
     Dim winBinDir, nixBinDir
