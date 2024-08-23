@@ -236,6 +236,15 @@ Sub registerVersion(version, installPath)
     sysVersion = parts(0) &"."& parts(1)
     featureVersion = parts(0) &"."& parts(1) &"."& parts(2) &".0"
 
+    dim bitDepth
+
+    If InStr(version, "-win32") Then
+        bitDepth = "32"
+        version = Replace(version, "-win32", "")
+    Else
+        bitDepth = "64"
+    End If     
+
     key = "HKCU\SOFTWARE\Python\PythonCore\"
     ' I prefer not overriding default Python registry values (that might already exist)
     ' Python Software Foundation
@@ -243,9 +252,9 @@ Sub registerVersion(version, installPath)
     ' http://www.python.org/
     'sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
     key = key & version &"\"
-    sh.RegWrite key & "DiplayName","Python "& sysVersion &" (64-bit)","REG_SZ"
+    sh.RegWrite key & "DiplayName","Python "& sysVersion &" (" & bitDepth & "-bit)","REG_SZ"
     sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
-    sh.RegWrite key & "SysArchitecture","64bit","REG_SZ"
+    sh.RegWrite key & "SysArchitecture",bitDepth & "bit","REG_SZ"
     sh.RegWrite key & "SysVersion",sysVersion,"REG_SZ"
     sh.RegWrite key & "Version",version,"REG_SZ"
     ' python only (not pypy)
