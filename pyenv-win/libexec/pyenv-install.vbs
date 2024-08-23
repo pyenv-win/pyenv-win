@@ -236,13 +236,14 @@ Sub registerVersion(version, installPath)
     sysVersion = parts(0) &"."& parts(1)
     featureVersion = parts(0) &"."& parts(1) &"."& parts(2) &".0"
 
-    dim bitDepth
+    dim bitDepth, versionAttribute
 
     If InStr(version, "-win32") Then
         bitDepth = "32"
-        version = Replace(version, "-win32", "")
+        versionAttribute = Replace(version, "-win32", "")
     Else
         bitDepth = "64"
+        versionAttribute = version
     End If     
 
     key = "HKCU\SOFTWARE\Python\PythonCore\"
@@ -256,7 +257,7 @@ Sub registerVersion(version, installPath)
     sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
     sh.RegWrite key & "SysArchitecture",bitDepth & "bit","REG_SZ"
     sh.RegWrite key & "SysVersion",sysVersion,"REG_SZ"
-    sh.RegWrite key & "Version",version,"REG_SZ"
+    sh.RegWrite key & "Version",versionAttribute,"REG_SZ"
     ' python only (not pypy)
     subKey = key & "InstalledFeatures\"
     sh.RegWrite subKey & "dev",featureVersion,"REG_SZ"
