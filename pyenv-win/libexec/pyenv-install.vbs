@@ -249,7 +249,7 @@ Sub registerVersion(version, installPath)
     key = "HKCU\SOFTWARE\Python\PythonCore\"
     ' I prefer not overriding default Python registry values (that might already exist)
     ' Python Software Foundation
-    'sh.RegWrite key & "DiplayName","pyenv-win","REG_SZ"
+    'sh.RegWrite key & "DisplayName","pyenv-win","REG_SZ"
     ' http://www.python.org/
     'sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
     key = key & version &"\"
