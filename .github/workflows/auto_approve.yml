@@ -9,4 +9,6 @@ jobs:
       pull-requests: write
     if: github.actor == 'github.actions[bot]'
     steps:
-      - uses: kirankotari/auto-approve-action@v4
+      - uses: hmarr/auto-approve-action@v4
+        with:
+          review-message: "Auto approved automated PR"
