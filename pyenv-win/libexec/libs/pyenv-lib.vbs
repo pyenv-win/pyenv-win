@@ -214,13 +214,13 @@ Function GetCurrentVersionsNoError()
     str = GetCurrentVersionsShell
     If Not(IsNull(str)) Then
         For Each v1 in str
-            versions.Add v1(0), v1(1)
+            versions.Item(v1(0)) = v1(1)
         Next
     Else
         str = GetCurrentVersionsLocal(strCurrent)
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Add v1(0), v1(1)
+                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
             Next
         End If
     End If
@@ -228,7 +228,7 @@ Function GetCurrentVersionsNoError()
         str = GetCurrentVersionsGlobal
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Add v1(0), v1(1)
+                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
             Next
         End If
     End If
@@ -238,7 +238,7 @@ End Function
 Function GetInstalledVersions()
     ' WScript.echo "kkotari: pyenv-lib.vbs get installed versions..!"
     Dim rootBinDir, winBinDir, version, versions()
-    ReDim Preserve versions(0)
+    ReDim Preserve versions(-1)
     If objfs.FolderExists(strDirVers) Then
         Set rootBinDir = objfs.GetFolder(strDirVers)
         For Each winBinDir in rootBinDir.SubFolders
@@ -367,7 +367,7 @@ Sub WriteLinuxScript(baseName)
                 .Close
             End With
         End If
-        
+
     End If
 End Sub
 
@@ -406,22 +406,36 @@ Sub Rehash()
             End If
         Next
 
-        If objfs.FolderExists(winBinDir & "\Scripts") Then
-            For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
-                ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
-                If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
-                    baseName = objfs.GetBaseName(file)
-                    If LCase(objfs.GetExtensionName(file)) <> "exe" Then
-                        LinkExeFiles baseName, file
-                    Else
-                        WriteWinScript baseName
-                        WriteLinuxScript baseName
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If objfs.FolderExists(winBinDir & subDir) Then
+                For Each file In objfs.GetFolder(winBinDir & subDir).Files
+                    ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+                    If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
+                        baseName = objfs.GetBaseName(file)
+                        If LCase(objfs.GetExtensionName(file)) <> "exe" Then
+                            LinkExeFiles baseName, file
+                        Else
+                            WriteWinScript baseName
+                            WriteLinuxScript baseName
+                        End If
                     End If
-                End If
-            Next
-        End If
+                Next
+            End If
+        Next
     Next
 End Sub
+
+Function GetArchPostfix()
+    Dim arch
+
+    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
+    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+
+    If UCase(arch) = "AMD64" Then GetArchPostfix = ""
+    If UCase(arch) = "X86"   Then GetArchPostfix = "-win32"
+    If UCase(arch) = "ARM64" Then GetArchPostfix = "-arm64"  ' NOT TESTED
+End Function
 
 ' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()

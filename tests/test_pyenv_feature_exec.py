@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import pytest
 from pathlib import Path
@@ -130,11 +131,23 @@ def test_many_paths(pyenv_path, env, pyenv):
         (
             rf"{pyenv_path}\versions\{Native('3.7.7')};"
             rf"{pyenv_path}\versions\{Native('3.7.7')}\Scripts;"
+            rf"{pyenv_path}\versions\{Native('3.7.7')}\bin;"
             rf"{pyenv_path}\versions\{Native('3.8.9')};"
             rf"{pyenv_path}\versions\{Native('3.8.9')}\Scripts;"
+            rf"{pyenv_path}\versions\{Native('3.8.9')}\bin;"
         )
     )
     assert pyenv.exec('version.bat') == ("3.7.7", "")
+
+
+@pytest.mark.parametrize('settings', [lambda: {
+        'versions': [],
+        'local_ver': Native('3.8.5')
+    }])
+def test_exec_local_not_installed(pyenv):
+    with pytest.raises(subprocess.CalledProcessError) as e:
+        pyenv.exec('python', check=True)
+    assert e.value.returncode == 1
 
 
 def test_bat_shim(pyenv):

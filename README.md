@@ -10,7 +10,6 @@ Contributors and Interested people can join us on @[Slack](https://join.slack.co
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub issues open](https://img.shields.io/github/issues/pyenv-win/pyenv-win.svg?)](https://github.com/pyenv-win/pyenv-win/issues)
 [![Downloads](https://pepy.tech/badge/pyenv-win)](https://pepy.tech/project/pyenv-win)
-[![Rate this package](https://badges.openbase.com/python/rating/pyenv-win.svg?token=hjylt9qszl1DzDMCXNqMQZ6ijtlNCYzG3dKZNF+hgk4=)](https://openbase.com/python/pyenv-win?utm_source=embedded&amp;utm_medium=badge&amp;utm_campaign=rate-badge)
 
 - [Introduction](#introduction)
 - [pyenv](#pyenv)
@@ -45,15 +44,15 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 
    - Default Path
 
-      ```pwsh
-      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-      ```
+     ```pwsh
+     Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+     ```
 
    - Custom Path
 
-      ```pwsh
-      Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1" -InstallDirectory 'Custom:\Path\here'
-      ```
+     ```pwsh
+     Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1" -InstallDirectory 'Custom:\Path\here'
+     ```
 
 2. Reopen PowerShell
 3. Run `pyenv --version` to check if the installation was successful.
@@ -79,6 +78,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
 ```yml
    commands     List all available pyenv commands
    local        Set or show the local application-specific Python version
+   latest       Print the latest installed or known version with the given prefix
    global       Set or show the global Python version
    shell        Set or show the shell-specific Python version
    install      Install 1 or more versions of Python
@@ -89,7 +89,7 @@ This project was forked from [rbenv-win][3] and modified for [pyenv][1]. It is n
    version      Show the current Python version and its origin
    version-name Show the current Python version
    versions     List all Python versions available to pyenv
-   exec         Runs an executable by first preparing PATH so that the selected 
+   exec         Runs an executable by first preparing PATH so that the selected
                 Python version's `bin' directory is at the front
    which        Display the full path to an executable
    whence       List all Python versions that contain the given executable
@@ -122,13 +122,20 @@ For Visual Studio Code or another IDE with a built in terminal, restart it and c
 
 ### Manually check the settings
 
+The environment variables to be set:
+
+```plaintext
+C:\Users\<replace with your actual username>\.pyenv\pyenv-win\bin
+C:\Users\<replace with your actual username>\.pyenv\pyenv-win\shims
+```
+
 Ensure all environment variables are properly set with high priority via the GUI:
 
 ```plaintext
 This PC
    → Properties
       → Advanced system settings
-         → Advanced → Environment Variables...
+         → Advanced → System Environment Variables...
             → PATH
 ```
 
@@ -138,7 +145,7 @@ This PC
 
 - To view a list of python versions supported by pyenv windows: `pyenv install -l`
 - To filter the list: `pyenv install -l | findstr 3.8`
-- To install a python version:  `pyenv install 3.5.2`
+- To install a python version: `pyenv install 3.5.2`
   - _Note: An install wizard may pop up for some non-silent installs. You'll need to click through the wizard during installation. There's no need to change any options in it. or you can use -q for quiet installation_
   - You can also install multiple versions in one command too: `pyenv install 2.4.3 3.6.8`
 - To set a python version as the global version: `pyenv global 3.5.2`
@@ -235,7 +242,7 @@ Please see the [Changelog](./docs/changelog.md) page.
 
 - pyenv-win is licensed under [MIT](http://opensource.org/licenses/mit-license.php) _2019_
 
-   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Author and Thanks
 

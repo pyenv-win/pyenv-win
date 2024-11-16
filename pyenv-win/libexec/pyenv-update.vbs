@@ -16,7 +16,10 @@ End Sub
 Import "libs\pyenv-lib.vbs"
 Import "libs\pyenv-install-lib.vbs"
 
-WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Dim mirror
+For Each mirror In mirrors
+    WScript.Echo ":: [Info] ::  Mirror: " & mirror
+Next
 
 Sub ShowHelp()
     WScript.Echo "Usage: pyenv update [--ignore]"
@@ -122,120 +125,6 @@ Function ScanForVersions(URL, optIgnore, ByRef pageCount)
     Next
 End Function
 
-' Test if ver1 < ver2
-Function SymanticCompare(ver1, ver2)
-    Dim comp1, comp2
-
-    ' Major
-    comp1 = ver1(VRX_Major)
-    comp2 = ver2(VRX_Major)
-    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
-    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' Minor
-    comp1 = ver1(VRX_Minor)
-    comp2 = ver2(VRX_Minor)
-    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
-    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' Patch
-    comp1 = ver1(VRX_Patch)
-    comp2 = ver2(VRX_Patch)
-    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
-    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' Release
-    comp1 = ver1(VRX_Release)
-    comp2 = ver2(VRX_Release)
-    If Len(comp1) = 0 And Len(comp2) Then
-        SymanticCompare = False
-        Exit Function
-    ElseIf Len(comp1) And Len(comp2) = 0 Then
-        SymanticCompare = True
-        Exit Function
-    Else
-        SymanticCompare = comp1 < comp2
-    End If
-    If comp1 <> comp2 Then Exit Function
-
-    ' Release Number
-    comp1 = ver1(VRX_RelNumber)
-    comp2 = ver2(VRX_RelNumber)
-    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
-    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' x64
-    comp1 = ver1(VRX_x64)
-    comp2 = ver2(VRX_x64)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' webinstall
-    comp1 = ver1(VRX_Web)
-    comp2 = ver2(VRX_Web)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-
-    ' ext
-    comp1 = ver1(VRX_Ext)
-    comp2 = ver2(VRX_Ext)
-    SymanticCompare = comp1 < comp2
-    If comp1 <> comp2 Then Exit Function
-End Function
-
-' Modified from code by "Reverend Jim" at:
-' https://www.daniweb.com/programming/code/515601/vbscript-implementation-of-quicksort
-Sub SymanticQuickSort(arr, arrMin, arrMax)
-    Dim middle  ' value of the element in the middle of the range
-    Dim swap    ' temporary item for the swapping of two elements
-    Dim arrFrst ' index of the first element in the range to check
-    Dim arrLast ' index of the last element in the range to check
-    Dim arrMid  ' index of the element in the middle of the range
-    If arrMax <= arrMin Then Exit Sub
-
-    ' Start the checks at the lower and upper limits of the Array
-    arrFrst = arrMin
-    arrLast = arrMax
-
-    ' Find the midpoint of the region to sort and the value of that element
-    arrMid = (arrMin + arrMax) \ 2
-    middle = arr(arrMid)
-    Do While (arrFrst <= arrLast)
-        ' Find the first element > the element at the midpoint
-        Do While SymanticCompare(arr(arrFrst)(SFV_Version), middle(SFV_Version))
-            arrFrst = arrFrst + 1
-            If arrFrst = arrMax Then Exit Do
-        Loop
-
-        ' Find the last element < the element at the midpoint
-        Do While SymanticCompare(middle(SFV_Version), arr(arrLast)(SFV_Version))
-            arrLast = arrLast - 1
-            If arrLast = arrMin Then Exit Do
-        Loop
-
-        ' Pivot the two elements around the midpoint if they are out of order
-        If (arrFrst <= arrLast) Then
-            swap = arr(arrFrst)
-            arr(arrFrst) = arr(arrLast)
-            arr(arrLast) = swap
-            arrFrst = arrFrst + 1
-            arrLast = arrLast - 1
-        End If
-    Loop
-
-    ' Sort sub-regions (recurse) if necessary
-    If arrMin  < arrLast Then SymanticQuickSort arr, arrMin,  arrLast
-    If arrFrst < arrMax  Then SymanticQuickSort arr, arrFrst, arrMax
-End Sub
-
 Sub main(arg)
     Dim optIgnore
     optIgnore = False
@@ -250,47 +139,65 @@ Sub main(arg)
 
     Dim objHTML
     Dim pageCount
-    Set objHTML = CreateObject("htmlfile")
     pageCount = 0
 
-    With objweb
-        On Error Resume Next
-        .Open "GET", mirror, False
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-
-        .Send
-        If Err.number <> 0 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-        On Error GoTo 0
-
-        If .Status <> 200 Then
-            WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
-            If optIgnore Then Exit Sub
-            WScript.Quit 1
-        End If
-
-        objHTML.write .responseText
-        pageCount = pageCount + 1
-    End With
-    EnsureBaseURL objHTML, mirror
-
-    Dim link
-    Dim version
-    Dim matches
     Dim installers1
     Set installers1 = CreateObject("Scripting.Dictionary")
-    For Each link In objHTML.links
-        version = objfs.GetFileName(link.pathname)
-        Set matches = regexVer.Execute(version)
-        If matches.Count = 1 Then _
-            UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+
+    For Each mirror In mirrors
+        Set objHTML = CreateObject("htmlfile")
+        With objweb
+            On Error Resume Next
+            .Open "GET", mirror, False
+            If Err.number <> 0 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+
+            .Send
+            If Err.number <> 0 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error(0x"& Hex(Err.number) &"): "& Err.Description
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+            On Error GoTo 0
+
+            If .Status <> 200 Then
+                WScript.Echo "HTTP Error downloading from mirror """& mirror &""""& vbCrLf &"Error("& .Status &"): "& .StatusText
+                If optIgnore Then Exit Sub
+                WScript.Quit 1
+            End If
+
+            objHTML.write .responseText
+            pageCount = pageCount + 1
+        End With
+        EnsureBaseURL objHTML, mirror
+
+        Dim link
+        Dim version
+        Dim matches
+        If objHTML.links.Length = 0 Then
+            ' Assume we're dealing with JSON
+            Dim match
+            Set matches = regexJsonUrl.Execute(objHTML.body.innerHTML)
+            For Each match in matches
+                ' we matched: Array([url], [filename], [ziproot], [major], [minor], [patch], [x64], [ARM])
+                ' we need: Array([filename], [url], Array([major], [minor], [patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
+                installers1(match.SubMatches(1)) = Array( _
+                    match.SubMatches(1), _
+                    match.SubMatches(0), _
+                    Array(match.SubMatches(3), match.SubMatches(4), match.SubMatches(5), "", "", match.SubMatches(6), match.SubMatches(7), "", "zip", match.SubMatches(2)) _
+                )
+            Next
+        Else
+            For Each link In objHTML.links
+                version = objfs.GetFileName(link.pathname)
+                Set matches = regexVer.Execute(version)
+                If matches.Count = 1 Then _
+                    UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+            Next
+        End If
     Next
 
     ' Now remove any duplicate versions that have the offline installer (it's prefered)

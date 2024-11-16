@@ -18,6 +18,7 @@ Sub Import(importFile)
 End Sub
 
 Import "libs\pyenv-lib.vbs"
+Import "libs\pyenv-install-lib.vbs"
 ' WScript.echo "kkotari: pyenv.vbs Import called..!"
 
 Function GetCommandList()
@@ -137,19 +138,22 @@ Sub CommandWhich(arg)
             End If
         Next
 
-        If objfs.FolderExists(strDirVers &"\"& version & "\Scripts") Then
-            If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program) Then
-                WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program).Path
-                WScript.Quit 0
-            End If
-
-            For Each ext In exts.Keys
-                If objfs.FileExists(strDirVers &"\"& version &"\Scripts\"& program & ext) Then
-                    WScript.Echo objfs.GetFile(strDirVers &"\"& version &"\Scripts\"& program & ext).Path
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If objfs.FolderExists(strDirVers &"\"& version & subDir) Then
+                If objfs.FileExists(strDirVers &"\"& version & subDir &"\"& program) Then
+                    WScript.Echo objfs.GetFile(strDirVers &"\"& version & subDir &"\"& program).Path
                     WScript.Quit 0
                 End If
-            Next
-        End If
+
+                For Each ext In exts.Keys
+                    If objfs.FileExists(strDirVers &"\"& version & subDir &"\"& program & ext) Then
+                        WScript.Echo objfs.GetFile(strDirVers &"\"& version & subDir &"\"& program & ext).Path
+                        WScript.Quit 0
+                    End If
+                Next
+            End If
+        Next
     Next
 
     WScript.Echo "pyenv: "& arg(1) &": command not found"
@@ -223,31 +227,34 @@ Sub CommandWhence(arg)
             Next
         End If
 
-        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            If objfs.FileExists(dir & "\Scripts\" & program) Then
-                found = True
-                foundAny = 0
-                If isPath Then
-                    WScript.Echo objfs.GetFile(dir & "\Scripts\" & program).Path
-                Else
-                    WScript.Echo objfs.GetFileName( dir )
-                End If
-            End If
-        End If
-
-        If Not found Or isPath And objfs.FolderExists(dir & "\Scripts") Then
-            For Each ext In exts.Keys
-                If objfs.FileExists(dir & "\Scripts\" & program & ext) Then
+        Dim subDir
+        For Each subDir in Array("\Scripts", "\bin")
+            If Not found Or isPath And objfs.FolderExists(dir & subDir) Then
+                If objfs.FileExists(dir & subDir &"\" & program) Then
+                    found = True
                     foundAny = 0
                     If isPath Then
-                        WScript.Echo objfs.GetFile(dir & "\Scripts\" & program & ext).Path
+                        WScript.Echo objfs.GetFile(dir & subDir & "\" & program).Path
                     Else
                         WScript.Echo objfs.GetFileName( dir )
                     End If
-                    Exit For
                 End If
-            Next
-        End If
+            End If
+
+            If Not found Or isPath And objfs.FolderExists(dir & subDir) Then
+                For Each ext In exts.Keys
+                    If objfs.FileExists(dir & subDir & "\" & program & ext) Then
+                        foundAny = 0
+                        If isPath Then
+                            WScript.Echo objfs.GetFile(dir & subDir & "\" & program & ext).Path
+                        Else
+                            WScript.Echo objfs.GetFileName( dir )
+                        End If
+                        Exit For
+                    End If
+                Next
+            End If
+        Next
     Next
 
     WScript.Quit foundAny
@@ -262,6 +269,7 @@ Sub ShowHelp()
      WScript.Echo "   commands     List all available pyenv commands"
      WScript.Echo "   duplicate    Creates a duplicate python environment"
      WScript.Echo "   local        Set or show the local application-specific Python version"
+     WScript.Echo "   latest       Print the latest installed or known version with the given prefix"
      WScript.Echo "   global       Set or show the global Python version"
      WScript.Echo "   shell        Set or show the shell-specific Python version"
      WScript.Echo "   install      Install a Python version using python-build"
@@ -307,7 +315,7 @@ Sub CommandRehash(arg)
 
     Dim versions
     versions = GetInstalledVersions()
-    If UBound(versions) = 0 Then
+    If UBound(versions) = -1 Then
         WScript.Echo "No version installed. Please install one with 'pyenv install <version>'."
     Else
         Rehash
@@ -338,8 +346,8 @@ Sub CommandGlobal(arg)
             ReDim globalVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                globalVersions(i) = Check32Bit(arg(i + 1))
-                GetBinDir(globalVersions(i))
+                globalVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(globalVersions(i), False))
             Next
         End If
 
@@ -380,8 +388,8 @@ Sub CommandLocal(arg)
             ReDim localVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                localVersions(i) = Check32Bit(arg(i + 1))
-                GetBinDir(localVersions(i))
+                localVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(localVersions(i), False))
             Next
         End If
 
