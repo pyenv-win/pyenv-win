@@ -68,7 +68,7 @@ if not exist "%bindir%" (
   echo No global/local python version has been set yet. Please set the global/local version by typing:
   echo pyenv global 3.7.4
   echo pyenv local 3.7.4
-  exit /b
+  exit /b 1
 )
 
 set cmdline=%*
