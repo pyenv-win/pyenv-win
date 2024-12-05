@@ -170,8 +170,8 @@ Return to [README](../README.md#installation)
 From within Git BASH, run the following:
 
 ```sh
-echo 'export PATH="$HOME/.pyenv/pyenv-win/bin:$PATH"' >> ~/.bash_profile
 echo 'export PATH="$HOME/.pyenv/pyenv-win/shims:$PATH"' >> ~/.bash_profile
+echo 'export PATH="$HOME/.pyenv/pyenv-win/bin:$PATH"' >> ~/.bash_profile
 ```
 
 Open a new terminal, and confirm `pyenv --version` works.
