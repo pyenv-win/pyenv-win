@@ -1,3 +1,5 @@
+Possible values for PYTHON_BUILD_MIRROR_URL are as follows.
+
 Default: https://www.python.org/ftp/python/
 Others:
     http://mirrors.sohu.com/python/
