@@ -133,17 +133,17 @@ set "exe=%~dp0..\libexec\pyenv-%1"
 rem TODO needed?
 call :normalizepath %exe% exe
 
-if exist "%exe%.bat" (
-  set "exe=call "%exe%.bat""
 
-) else if exist "%exe%.cmd" (
-  set "exe=call "%exe%.cmd""
+setlocal EnableDelayedExpansion
 
-) else if exist "%exe%.vbs" (
-  set "exe=cscript //nologo "%exe%.vbs""
-
-) else if exist "%exe%.lnk" (
-  set "exe=start '' "%exe%.bat""
+if exist "!exe!.bat" (
+  set "exe=call !exe!.bat"
+) else if exist "!exe!.cmd" (
+  set "exe=call !exe!.cmd"
+) else if exist "!exe!.vbs" (
+  set "exe=cscript //nologo "!exe!.vbs""
+) else if exist "!exe!.lnk" (
+  set "exe=start '' "!exe!.bat""
 ) else (
   echo pyenv: no such command '%1'
   exit /b 1
@@ -160,7 +160,6 @@ set /a len=%len%+1
 set "arg1=%arg1:~1%"
 if not [%arg1%]==[] goto :loop_len
 
-setlocal enabledelayedexpansion
 set cmdline=!exe! !cmdline:~%len%!
 :: run command (no need to update PATH for plugins)
 :: endlocal needed to ensure exit will not automatically close setlocal
