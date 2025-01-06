@@ -165,6 +165,17 @@ C:\Users\my_pc\.pyenv\pyenv-win\shims
 Installation is done. Hurray!
 Return to [README](../README.md#installation)
 
+## **Usage with Git BASH**
+
+From within Git BASH, run the following:
+
+```sh
+echo 'export PATH="$HOME/.pyenv/pyenv-win/shims:$PATH"' >> ~/.bash_profile
+echo 'export PATH="$HOME/.pyenv/pyenv-win/bin:$PATH"' >> ~/.bash_profile
+```
+
+Open a new terminal, and confirm `pyenv --version` works.
+
 ***
 
 ## **How to use 32-train**
