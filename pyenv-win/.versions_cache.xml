@@ -3461,6 +3461,21 @@
 		<URL>https://www.python.org/ftp/python/3.12.8/python-3.12.8-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.12.9-win32</code>
+		<file>python-3.12.9.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.9/python-3.12.9.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.9-arm</code>
+		<file>python-3.12.9-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.9/python-3.12.9-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.12.9</code>
+		<file>python-3.12.9-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.12.9/python-3.12.9-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.13.0a1-win32</code>
 		<file>python-3.13.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.13.0/python-3.13.0a1.exe</URL>
@@ -3686,6 +3701,21 @@
 		<URL>https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.13.2-win32</code>
+		<file>python-3.13.2.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.2/python-3.13.2.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.2-arm</code>
+		<file>python-3.13.2-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.2/python-3.13.2-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.2</code>
+		<file>python-3.13.2-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.14.0a1-win32</code>
 		<file>python-3.14.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a1.exe</URL>
@@ -3744,6 +3774,21 @@
 		<code>3.14.0a4</code>
 		<file>python-3.14.0a4-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a4-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.14.0a5-win32</code>
+		<file>python-3.14.0a5.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a5.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.0a5-arm</code>
+		<file>python-3.14.0a5-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a5-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.0a5</code>
+		<file>python-3.14.0a5-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a5-amd64.exe</URL>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.7-v7.3.4-win64</code>
@@ -3866,10 +3911,10 @@
 		<zipRootDir>pypy2.7-v7.3.10-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>pypy3.9-v7.3.11-win64</code>
-		<file>pypy3.9-v7.3.11-win64.zip</file>
-		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.11-win64.zip</URL>
-		<zipRootDir>pypy3.9-v7.3.11-win64</zipRootDir>
+		<code>pypy2.7-v7.3.11-win64</code>
+		<file>pypy2.7-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.8-v7.3.11-win64</code>
@@ -3878,10 +3923,10 @@
 		<zipRootDir>pypy3.8-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>pypy2.7-v7.3.11-win64</code>
-		<file>pypy2.7-v7.3.11-win64.zip</file>
-		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.11-win64.zip</URL>
-		<zipRootDir>pypy2.7-v7.3.11-win64</zipRootDir>
+		<code>pypy3.9-v7.3.11-win64</code>
+		<file>pypy3.9-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.10-v7.3.12-win64</code>
@@ -3984,6 +4029,24 @@
 		<file>pypy2.7-v7.3.17-win64.zip</file>
 		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.17-win64.zip</URL>
 		<zipRootDir>pypy2.7-v7.3.17-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.11-v7.3.18-win64</code>
+		<file>pypy3.11-v7.3.18-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.11-v7.3.18-win64.zip</URL>
+		<zipRootDir>pypy3.11-v7.3.18-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.18-win64</code>
+		<file>pypy3.10-v7.3.18-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.18-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.18-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.18-win64</code>
+		<file>pypy2.7-v7.3.18-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.18-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.18-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>graalpy-23.1.0-windows-amd64</code>
