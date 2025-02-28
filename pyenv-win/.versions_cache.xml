@@ -3911,10 +3911,10 @@
 		<zipRootDir>pypy2.7-v7.3.10-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>pypy2.7-v7.3.11-win64</code>
-		<file>pypy2.7-v7.3.11-win64.zip</file>
-		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.11-win64.zip</URL>
-		<zipRootDir>pypy2.7-v7.3.11-win64</zipRootDir>
+		<code>pypy3.9-v7.3.11-win64</code>
+		<file>pypy3.9-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy3.9-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.8-v7.3.11-win64</code>
@@ -3923,10 +3923,10 @@
 		<zipRootDir>pypy3.8-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
-		<code>pypy3.9-v7.3.11-win64</code>
-		<file>pypy3.9-v7.3.11-win64.zip</file>
-		<URL>https://downloads.python.org/pypy/pypy3.9-v7.3.11-win64.zip</URL>
-		<zipRootDir>pypy3.9-v7.3.11-win64</zipRootDir>
+		<code>pypy2.7-v7.3.11-win64</code>
+		<file>pypy2.7-v7.3.11-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.11-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.11-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.10-v7.3.12-win64</code>
@@ -4047,6 +4047,24 @@
 		<file>pypy2.7-v7.3.18-win64.zip</file>
 		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.18-win64.zip</URL>
 		<zipRootDir>pypy2.7-v7.3.18-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.11-v7.3.19-win64</code>
+		<file>pypy3.11-v7.3.19-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.11-v7.3.19-win64.zip</URL>
+		<zipRootDir>pypy3.11-v7.3.19-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.10-v7.3.19-win64</code>
+		<file>pypy3.10-v7.3.19-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.10-v7.3.19-win64.zip</URL>
+		<zipRootDir>pypy3.10-v7.3.19-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.19-win64</code>
+		<file>pypy2.7-v7.3.19-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.19-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.19-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>graalpy-23.1.0-windows-amd64</code>
