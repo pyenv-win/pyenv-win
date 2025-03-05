@@ -17,17 +17,19 @@ Const SFV_FileName = 0
 Const SFV_URL = 1
 Const SFV_Version = 2
 
-Const VRX_Major = 0
-Const VRX_Minor = 1
-Const VRX_Patch = 2
-Const VRX_Release = 3
-Const VRX_RelNumber = 4
-Const VRX_x64 = 5
-Const VRX_ARM = 6
-Const VRX_Web = 7
-Const VRX_Ext = 8
-Const VRX_Arch = 5
-Const VRX_ZipRoot = 9
+Const VRX_Py_Major = 0
+Const VRX_Py_Minor = 1
+Const VRX_Bin_Major = 2
+Const VRX_Bin_Minor = 3
+Const VRX_Bin_Patch = 4
+Const VRX_Release = 5
+Const VRX_RelNumber = 6
+Const VRX_x64 = 7
+Const VRX_ARM = 8
+Const VRX_Web = 9
+Const VRX_Ext = 10
+Const VRX_Arch = 7
+Const VRX_ZipRoot = 11
 
 ' Version definition array from LoadVersionsXML.
 Const LV_Code = 0
@@ -71,7 +73,7 @@ End With
 With regexJsonUrl
     ' example for graalpy: graalpy-24.0.1-windows-amd64.zip
     ' example for pypy: pypy3.7-v7.3.4-win64.zip
-    .Pattern = "download_url"": ?""(https://[^\s""]+/(((?:pypy\d+\.\d+-v|graalpy-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(win64|windows-amd64)?(windows-aarch64)?).zip))"""
+    .Pattern = "download_url"": ?""(https://[^\s""]+/(((?:pypy(\d+)\.(\d+)-v|graalpy-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(win64|windows-amd64)?(windows-aarch64)?).zip))"""
     .Global = True
     .IgnoreCase = True
 End With
@@ -80,9 +82,9 @@ End With
 Function JoinWin32String(pieces)
     ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinWin32String..!"
     JoinWin32String = ""
-    If Len(pieces(VRX_Major))     Then JoinWin32String = JoinWin32String & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Bin_Major))     Then JoinWin32String = JoinWin32String & pieces(VRX_Bin_Major)
+    If Len(pieces(VRX_Bin_Minor))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Bin_Minor)
+    If Len(pieces(VRX_Bin_Patch))     Then JoinWin32String = JoinWin32String &"."& pieces(VRX_Bin_Patch)
     If Len(pieces(VRX_Release))   Then JoinWin32String = JoinWin32String & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinWin32String = JoinWin32String & pieces(VRX_RelNumber)
     If Len(pieces(VRX_ARM)) Then
@@ -96,9 +98,9 @@ End Function
 Function JoinInstallString(pieces)
     ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinInstallString..!"
     JoinInstallString = ""
-    If Len(pieces(VRX_Major))     Then JoinInstallString = JoinInstallString & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Bin_Major))     Then JoinInstallString = JoinInstallString & pieces(VRX_Bin_Major)
+    If Len(pieces(VRX_Bin_Minor))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Bin_Minor)
+    If Len(pieces(VRX_Bin_Patch))     Then JoinInstallString = JoinInstallString &"."& pieces(VRX_Bin_Patch)
     If Len(pieces(VRX_Release))   Then JoinInstallString = JoinInstallString & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinInstallString = JoinInstallString & pieces(VRX_RelNumber)
     If Len(pieces(VRX_x64))       Then JoinInstallString = JoinInstallString & pieces(VRX_x64)
@@ -315,24 +317,40 @@ Function SymanticCompare(ver1, ver2)
     Dim comp1, comp2
 
     ' Major
-    comp1 = ver1(VRX_Major)
-    comp2 = ver2(VRX_Major)
+    comp1 = ver1(VRX_Py_Major)
+    comp2 = ver2(VRX_Py_Major)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' Minor
-    comp1 = ver1(VRX_Minor)
-    comp2 = ver2(VRX_Minor)
+    comp1 = ver1(VRX_Py_Minor)
+    comp2 = ver2(VRX_Py_Minor)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Major
+    comp1 = ver1(VRX_Bin_Major)
+    comp2 = ver2(VRX_Bin_Major)
+    If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
+    If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
+    SymanticCompare = comp1 < comp2
+    If comp1 <> comp2 Then Exit Function
+
+    ' Minor
+    comp1 = ver1(VRX_Bin_Minor)
+    comp2 = ver2(VRX_Bin_Minor)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
     If comp1 <> comp2 Then Exit Function
 
     ' Patch
-    comp1 = ver1(VRX_Patch)
-    comp2 = ver2(VRX_Patch)
+    comp1 = ver1(VRX_Bin_Patch)
+    comp2 = ver2(VRX_Bin_Patch)
     If Len(comp1) = 0 Then comp1 = 0: Else comp1 = CLng(comp1)
     If Len(comp2) = 0 Then comp2 = 0: Else comp2 = CLng(comp2)
     SymanticCompare = comp1 < comp2
@@ -433,9 +451,9 @@ End Sub
 Function JoinVersionString(pieces)
     ' WScript.echo "kkotari: pyenv-install-lib.vbs JoinVersionString..!"
     JoinVersionString = ""
-    If Len(pieces(VRX_Major))     Then JoinVersionString = JoinVersionString & pieces(VRX_Major)
-    If Len(pieces(VRX_Minor))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Minor)
-    If Len(pieces(VRX_Patch))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Patch)
+    If Len(pieces(VRX_Bin_Major))     Then JoinVersionString = JoinVersionString & pieces(VRX_Bin_Major)
+    If Len(pieces(VRX_Bin_Minor))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Bin_Minor)
+    If Len(pieces(VRX_Bin_Patch))     Then JoinVersionString = JoinVersionString &"."& pieces(VRX_Bin_Patch)
     If Len(pieces(VRX_Release))   Then JoinVersionString = JoinVersionString & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinVersionString = JoinVersionString & pieces(VRX_RelNumber)
     If Len(pieces(VRX_Arch))      Then JoinVersionString = JoinVersionString & pieces(VRX_Arch)
@@ -468,6 +486,7 @@ Function FindLatestVersion(prefix, known)
 
     Dim x
     Dim matches
+    Dim normalized_matches
 
     Dim bestMatch
     Dim arch
@@ -482,14 +501,24 @@ Function FindLatestVersion(prefix, known)
                 Set matches = regexVerArch.Execute(candidates(x))
 
                 if matches.Count = 1 Then
+                    normalized_matches = Array( _
+                        matches(0).SubMatches(0), _
+                        matches(0).SubMatches(1), _
+                        matches(0).SubMatches(0), _
+                        matches(0).SubMatches(1), _
+                        matches(0).SubMatches(2), _
+                        matches(0).SubMatches(3), _
+                        matches(0).SubMatches(4), _
+                        matches(0).SubMatches(5) _
+                    )
                     ' Skip dev builds, releases and so on
                     ' Comparing each version by <major>.<minor>.<patch>
-                    If matches(0).SubMatches(VRX_Release) = "" And matches(0).SubMatches(VRX_Arch) = arch Then
+                    If normalized_matches(VRX_Release) = "" And normalized_matches(VRX_Arch) = arch Then
                         If IsEmpty(bestMatch) Then
-                            Set bestMatch = matches(0).SubMatches
+                            bestMatch = normalized_matches
                         Else
-                            If SymanticCompare(bestMatch, matches(0).SubMatches) Then
-                                Set bestMatch = matches(0).SubMatches
+                            If SymanticCompare(bestMatch, normalized_matches) Then
+                                bestMatch = normalized_matches
                             End If
                         End If
                     End If
@@ -497,7 +526,6 @@ Function FindLatestVersion(prefix, known)
             End If
         End If
     Next
-
     if IsEmpty(bestMatch) Then
         FindLatestVersion = ""
     else
@@ -507,7 +535,6 @@ End Function
 
 Function TryResolveVersion(prefix, known)
     Dim resolved
-
     resolved = FindLatestVersion(prefix, known)
 
     If resolved = "" Then resolved = prefix

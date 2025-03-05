@@ -119,8 +119,11 @@ Function ScanForVersions(URL, optIgnore, ByRef pageCount)
         If matches.Count = 1 Then
             ' Save as a dictionary entry with Key/Value as:
             '  -Key: [filename]
-            '  -Value: Array([filename], [url], Array([regex submatches]))
-            ScanForVersions.Add fileName, Array(fileName, link.href, CollectionToArray(matches(0).SubMatches))
+            '  -Value: Array([filename], [url], Array([py_major], [py_minor], [bin_major], [bin_minor], [bin_patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
+            '
+            ' SubMatches: Array([filename], [url], Array([bin_major], [bin_minor], [bin_patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
+            ' Use bin_major as py_major and bin_minor as py_minor
+            ScanForVersions.Add fileName, Array(fileName, link.href, Array(matches(0).SubMatches.Item(0), matches(0).SubMatches.Item(1), matches(0).SubMatches.Item(0), matches(0).SubMatches.Item(1), matches(0).SubMatches.Item(2), matches(0).SubMatches.Item(3), matches(0).SubMatches.Item(4), matches(0).SubMatches.Item(5), matches(0).SubMatches.Item(6), matches(0).SubMatches.Item(7), matches(0).SubMatches.Item(8)))
         End If
     Next
 End Function
@@ -187,7 +190,7 @@ Sub main(arg)
                 installers1(match.SubMatches(1)) = Array( _
                     match.SubMatches(1), _
                     match.SubMatches(0), _
-                    Array(match.SubMatches(3), match.SubMatches(4), match.SubMatches(5), "", "", match.SubMatches(6), match.SubMatches(7), "", "zip", match.SubMatches(2)) _
+                    Array(match.SubMatches(3), match.SubMatches(4), match.SubMatches(5), match.SubMatches(6), match.SubMatches(7), "", "", match.SubMatches(8), match.SubMatches(9), "", "zip", match.SubMatches(2)) _
                 )
             Next
         Else
@@ -206,19 +209,21 @@ Sub main(arg)
     Dim versPieces
     Dim installers2
     Set installers2 = CopyDictionary(installers1) ' Use a copy because "For Each" and .Remove don't play nice together.
-    minVers = Array("2", "4", "", "", "", "", "", "", "")
+    minVers = Array("2", "4", "2", "4", "", "", "", "", "", "", "")
     For Each fileName In installers1.Keys()
-        ' Array([filename], [url], Array([major], [minor], [path], [rel], [rel_num], [x64], [ARM], [webinstall], [ext]))
+        ' Array([filename], [url], Array([py_major], [py_minor], [bin_major], [bin_minor], [path], [rel], [rel_num], [x64], [ARM], [webinstall], [ext]))
         versPieces = installers1(fileName)(SFV_Version)
 
         ' Ignore versions <2.4, Wise Installer's command line is unusable.
-        If SymanticCompare(versPieces, minVers) Then
+        If Mid(fileName, 1, 5) <> "graal" And SymanticCompare(versPieces, minVers) Then
             installers2.Remove fileName
         ElseIf Len(versPieces(VRX_Web)) Then
             fileNonWeb = "python-"& JoinInstallString(Array( _
-                versPieces(VRX_Major), _
-                versPieces(VRX_Minor), _
-                versPieces(VRX_Patch), _
+                Empty, _
+                Empty, _
+                versPieces(VRX_Bin_Major), _
+                versPieces(VRX_Bin_Minor), _
+                versPieces(VRX_Bin_Patch), _
                 versPieces(VRX_Release), _
                 versPieces(VRX_RelNumber), _
                 versPieces(VRX_x64), _

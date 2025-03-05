@@ -78,6 +78,7 @@ Function GetCurrentVersionsGlobal()
         Loop
         objFile.Close
     End If
+
     if UBound(versions) >= 0 Then
         GetCurrentVersionsGlobal = versions
     Else
