@@ -104,9 +104,9 @@ cd ${env:PYENV_HOME}
 install-pyenv-win.ps1 -UNINSTALL
 ```
 
-If you're having issues, you can also try to get the latest script from the repository before executing it.
+If you're having issues, you can also try to get the latest script from the repository before executing it. Example for Powershell
 
-```
+```sh
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1" -UNINSTALL
 ```
 
