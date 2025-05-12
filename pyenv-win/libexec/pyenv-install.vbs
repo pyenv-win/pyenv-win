@@ -100,7 +100,7 @@ Function deepExtract(params, web)
             End If
             deepExtract = objws.Run("cmd /D /C move """& cachePath &"""\AttachedContainer\*.msi """& cachePath &"""", 0, True)
             If deepExtract Then
-                WScript.Echo ":: [Error] :: error extracting the embedded portion from the installer."
+                WScript.Echo ":: [Error] :: error moving the extracted embedded portion from the installer."
                 Exit Function
             End If
         End If
