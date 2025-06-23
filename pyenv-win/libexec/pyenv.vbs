@@ -420,8 +420,8 @@ Sub CommandShell(arg)
             ReDim shellVersions(versionCount - 1)
             Dim i
             For i = 0 To versionCount - 1
-                shellVersions(i) = Check32Bit(arg(i + 1))
-                GetBinDir(shellVersions(i))
+                shellVersions(i) = arg(i + 1)
+                GetBinDir(TryResolveVersion(shellVersions(i), False))
             Next
         End If
 
