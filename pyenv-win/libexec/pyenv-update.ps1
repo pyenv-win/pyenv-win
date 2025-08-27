@@ -309,7 +309,10 @@ function Save-VersionsXml {
         if ($arch -eq "win32" -or (-not $arch -and $x64 -eq "false")) {
             $code += "-win32"
         }
-        
+        elseif ($arch -eq "arm64") {
+            $code += "-arm64"
+        }
+
         $xml += "`t<version x64=`"$x64`" webInstall=`"$isWebInstall`" msi=`"$isMsi`">`n"
         $xml += "`t`t<code>$code</code>`n"
         $xml += "`t`t<file>$fileName</file>`n"
