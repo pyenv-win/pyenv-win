@@ -10,6 +10,10 @@ Estrutura de diretórios
 - Padrão: %USERPROFILE%\.pyenv\pyenv-win
 - Subpastas: bin, shims (no PATH), libexec
 
+Método 0 — One-liner PowerShell (recomendado)
+Baixa e executa o instalador deste fork. Ele adiciona bin e shims no PATH automaticamente e atualiza o cache ao final.
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+
 Método 1 — PowerShell (Zip do GitHub Release deste fork)
 1) Abrir PowerShell (usuário).
 2) Criar pasta base:
@@ -60,4 +64,3 @@ Comandos de uso (iguais ao original)
 Observações
 - Este fork atualiza o cache automaticamente no fim do script de instalação interno; nos métodos manuais, execute o update após instalar.
 - Em hosts x64, amd64 é implícito; para ARM64, use sufixo -arm64.
-
