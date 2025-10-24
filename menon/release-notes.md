@@ -1,5 +1,19 @@
 # Release Notes — Atualização do index de versões (Windows)
 
+## TL;DR — Instalação rápida (sem admin)
+
+- One‑liner PowerShell (recomendado):
+  ```pwsh
+  Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+  ```
+- Clique e instale: use `install.cmd` na raiz deste repositório (baixa e executa o instalador automaticamente).
+- PATH (bin + shims) configurado automaticamente; cache de versões atualizado ao final.
+- Comandos (iguais ao original):
+  - Atualizar base: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
+  - Listar: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
+  - Instalar amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
+  - Instalar ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
+
 - Objetivo
   - Atualizar e modernizar o índice de versões do pyenv-win para Windows, cobrindo CPython estável atual (amd64/arm64/win32), removendo distribuições não-CPython e pré-releases, e garantindo descoberta via FTP moderno.
 
@@ -11,8 +25,8 @@
     - Otimização de varredura: tenta versões por série e interrompe após 5 falhas consecutivas por série (reduz carga de rede). Intervalo de séries: 3.9 até 3.30; patches tentados 0..30.
   - Padronização ARM
     - Códigos de versão ARM padronizados como `-arm64` (antes havia `-arm` em alguns históricos): `pyenv-win/libexec/libs/pyenv-install-lib.vbs`.
-  - Pós-instalação
-    - O instalador agora executa `pyenv update --ignore` ao final para pré-popular `.versions_cache.xml`: `pyenv-win/install-pyenv-win.ps1`.
+- Pós-instalação
+  - O instalador agora executa `pyenv update --ignore` ao final para pré-popular `.versions_cache.xml`: `pyenv-win/install-pyenv-win.ps1`.
 
 - Itens explicitamente removidos
   - Distribuições: PyPy, GraalPy
@@ -48,4 +62,3 @@
 - Próximos ajustes possíveis
   - Tornar `startMinor/endMinor/maxPatch` configuráveis por variável de ambiente.
   - Acrescentar cache incremental (evitar revalidar versões já confirmadas).
-
