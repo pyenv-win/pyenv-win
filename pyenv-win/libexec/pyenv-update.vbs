@@ -31,26 +31,33 @@ Sub ShowHelp()
     WScript.Quit 0
 End Sub
 
-Sub EnsureBaseURL(ByRef html, ByVal URL)
-    Dim head
-    Dim base
-
-    Set head = html.getElementsByTagName("head")(0)
-    If head Is Nothing Then
-        Set head = html.createElement("head")
-        html.insertBefore html.body, head
+Function ResolveUrl(ByVal baseUrl, ByVal href)
+    Dim lhref
+    lhref = LCase(href)
+    If Left(lhref, 7) = "http://" Or Left(lhref, 8) = "https://" Then
+        ResolveUrl = href
+        Exit Function
     End If
 
-    Set base = head.getElementsByTagName("base")(0)
-    If base Is Nothing Then
-        If Len(URL) And Right(URL, 1) <> "/" Then URL = URL &"/"
-        Set base = html.createElement("base")
-        base.href = URL
-        head.appendChild base
-    End If
-End Sub
+    If Right(baseUrl, 1) <> "/" Then baseUrl = baseUrl & "/"
 
-Function CollectionToArray(collection) _
+    If Left(href, 1) = "/" Then
+        Dim re, matches
+        Set re = New RegExp
+        re.Pattern = "^(https?://[^/]+)"
+        re.IgnoreCase = True
+        Set matches = re.Execute(baseUrl)
+        If matches.Count > 0 Then
+            ResolveUrl = matches(0).SubMatches(0) & href
+        Else
+            ResolveUrl = baseUrl & Mid(href, 2)
+        End If
+    Else
+        ResolveUrl = baseUrl & href
+    End If
+End Function
+
+Function CollectionToArray(collection)
     Dim i
     Dim arr()
     ReDim arr(collection.Count-1)
@@ -83,9 +90,108 @@ Sub UpdateDictionary(dict1, dict2)
     Next
 End Sub
 
+Function ExtractHrefs(text)
+    Dim re, m, arr()
+    Set re = New RegExp
+    re.Pattern = "href\s*=\s*""([^""]+)"""
+    re.Global = True
+    re.IgnoreCase = True
+    Set m = re.Execute(text)
+    ReDim arr(m.Count-1)
+    Dim i
+    For i = 0 To m.Count-1
+        arr(i) = m(i).SubMatches(0)
+    Next
+    ExtractHrefs = arr
+End Function
+
+Function LastPathSegment(path)
+    Dim p
+    p = Split(path, "?")(0)
+    If Right(p, 1) = "/" Then p = Left(p, Len(p)-1)
+    Dim idx
+    idx = InStrRev(p, "/")
+    If idx > 0 Then
+        LastPathSegment = Mid(p, idx+1)
+    Else
+        LastPathSegment = p
+    End If
+End Function
+
+Function EnsureTrailingSlash(url)
+    If Right(url, 1) <> "/" Then
+        EnsureTrailingSlash = url & "/"
+    Else
+        EnsureTrailingSlash = url
+    End If
+End Function
+
+Function URLExists(u)
+    On Error Resume Next
+    Dim req
+    Set req = CreateObject("WinHttp.WinHttpRequest.5.1")
+    req.Open "GET", u, False
+    req.setRequestHeader "Range", "bytes=0-0"
+    req.Send
+    If Err.Number <> 0 Then
+        URLExists = False
+        Err.Clear
+        Exit Function
+    End If
+    On Error GoTo 0
+    URLExists = (req.Status = 200 Or req.Status = 206)
+End Function
+
+Sub TryAddDirectInstaller(ByRef dict, ByVal baseUrl, ByVal versionStr, ByVal arch)
+    Dim fileName, url, m
+    If arch = "" Then
+        fileName = "python-" & versionStr & ".exe"
+    Else
+        fileName = "python-" & versionStr & "-" & arch & ".exe"
+    End If
+    baseUrl = EnsureTrailingSlash(baseUrl)
+    url = baseUrl & fileName
+    If URLExists(url) Then
+        Set m = regexFile.Execute(fileName)
+        If m.Count = 1 Then
+            dict(fileName) = Array(fileName, url, CollectionToArray(m(0).SubMatches))
+        End If
+    End If
+End Sub
+
+Sub AddDirectInstallersForVersion(ByRef dict, ByVal versionUrl, ByVal versionStr)
+    Dim m
+    Set m = regexVer.Execute(versionStr)
+    If m.Count = 1 Then
+        If CLng(m(0).SubMatches(0)) >= 3 Then
+            TryAddDirectInstaller dict, versionUrl, versionStr, "amd64"
+            TryAddDirectInstaller dict, versionUrl, versionStr, "arm64"
+            TryAddDirectInstaller dict, versionUrl, versionStr, ""
+        End If
+    End If
+End Sub
+
+Sub AugmentCPythonSpan(ByRef dict, ByVal startMinor, ByVal endMinor, ByVal maxPatch)
+    Dim base, minor, patch, ver, verUrl, misses
+    base = "https://www.python.org/ftp/python/3."
+    For minor = startMinor To endMinor
+        misses = 0
+        For patch = 0 To maxPatch
+            ver = "3." & CStr(minor) & "." & CStr(patch)
+            verUrl = base & CStr(minor) & "." & CStr(patch) & "/"
+            If URLExists(verUrl) Then
+                AddDirectInstallersForVersion dict, verUrl, ver
+                misses = 0
+            Else
+                misses = misses + 1
+                If misses >= 5 Then Exit For
+            End If
+        Next
+    Next
+End Sub
+
 Function ScanForVersions(URL, optIgnore, ByRef pageCount)
-    Dim objHTML
-    Set objHTML = CreateObject("htmlfile")
+    ' Parse using regex over the response, no DOM dependency.
     Set ScanForVersions = CreateObject("Scripting.Dictionary")
 
     With objweb
@@ -104,23 +210,31 @@ Function ScanForVersions(URL, optIgnore, ByRef pageCount)
             WScript.Quit 1
         End If
 
-        objHTML.write .responseText
+        Dim pageText
+        pageText = .responseText
         pageCount = pageCount + 1
     End With
-    EnsureBaseURL objHTML, URL
+    ' Base resolution handled by ResolveUrl; no DOM base tag needed.
 
-    Dim link
+    Dim hrefs, href
     Dim fileName
     Dim matches
-    Dim major, minor, patch, rel
-    For Each link In objHTML.links
-        fileName = Trim(link.innerText)
+    hrefs = ExtractHrefs(pageText)
+    For Each href In hrefs
+        fileName = LastPathSegment(href)
         Set matches = regexFile.Execute(fileName)
         If matches.Count = 1 Then
-            ' Save as a dictionary entry with Key/Value as:
-            '  -Key: [filename]
-            '  -Value: Array([filename], [url], Array([regex submatches]))
-            ScanForVersions.Add fileName, Array(fileName, link.href, CollectionToArray(matches(0).SubMatches))
+            ScanForVersions.Add fileName, Array(fileName, ResolveUrl(URL, href), CollectionToArray(matches(0).SubMatches))
+        End If
+    Next
+
+    ' Handle per-architecture subdirectories introduced in newer releases (amd64/arm64/win32)
+    Dim archHref
+    For Each href In hrefs
+        archHref = LCase(href)
+        If Right(archHref, 1) = "/" Then archHref = Left(archHref, Len(archHref) - 1)
+        If archHref = "amd64" Or archHref = "arm64" Or archHref = "win32" Then
+            UpdateDictionary ScanForVersions, ScanForVersions(ResolveUrl(URL, href), optIgnore, pageCount)
         End If
     Next
 End Function
@@ -137,7 +251,7 @@ Sub main(arg)
         End If
     End If
 
-    Dim objHTML
+    ' No DOM usage; parse text only.
     Dim pageCount
     pageCount = 0
 
@@ -145,7 +259,7 @@ Sub main(arg)
     Set installers1 = CreateObject("Scripting.Dictionary")
 
     For Each mirror In mirrors
-        Set objHTML = CreateObject("htmlfile")
+        ' No DOM usage here.
         With objweb
             On Error Resume Next
             .Open "GET", mirror, False
@@ -169,21 +283,19 @@ Sub main(arg)
                 WScript.Quit 1
             End If
 
-            objHTML.write .responseText
+            Dim pageText
+            pageText = .responseText
             pageCount = pageCount + 1
         End With
-        EnsureBaseURL objHTML, mirror
+        ' Base resolution handled by ResolveUrl; no DOM base tag needed.
 
-        Dim link
         Dim version
         Dim matches
-        If objHTML.links.Length = 0 Then
-            ' Assume we're dealing with JSON
-            Dim match
-            Set matches = regexJsonUrl.Execute(objHTML.body.innerHTML)
+        ' Try JSON (PyPy/GraalPy) directly on the raw text
+        Dim match
+        Set matches = regexJsonUrl.Execute(pageText)
+        If matches.Count > 0 Then
             For Each match in matches
-                ' we matched: Array([url], [filename], [ziproot], [major], [minor], [patch], [x64], [ARM])
-                ' we need: Array([filename], [url], Array([major], [minor], [patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
                 installers1(match.SubMatches(1)) = Array( _
                     match.SubMatches(1), _
                     match.SubMatches(0), _
@@ -191,11 +303,19 @@ Sub main(arg)
                 )
             Next
         Else
-            For Each link In objHTML.links
-                version = objfs.GetFileName(link.pathname)
+            ' HTML directory listing: extract hrefs and recurse into version directories
+            Dim hrefs2, href2, relHref
+            hrefs2 = ExtractHrefs(pageText)
+            For Each href2 In hrefs2
+                relHref = href2
+                If Right(relHref, 1) = "/" Then relHref = Left(relHref, Len(relHref)-1)
+                version = LastPathSegment(relHref)
                 Set matches = regexVer.Execute(version)
-                If matches.Count = 1 Then _
-                    UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+                If matches.Count = 1 Then
+                    UpdateDictionary installers1, ScanForVersions(ResolveUrl(mirror, href2), optIgnore, pageCount)
+                    ' Also synthesize direct installer URLs if present
+                    AddDirectInstallersForVersion installers1, ResolveUrl(mirror, href2), version
+                End If
             Next
         End If
     Next
@@ -213,6 +333,16 @@ Sub main(arg)
 
         ' Ignore versions <2.4, Wise Installer's command line is unusable.
         If SymanticCompare(versPieces, minVers) Then
+            installers2.Remove fileName
+        ' Drop non-CPython distributions (PyPy/GraalPy)
+        ElseIf LCase(Left(fileName, 4)) = "pypy" Or LCase(Left(fileName, 7)) = "graalpy" Then
+            installers2.Remove fileName
+        ' Drop release candidates (rc)
+        ElseIf LCase(versPieces(VRX_Release)) = "rc" Then
+            installers2.Remove fileName
+        ElseIf LCase(versPieces(VRX_Release)) = "a" Then
+            installers2.Remove fileName
+        ElseIf LCase(versPieces(VRX_Release)) = "b" Then
             installers2.Remove fileName
         ElseIf Len(versPieces(VRX_Web)) Then
             fileNonWeb = "python-"& JoinInstallString(Array( _
@@ -233,6 +363,10 @@ Sub main(arg)
 
     ' Now sort by semantic version and save
     Dim installArr
+    installArr = installers2.Items
+    ' Augment explicitly for current stable series to ensure presence
+    ' Cover 3.9 up to 3.30, patches 0..30 (stable only)
+    AugmentCPythonSpan installers2, 9, 30, 30
     installArr = installers2.Items
     SymanticQuickSort installArr, LBound(installArr), UBound(installArr)
     SaveVersionsXML strDBFile, installArr

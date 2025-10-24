@@ -145,6 +145,19 @@ Function Main() {
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
     
+    # Pós-instalação: atualizar base de versões local (renova .versions_cache.xml)
+    try {
+        $UpdateScript = Join-Path $PyEnvWinDir 'libexec\pyenv-update.vbs'
+        if (Test-Path $UpdateScript) {
+            Write-Host "Refreshing local versions cache via 'pyenv update --ignore'..."
+            & cscript.exe //nologo "$UpdateScript" --ignore | Write-Host
+        } else {
+            Write-Host "pyenv-update.vbs not found at $UpdateScript; skipping automatic update."
+        }
+    } catch {
+        Write-Host "Warning: automatic 'pyenv update' failed: $($_.Exception.Message)"
+    }
+
     If ($? -eq $True) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }

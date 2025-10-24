@@ -151,6 +151,14 @@ This PC
 - To view all the python versions installed on this system: `pyenv versions`
 - Update the list of discoverable Python versions using: `pyenv update` command for pyenv-win `2.64.x` and `2.32.x` versions
 
+### Version cache and architectures
+
+- The versions cache (`.versions_cache.xml`) is refreshed automatically after running the installer script (`install-pyenv-win.ps1`).
+- To refresh manually at any time: `cscript //nologo pyenv-win/libexec/pyenv-update.vbs` (append `--ignore` to skip transient network errors).
+- Architectures:
+  - On x64 hosts, amd64 is the default: `pyenv install 3.x.y`.
+  - For ARM64 builds, specify the suffix: `pyenv install 3.x.y-arm64`.
+
 ## How to update pyenv
 
 - If installed via pip

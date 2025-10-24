@@ -86,7 +86,7 @@ Function JoinWin32String(pieces)
     If Len(pieces(VRX_Release))   Then JoinWin32String = JoinWin32String & pieces(VRX_Release)
     If Len(pieces(VRX_RelNumber)) Then JoinWin32String = JoinWin32String & pieces(VRX_RelNumber)
     If Len(pieces(VRX_ARM)) Then
-        JoinWin32String = JoinWin32String & "-arm"
+        JoinWin32String = JoinWin32String & "-arm64"
     ElseIf Len(pieces(VRX_x64)) = 0 Then
         JoinWin32String = JoinWin32String & "-win32"
     End If
