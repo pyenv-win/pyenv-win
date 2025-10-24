@@ -131,11 +131,24 @@ Function Main() {
     [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\", "User")
     [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\", "User")
     [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\", "User")
+    $env:PYENV = "${PyEnvWinDir}\"
+    $env:PYENV_ROOT = "${PyEnvWinDir}\"
+    $env:PYENV_HOME = "${PyEnvWinDir}\"
 
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
 
-    # Remove existing paths, so we don't add duplicates
-    $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
+    # Remove existing pyenv-win paths from other locations (including scoop) and duplicates
+    $NewPathParts = @()
+    foreach($p in $PathParts){
+        if([string]::IsNullOrWhiteSpace($p)){ continue }
+        $pp = $p.Trim()
+        $isOurBin   = ($pp -ieq $BinPath)
+        $isOurShims = ($pp -ieq $ShimsPath)
+        $isOtherPyenvBin   = ($pp -match '\\pyenv-win\\bin$'   -and -not $isOurBin)
+        $isOtherPyenvShims = ($pp -match '\\pyenv-win\\shims$' -and -not $isOurShims)
+        if($isOtherPyenvBin -or $isOtherPyenvShims){ continue }
+        if($pp -ne $BinPath -and $pp -ne $ShimsPath){ $NewPathParts += $pp }
+    }
     $NewPathParts = ($BinPath, $ShimsPath) + $NewPathParts
     $NewPath = $NewPathParts -Join ";"
     [System.Environment]::SetEnvironmentVariable('PATH', $NewPath, "User")
