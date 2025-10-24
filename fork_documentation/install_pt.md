@@ -43,3 +43,45 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
   cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64
   ```
 
+## Comandos apos instalar (pyenv)
+
+| Acao             | Comando                          |
+|------------------|----------------------------------|
+| Listar instalados| `pyenv versions`                 |
+| Listar disponiveis| `pyenv install -l`              |
+| Instalar versao  | `pyenv install 3.13.9`           |
+| Desinstalar      | `pyenv uninstall 3.13.9`         |
+| Definir global   | `pyenv global 3.13.9`            |
+| Definir local    | `pyenv local 3.13.9`             |
+| Mostrar versao   | `pyenv version`                  |
+| Qual python      | `pyenv which python`             |
+| Recriar shims    | `pyenv rehash`                   |
+
+```pwsh
+# Listar instalados
+pyenv versions
+
+# Listar disponiveis
+pyenv install -l
+
+# Instalar versao
+pyenv install 3.13.9
+
+# Desinstalar versao
+pyenv uninstall 3.13.9
+
+# Definir global
+pyenv global 3.13.9
+
+# Definir local
+pyenv local 3.13.9
+
+# Mostrar versao
+pyenv version
+
+# Qual python
+pyenv which python
+
+# Recriar shims
+pyenv rehash
+```
