@@ -58,30 +58,29 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
 | Rebuild shims    | `pyenv rehash`                   |
 
 ```pwsh
-# List installed
 pyenv versions
-
-# List available
+```
+```pwsh
 pyenv install -l
-
-# Install version
+```
+```pwsh
 pyenv install 3.13.9
-
-# Uninstall version
+```
+```pwsh
 pyenv uninstall 3.13.9
-
-# Set global
+```
+```pwsh
 pyenv global 3.13.9
-
-# Set local
+```
+```pwsh
 pyenv local 3.13.9
-
-# Show version
+```
+```pwsh
 pyenv version
-
-# Which python
+```
+```pwsh
 pyenv which python
-
-# Rebuild shims
+```
+```pwsh
 pyenv rehash
 ```

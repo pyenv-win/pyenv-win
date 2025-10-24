@@ -19,16 +19,15 @@
 ## Basic commands
 
 ```pwsh
-# List
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
-
-# Update cache
+```
+```pwsh
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore
-
-# Install amd64
+```
+```pwsh
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9
-
-# Install ARM64
+```
+```pwsh
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64
 ```
 
