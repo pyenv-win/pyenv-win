@@ -2,6 +2,8 @@
 
 - Documentacao em Portugues: [install pt](fork_documentation/install_pt.md)
 
+[![Release](https://img.shields.io/github/v/release/mauriciomenon/pyenv-win_adaptado)](https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest)
+
 ## TLDR
 
 Recommended:
