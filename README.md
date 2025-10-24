@@ -19,11 +19,48 @@ Method 3:
 Method 4:
 - Release ZIP: latest release https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
 
-Commands
-- List: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
-- Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
-- Install amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
-- Install ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
+## Commands after install (pyenv)
+
+| Action           | Command                |
+|------------------|------------------------|
+| List installed   | `pyenv versions`       |
+| List available   | `pyenv install -l`     |
+| Install version  | `pyenv install 3.13.9` |
+| Uninstall        | `pyenv uninstall 3.13.9` |
+| Set global       | `pyenv global 3.13.9`  |
+| Set local        | `pyenv local 3.13.9`   |
+| Show version     | `pyenv version`        |
+| Which python     | `pyenv which python`   |
+| Rebuild shims    | `pyenv rehash`         |
+
+```pwsh
+# List installed
+pyenv versions
+
+# List available
+pyenv install -l
+
+# Install version
+pyenv install 3.13.9
+
+# Uninstall version
+pyenv uninstall 3.13.9
+
+# Set global
+pyenv global 3.13.9
+
+# Set local
+pyenv local 3.13.9
+
+# Show version
+pyenv version
+
+# Which python
+pyenv which python
+
+# Rebuild shims
+pyenv rehash
+```
 
 Changes
 - Windows versions index: FTP parsing with direct fallback, supports `amd64/`, `arm64/`, `win32`.
@@ -32,9 +69,27 @@ Changes
 - Installer does not auto update versions; run `pyenv update` when needed.
 
 Full documentation
-- Install guides: `fork_documentation/install_en.md`, `fork_documentation/install_pt.md`, `fork_documentation/install_en.txt`, `fork_documentation/install_pt.txt`
-- Project structure: `fork_documentation/project_structure_en.md`, `fork_documentation/project_structure_pt.md`
+- [install_en.md](fork_documentation/install_en.md) - install guide EN
+- [install_pt.md](fork_documentation/install_pt.md) - install guide PT
+- [install_en.txt](fork_documentation/install_en.txt) - install text EN
+- [install_pt.txt](fork_documentation/install_pt.txt) - install text PT
+- [project_structure_en.md](fork_documentation/project_structure_en.md) - project structure EN
+- [project_structure_pt.md](fork_documentation/project_structure_pt.md) - project structure PT
 
+VBS commands (installer scripts)
+```pwsh
+# List
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
+
+# Update cache
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore
+
+# Install amd64
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9
+
+# Install ARM64
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64
+```
 Original README
 # pyenv for Windows
 
