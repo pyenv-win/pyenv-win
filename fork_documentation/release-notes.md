@@ -1,64 +1,22 @@
-#—çãõ()
+# Release notes - Windows versions index update
 
-##—çãá()
+## TLDR - install - no admin
 
--‑()
-```
----"//..//-_//-/--."-"./--."&"./--."
-```
--`.`ó().
--(+)õ.
--()
--`//%%.--.--`
--`//%%.--.--`
--`//%%.--...`
--`//%%.--...-`
+- One-liner PowerShell:
+  ```pwsh
+  Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+  ```
+- Click to install: run `install.cmd`.
+- Commands:
+  - Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
+  - List: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
+  - Install amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
+  - Install ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
 
--
--íõ-,á(//),çõã-é-,.
+## Changes vs original
 
--ç
--()`-//-.`
--/`/`,`/`,`/`.
--çõ,``é`()``()`.
--í()..(≥)`--.`,`--.`,`-.`íã.
--çãõéóé().é.é....
--çã
--óã`-`(`-`ó)`-///--.`.
--ó-çã
--`--`é-`._.``-/--.`.
-
--
--çõ,
--(),(),()
-
--õ()
--é.é.(á``).
--é..,-ó.
--(ã),,.
-
--(á)
--ó,õé.
--
--`//-//-.--`
--`//-//-.--`
--()`//-//-...`
--()`//-//-...-`
-
--çõé
--íçõ()êá-.
--í.
--``á(//óçã).
-
--ç
--`..`().
--`..`().
--`--`á,//.
-
--çã
--é-é/í.
--ç.
-
--óí
--`//`áá.
--(õá).
+- FTP parsing with direct fallback, supports `amd64/`, `arm64/`, `win32`.
+- Filters: remove pypy, graalpy, rc, alpha, beta.
+- Synthesizes direct installer entries 3.9 to 3.30, patches 0..30.
+- ARM naming `-arm64`.
+- No automatic versions update on install. Run `pyenv update` when needed.

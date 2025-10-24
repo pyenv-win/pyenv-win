@@ -20,7 +20,7 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
 
 ## Metodo 2 - ZIP do release
 
-1. Baixe o ZIP de uma tag deste fork.
+1. Baixe o ultimo release: https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
 2. Extraia em `%USERPROFILE%\.pyenv\pyenv-win`.
 3. Rode os comandos de update e list acima.
 

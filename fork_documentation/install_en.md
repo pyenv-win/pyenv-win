@@ -20,7 +20,7 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
 
 ## Method 2 - Release ZIP
 
-1. Download the ZIP of a tag from this fork.
+1. Download the latest release: https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
 2. Extract into `%USERPROFILE%\.pyenv\pyenv-win`.
 3. Run the update and list commands above.
 
