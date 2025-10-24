@@ -1,6 +1,6 @@
 # Fork README
 
-- Portuguese documentation: `menon/install_pt.md`
+- Portuguese documentation: [install pt](fork_documentation/install_pt.md)
 
 ### TLDR
 
@@ -10,7 +10,7 @@
   ```
 - Click to install: run `install.cmd`
 - Git clone: `git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win`
-- Release ZIP: see `menon/install_en.md` and `menon/install_en.txt`
+- Release ZIP: see [install en](fork_documentation/install_en.md) and [install en txt](fork_documentation/install_en.txt)
 
 Commands
 - Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
@@ -25,8 +25,8 @@ Changes
 - Installer refreshes version cache after install.
 
 Full documentation
-- Install guides: `menon/install_en.md`, `menon/install_pt.md`, `menon/install_en.txt`, `menon/install_pt.txt`
-- Project structure: `menon/project_structure_en.md`, `menon/project_structure_pt.md`
+- Install guides: fork_documentation/install_en.md, fork_documentation/install_pt.md, fork_documentation/install_en.txt, fork_documentation/install_pt.txt
+- Project structure: fork_documentation/project_structure_en.md, fork_documentation/project_structure_pt.md
 
 Original README
 # pyenv for Windows
