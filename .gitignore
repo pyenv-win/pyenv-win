@@ -117,3 +117,5 @@ exec.bat
 # git
 *.orig
 
+# Local reports (do not commit)
+local_dependency_report.md
