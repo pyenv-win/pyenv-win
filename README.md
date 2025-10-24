@@ -1,31 +1,34 @@
-# TL;DR (Fork adaptado para Windows)
+# Fork README
 
-- Instalador aponta para ESTE fork (não o upstream): ver `pyenv-win/install-pyenv-win.ps1:52, 81, 84`.
-- Instalacao simples (sem admin):
-  - One-liner PowerShell (recomendado):
-    ```pwsh
-    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-    ```
-  - Click to install: run `install.cmd` (este repositorio)
-  - Git clone: `git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win`
-  - ZIP do release deste fork (ver `menon/Instalacao.md` / `menon/Instalacao.txt`)
-- PATH é configurado automaticamente (bin + shims). O cache de versões é atualizado ao final da Instalacao.
-- Same commands as original:
-  - Atualizar base: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
-  - Listar: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
-  - Instalar amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
-  - Instalar ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
+- Portuguese documentation: `menon/install_pt.md`
 
-## Changes vs original
+### TLDR
 
-- Índice de versões modernizado (Windows): coleta via FTP com fallback direto e suporte a subpastas `amd64/`, `arm64/`, `win32`.
-- Apenas CPython estavel: removidos pypy/graalpy e pré-releases (rc/alpha/beta).
+- One-liner PowerShell (no admin):
+  ```pwsh
+  Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+  ```
+- Click to install: run `install.cmd`
+- Git clone: `git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win`
+- Release ZIP: see `menon/install_en.md` and `menon/install_en.txt`
+
+Commands
+- Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
+- List: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
+- Install amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
+- Install ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
+
+Changes
+- Windows versions index: FTP parsing with direct fallback, supports `amd64/`, `arm64/`, `win32`.
+- CPython stable only: pypy/graalpy and pre-releases (rc/alpha/beta) removed.
 - ARM naming standardized to `-arm64`.
-- `install-pyenv-win.ps1` atualiza o cache automaticamente apos instalar.
-- Documentacao clara de Instalacao com tres metodos equivalentes e um One-liner.
+- Installer refreshes version cache after install.
 
-—
+Full documentation
+- Install guides: `menon/install_en.md`, `menon/install_pt.md`, `menon/install_en.txt`, `menon/install_pt.txt`
+- Project structure: `menon/project_structure_en.md`, `menon/project_structure_pt.md`
 
+Original README
 # pyenv for Windows
 
 [pyenv][1] is an amazing tool used to manage multiple versions of python in your machine. We have ported it to Windows. We need your thoughts to improve this library and your feedback helps to grow the project.
