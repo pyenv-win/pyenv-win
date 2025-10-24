@@ -1,20 +1,27 @@
 # Fork README
 
-- Portuguese documentation: [install pt](fork_documentation/install_pt.md)
+- Documentacao em Portugues: [install pt](fork_documentation/install_pt.md)
 
-### TLDR
+## TLDR
 
+Recommended:
 - One-liner PowerShell (no admin):
   ```pwsh
   Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
   ```
-- Click to install: run `install.cmd`
+
+Method 2:
+- Click to install: run `install.cmd` (or `install.ps1`)
+
+Method 3:
 - Git clone: `git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win`
-- Release ZIP: see [install en](fork_documentation/install_en.md) and [install en txt](fork_documentation/install_en.txt)
+
+Method 4:
+- Release ZIP: latest release https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
 
 Commands
-- Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
 - List: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list`
+- Update cache: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore`
 - Install amd64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9`
 - Install ARM64: `cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64`
 
@@ -22,11 +29,11 @@ Changes
 - Windows versions index: FTP parsing with direct fallback, supports `amd64/`, `arm64/`, `win32`.
 - CPython stable only: pypy/graalpy and pre-releases (rc/alpha/beta) removed.
 - ARM naming standardized to `-arm64`.
-- Installer refreshes version cache after install.
+- Installer does not auto update versions; run `pyenv update` when needed.
 
 Full documentation
-- Install guides: fork_documentation/install_en.md, fork_documentation/install_pt.md, fork_documentation/install_en.txt, fork_documentation/install_pt.txt
-- Project structure: fork_documentation/project_structure_en.md, fork_documentation/project_structure_pt.md
+- Install guides: `fork_documentation/install_en.md`, `fork_documentation/install_pt.md`, `fork_documentation/install_en.txt`, `fork_documentation/install_pt.txt`
+- Project structure: `fork_documentation/project_structure_en.md`, `fork_documentation/project_structure_pt.md`
 
 Original README
 # pyenv for Windows
