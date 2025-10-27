@@ -1,8 +1,8 @@
-# Fork README
+# Fork README [![Release](https://img.shields.io/github/v/release/mauriciomenon/pyenv-win_adaptado)](https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest)
 
 - Documentacao em Portugues: [install pt](fork_documentation/install_pt.md)
 
-[![Release](https://img.shields.io/github/v/release/mauriciomenon/pyenv-win_adaptado)](https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest)
+
 
 ## TLDR
 
@@ -56,36 +56,6 @@ Method 4:
 | Rebuild shims    | `pyenv rehash`           |
 
 - Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
-
-```pwsh
-pyenv versions
-```
-```pwsh
-pyenv install -l
-```
-```pwsh
-pyenv install 3.10.11
-```
-```pwsh
-pyenv uninstall 3.10.11
-```
-```pwsh
-pyenv global 3.10.11
-```
-```pwsh
-pyenv local 3.10.11
-```
-```pwsh
-pyenv version
-```
-```pwsh
-pyenv which python
-```
-```pwsh
-pyenv rehash
-```
-
-### Copy commands
 
 ```pwsh
 pyenv versions
