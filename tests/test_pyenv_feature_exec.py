@@ -5,7 +5,7 @@ import pytest
 from pathlib import Path
 from tempenv import TemporaryEnvironment
 
-from test_pyenv_helpers import Native
+from test_pyenv_helpers import Native, is_cmd_not_found
 
 
 @pytest.fixture()
@@ -155,13 +155,9 @@ def test_bat_shim(pyenv):
 
 
 def test_removes_shims_from_path(pyenv):
-    assert pyenv.exec('python310') == (
-        '',
-        (
-            "'python310' is not recognized as an internal or external command,\r\n"
-            'operable program or batch file.'
-        )
-    )
+    stdout, stderr = pyenv.exec('python310')
+    assert stdout == ''
+    assert is_cmd_not_found(stderr)
 
 
 def pyenv_exec_help():

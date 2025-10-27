@@ -1,0 +1,29 @@
+diff --git a/pyenv-win/libexec/pyenv-install.vbs b/pyenv-win/libexec/pyenv-install.vbs
+index 80ccb59..b36792c 100644
+--- a/pyenv-win/libexec/pyenv-install.vbs
++++ b/pyenv-win/libexec/pyenv-install.vbs
+@@ -503,7 +503,9 @@ Sub main(arg)
+     Dim verDef
+     Dim installParams
+     Dim installed
++    Dim successCount
+     Set installed = CreateObject("Scripting.Dictionary")
++    successCount = 0
+ 
+     For Each version In installVersions.Keys
+         If Not installed.Exists(version) Then
+@@ -527,12 +529,13 @@ Sub main(arg)
+             ' Post-install verification: folder, python.exe, pip.exe, and version prefix
+             If VerifyInstall(verDef(LV_Code), strDirVers &"\"& verDef(LV_Code)) Then
+                 installed(version) = Empty
++                successCount = successCount + 1
+             Else
+                 WScript.Echo ":: [Error] :: verification failed for " & verDef(LV_Code)
+             End If
+         End If
+     Next
+-    Rehash
++    If successCount > 0 Then Rehash
+ End Sub
+ 
+ Function VerifyInstall(code, installPath)

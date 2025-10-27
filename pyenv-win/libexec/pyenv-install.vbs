@@ -38,6 +38,7 @@ Sub ShowHelp()
     WScript.Echo "  --32only               Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --64only               Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --dev                  Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
+    WScript.Echo "  --strict-verify        Treat version mismatch or missing pip.exe as errors (default is warning-only)."
     WScript.Echo "  --help                 Help, list of options allowed on pyenv install"
     WScript.Echo ""
     WScript.Quit 0
@@ -360,6 +361,7 @@ Sub main(arg)
     Dim opt32
     Dim opt64
     Dim optDev
+    Dim optStrict
     Dim optReg
     Dim optClear
     Dim installVersions
@@ -372,6 +374,7 @@ Sub main(arg)
     opt32 = False
     opt64 = False
     optDev = False
+    optStrict = False
     optReg = False
     Set installVersions = CreateObject("Scripting.Dictionary")
 
@@ -393,6 +396,7 @@ Sub main(arg)
             Case "--32only"         opt32 = True
             Case "--64only"         opt64 = True
             Case "--dev"            optDev = True
+            Case "--strict-verify"  optStrict = True
             Case "-r"               optReg = True
             Case "--register"       optReg = True
             Case Else
@@ -503,7 +507,9 @@ Sub main(arg)
     Dim verDef
     Dim installParams
     Dim installed
+    Dim successCount
     Set installed = CreateObject("Scripting.Dictionary")
+    successCount = 0
 
     For Each version In installVersions.Keys
         If Not installed.Exists(version) Then
@@ -523,10 +529,77 @@ Sub main(arg)
             )
             If optForce Then clear(installParams)
             extract installParams, optReg
-            installed(version) = Empty
+
+            ' Post-install verification: folder, python.exe, pip.exe (best-effort), and version prefix (warning by default)
+            If VerifyInstall(verDef(LV_Code), strDirVers &"\"& verDef(LV_Code), optStrict) Then
+                installed(version) = Empty
+                successCount = successCount + 1
+            Else
+                WScript.Echo ":: [Error] :: verification failed for " & verDef(LV_Code)
+            End If
         End If
     Next
-    Rehash
+    If successCount > 0 Then Rehash
 End Sub
+
+Function VerifyInstall(code, installPath, strict)
+    On Error Resume Next
+    VerifyInstall = False
+
+    ' require folder
+    If Not objfs.FolderExists(installPath) Then Exit Function
+
+    ' require python.exe
+    Dim pyexe
+    pyexe = installPath & "\python.exe"
+    If Not objfs.FileExists(pyexe) Then Exit Function
+
+    ' ensure pip.exe if possible (best-effort); if strict and still missing, fail
+    Dim pipexe
+    pipexe = installPath & "\Scripts\pip.exe"
+    If Not objfs.FileExists(pipexe) Then
+        Dim shEnsure, rcEnsure
+        Set shEnsure = CreateObject("WScript.Shell")
+        rcEnsure = shEnsure.Run("""" & pyexe & """ -m ensurepip -U", 0, True)
+        If Not objfs.FileExists(pipexe) Then
+            If strict Then
+                WScript.Echo ":: [Error] :: pip.exe not found after install (and ensurepip)"
+                Exit Function
+            Else
+                WScript.Echo ":: [Warn] :: pip.exe not found after install (and ensurepip); continuing"
+            End If
+        End If
+    End If
+
+    ' optional version prefix check via `python -V` (warning only)
+    Dim base, parts, prefix
+    base = Split(code, "-")(0)
+    parts = Split(base, ".")
+    If UBound(parts) < 1 Then
+        prefix = base
+    Else
+        prefix = parts(0) & "." & parts(1)
+    End If
+
+    Dim sh, proc, outTxt, errTxt, allTxt
+    Set sh = CreateObject("WScript.Shell")
+    Set proc = sh.Exec("""" & pyexe & """ -V")
+    outTxt = proc.StdOut.ReadAll()
+    errTxt = proc.StdErr.ReadAll()
+    allTxt = outTxt
+    If allTxt = "" Then allTxt = errTxt
+    If allTxt <> "" And InStr(1, allTxt, "Python " & prefix, vbTextCompare) = 0 Then
+        If strict Then
+            WScript.Echo ":: [Error] :: python -V='" & Trim(allTxt) & "' does not match prefix " & prefix
+            Exit Function
+        Else
+            WScript.Echo ":: [Warn] :: python -V='" & Trim(allTxt) & "' does not match prefix " & prefix
+        End If
+    End If
+
+    ' base checks passed
+    VerifyInstall = True
+    On Error GoTo 0
+End Function
 
 main(WScript.Arguments)

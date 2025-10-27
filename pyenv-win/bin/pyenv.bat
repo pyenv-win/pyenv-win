@@ -4,6 +4,24 @@ chcp 65001 >nul 2>&1
 
 set "pyenv=cscript //nologo "%~dp0..\libexec\pyenv.vbs""
 
+:: Fallback: if a user-level pyenv exists, but this script is not running
+:: from that root (e.g. running Scoop's pyenv), delegate to user pyenv.
+:: Does not modify PATH; only re-invokes the command from preferred root.
+for %%I in ("%~dp0..") do set "__THIS_ROOT=%%~fI"
+set "__USER_ROOT=%USERPROFILE%\.pyenv\pyenv-win"
+set "__SCOOP_ROOT=%USERPROFILE%\scoop\apps\pyenv\current\pyenv-win"
+for %%I in ("%__THIS_ROOT%") do set "__THIS_ROOT_F=%%~fI"
+for %%I in ("%__SCOOP_ROOT%") do set "__SCOOP_ROOT_F=%%~fI"
+if exist "%__USER_ROOT%\bin\pyenv.bat" (
+  rem only delegate when running from Scoop install
+  if /I "%__THIS_ROOT_F%"=="%__SCOOP_ROOT_F%" (
+    for %%I in ("%__USER_ROOT%") do set "__USER_ROOT_F=%%~fI"
+    echo [pyenv] Fallback: delegating to user installation at "%__USER_ROOT_F%".
+    call "%__USER_ROOT_F%\bin\pyenv.bat" %*
+    exit /b %ERRORLEVEL%
+  )
+)
+
 :: if 'pyenv' called alone, then run pyenv.vbs
 if [%1]==[] (
   %pyenv% || goto :error
@@ -15,6 +33,7 @@ for /f "delims=" %%i in ('echo skip') do (call :incrementskip)
 if [%skip%]==[0] set "skip_arg="
 if not [%skip%]==[0] set "skip_arg=skip=%skip% "
 
+:: run PATH sanity check for common commands where users expect python to switch
 if /i [%1%2]==[version] call :check_path
 
 :: use pyenv.vbs to aid resolving absolute path of "active" version into 'bindir'
@@ -48,7 +67,7 @@ if /i [%1]==[help] (
 )
 
 :: let pyenv.vbs handle these
-set "commands=rehash global local version vname version-name versions commands shims which whence help --help"
+set "commands=rehash global local version vname version-name versions commands shims which whence help --help doctor"
 for %%a in (%commands%) do (
   if /i [%1]==[%%a] (
     rem endlocal not really needed here since above commands do not set any variable
@@ -200,11 +219,11 @@ goto :eof
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: tell bad PATH and exit
 :bad_path
-set "bad_python=%~1"
-set "bad_dir=%~dp1"
-echo [91mFATAL: Found [95m%bad_python%[91m version before pyenv in PATH.[0m
-echo [91mPlease remove [95m%bad_dir%[91m from PATH for pyenv to work properly.[0m
-goto :eof
+  set "bad_python=%~1"
+  set "bad_dir=%~dp1"
+  echo [91mFATAL: Found [95m%bad_python%[91m version before pyenv in PATH.[0m
+  echo [91mPlease remove [95m%bad_dir%[91m from PATH for pyenv to work properly.[0m
+  goto :eof
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: if AutoExec/AutoRun is configured for cmd it probably ends with the `cls` command
 :: meaning there will be a Form Feed (U+000C) included in the output.
@@ -218,3 +237,4 @@ goto :eof
 
 :error
 exit /b %errorlevel%
+

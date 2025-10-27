@@ -54,36 +54,13 @@ Method 4:
 | Show version     | `pyenv version`          |
 | Which python     | `pyenv which python`     |
 | Rebuild shims    | `pyenv rehash`           |
+| Doctor (check PATH) | `pyenv doctor`        |
 
 - Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
 
-```pwsh
-pyenv versions
-```
-```pwsh
-pyenv install -l
-```
-```pwsh
-pyenv install 3.10.11
-```
-```pwsh
-pyenv uninstall 3.10.11
-```
-```pwsh
-pyenv global 3.10.11
-```
-```pwsh
-pyenv local 3.10.11
-```
-```pwsh
-pyenv version
-```
-```pwsh
-pyenv which python
-```
-```pwsh
-pyenv rehash
-```
+Note on post-install verification
+- By default, install completes if the target folder and `python.exe` exist. If `pip.exe` is missing, pyenv-win tries `python -m ensurepip -U` and continues with a warning. Version check via `python -V` is warning-only.
+- Use `--strict-verify` to enforce both checks (missing `pip.exe` or version mismatch will fail the install).
 
 Changes
 - Windows versions index: FTP parsing with direct fallback, supports `amd64/`, `arm64/`, `win32`.
@@ -396,3 +373,4 @@ Thanks for all Contributors and Supports for patience for the latest major relea
 [1]: https://github.com/pyenv/pyenv
 [2]: https://github.com/rbenv/rbenv
 [3]: https://github.com/nak1114/rbenv-win
+

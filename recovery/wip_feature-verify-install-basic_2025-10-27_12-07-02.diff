@@ -1,0 +1,70 @@
+diff --git a/pyenv-win/libexec/pyenv-install.vbs b/pyenv-win/libexec/pyenv-install.vbs
+index 80ccb59..201a360 100644
+--- a/pyenv-win/libexec/pyenv-install.vbs
++++ b/pyenv-win/libexec/pyenv-install.vbs
+@@ -503,7 +503,9 @@ Sub main(arg)
+     Dim verDef
+     Dim installParams
+     Dim installed
++    Dim successCount
+     Set installed = CreateObject("Scripting.Dictionary")
++    successCount = 0
+ 
+     For Each version In installVersions.Keys
+         If Not installed.Exists(version) Then
+@@ -527,12 +529,13 @@ Sub main(arg)
+             ' Post-install verification: folder, python.exe, pip.exe, and version prefix
+             If VerifyInstall(verDef(LV_Code), strDirVers &"\"& verDef(LV_Code)) Then
+                 installed(version) = Empty
++                successCount = successCount + 1
+             Else
+                 WScript.Echo ":: [Error] :: verification failed for " & verDef(LV_Code)
+             End If
+         End If
+     Next
+-    Rehash
++    If successCount > 0 Then Rehash
+ End Sub
+ 
+ Function VerifyInstall(code, installPath)
+@@ -547,12 +550,19 @@ Function VerifyInstall(code, installPath)
+     pyexe = installPath & "\python.exe"
+     If Not objfs.FileExists(pyexe) Then Exit Function
+ 
+-    ' require pip.exe (created by ensurepip for MSI extractions)
++    ' ensure pip.exe if possible (best-effort); do not fail install if missing
+     Dim pipexe
+     pipexe = installPath & "\Scripts\pip.exe"
+-    If Not objfs.FileExists(pipexe) Then Exit Function
++    If Not objfs.FileExists(pipexe) Then
++        Dim shEnsure, rcEnsure
++        Set shEnsure = CreateObject("WScript.Shell")
++        rcEnsure = shEnsure.Run("""" & pyexe & """ -m ensurepip -U", 0, True)
++        If Not objfs.FileExists(pipexe) Then
++            WScript.Echo ":: [Warn] :: pip.exe not found after install (and ensurepip); continuing"
++        End If
++    End If
+ 
+-    ' check version prefix via `python -V`
++    ' optional version prefix check via `python -V` (warning only)
+     Dim base, parts, prefix
+     base = Split(code, "-")(0)
+     parts = Split(base, ".")
+@@ -569,12 +579,12 @@ Function VerifyInstall(code, installPath)
+     errTxt = proc.StdErr.ReadAll()
+     allTxt = outTxt
+     If allTxt = "" Then allTxt = errTxt
+-
+-    If InStr(1, allTxt, "Python " & prefix, vbTextCompare) > 0 Then
+-        VerifyInstall = True
+-    Else
+-        VerifyInstall = False
++    If allTxt <> "" And InStr(1, allTxt, "Python " & prefix, vbTextCompare) = 0 Then
++        WScript.Echo ":: [Warn] :: python -V='" & Trim(allTxt) & "' does not match prefix " & prefix
+     End If
++
++    ' base checks passed
++    VerifyInstall = True
+     On Error GoTo 0
+ End Function
+ 

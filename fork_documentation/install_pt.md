@@ -81,36 +81,13 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 | Mostrar versao     | `pyenv version`          |
 | Qual python        | `pyenv which python`     |
 | Recriar shims      | `pyenv rehash`           |
+| Doctor (verificar PATH) | `pyenv doctor`      |
 
 - Dica: 'pyenv install 3.13' resolve para a ultima 3.13.x da sua arquitetura; 'pyenv install 3' resolve para a ultima 3.x.y.
 
-```pwsh
-pyenv versions
-```
-```pwsh
-pyenv install -l
-```
-```pwsh
-pyenv install 3.10.11
-```
-```pwsh
-pyenv uninstall 3.10.11
-```
-```pwsh
-pyenv global 3.10.11
-```
-```pwsh
-pyenv local 3.10.11
-```
-```pwsh
-pyenv version
-```
-```pwsh
-pyenv which python
-```
-```pwsh
-pyenv rehash
-```
+Verificação pós-instalação
+- Padrão: a instalação é considerada concluída quando a pasta alvo e o `python.exe` existem. Se `Scripts/pip.exe` estiver ausente, o pyenv-win tenta `python -m ensurepip -U` e continua com um aviso. A verificação de versão via `python -V` também é apenas aviso.
+- Modo estrito: use `--strict-verify` para tratar falta do `pip.exe` ou divergência de versão como erro e abortar a instalação.
 
 ## Uso imediato nesta sessao
 
@@ -150,3 +127,4 @@ Fallback pelo CMD para testar sem PATH:
   - Remova outras entradas de bin/shims do pyenv-win; mantenha este fork primeiro no PATH do usuario.
 - Por tras de proxy
   - Defina `http_proxy` e `https_proxy` antes de instalar/atualizar.
+
