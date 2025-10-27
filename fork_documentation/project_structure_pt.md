@@ -1,4 +1,4 @@
-## Indice de versoes e fluxo de isntalacao
+## Indice de versoes e fluxo de instalacao
 
 - Base local de versoes: `pyenv-win/.versions_cache.xml`
 - Script de update: `pyenv-win/libexec/pyenv-update.vbs`
