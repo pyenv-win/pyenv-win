@@ -84,6 +84,8 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 | Doctor (verificar PATH) | `pyenv doctor`      |
 
 Desinstalar
+- Pelo pyenv: `pyenv remove` (padrão KeepVersions). Use `--full` para remoção completa.
+
 - Preservar versões (remove apenas PATH/perfil):
   - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
   - CMD: `uninstall.cmd`
@@ -97,4 +99,5 @@ Comportamento
 
 Logs
 - Instalacao/desinstalacao de versoes grava em %USERPROFILE%\\.pyenv\\pyenv-win\\pyenv-actions.log com timestamp.
+
 

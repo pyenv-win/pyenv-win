@@ -57,6 +57,8 @@ Method 4:
 | Doctor (check PATH) | `pyenv doctor`        |
 
 Uninstall
+- From pyenv: `pyenv remove` (defaults to KeepVersions). Use `pyenv remove --full` for full removal.
+
 - Keep versions (preserve downloads and installed Pythons; remove PATH/profile only):
   - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
   - CMD: run `uninstall.cmd`
@@ -67,4 +69,5 @@ Behavior
 - Best-effort: never abort operations. Doctor warns about Machine PATH; uninstaller attempts to fix Machine PATH if elevated.
 - Backups: before any change to PATH/profile, timestamped backups are written under `%USERPROFILE%\\.pyenv\\pyenv-win`.
 - Logging: install/uninstall of Python versions append to `%USERPROFILE%\\.pyenv\\pyenv-win\\pyenv-actions.log` with timestamps.
+
 
