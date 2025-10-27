@@ -83,6 +83,16 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 | Recriar shims      | `pyenv rehash`           |
 | Doctor (verificar PATH) | `pyenv doctor`      |
 
+Desinstalar
+- Preservar versões (remove apenas PATH/perfil):
+  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode KeepVersions`
+  - CMD: `uninstall.cmd`
+- Remoção completa (apaga `%USERPROFILE%\.pyenv\pyenv-win` inteiro):
+  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode Full`
+
+Observação
+- Não é suportado usar PATH do sistema. `pyenv doctor` acusa erro se houver pyenv no PATH de Máquina.
+
 - Dica: 'pyenv install 3.13' resolve para a ultima 3.13.x da sua arquitetura; 'pyenv install 3' resolve para a ultima 3.x.y.
 
 Verificação pós-instalação

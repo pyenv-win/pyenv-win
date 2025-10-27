@@ -56,6 +56,17 @@ Method 4:
 | Rebuild shims    | `pyenv rehash`           |
 | Doctor (check PATH) | `pyenv doctor`        |
 
+Uninstall
+- Keep versions (preserve downloads and installed Pythons; remove PATH/profile only):
+  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode KeepVersions`
+  - CMD: run `uninstall.cmd`
+- Full removal (delete everything under `%USERPROFILE%\.pyenv\pyenv-win`, including versions and cache):
+  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode Full`
+
+Notes
+- System PATH usage is not supported. `pyenv doctor` reports an error if `.pyenv\pyenv-win\bin` or `shims` are on the Machine PATH.
+- After uninstall, reopen the terminal (or run `. $PROFILE`) for PATH changes to take effect.
+
 - Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
 
 Note on post-install verification
