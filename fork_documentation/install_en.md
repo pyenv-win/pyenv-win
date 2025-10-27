@@ -94,3 +94,7 @@ Behavior
 - Best-effort: never abort. Doctor warns about Machine PATH; uninstaller attempts to fix Machine PATH if elevated.
 - Backups: before any change to PATH/profile, timestamped backups are written under `%USERPROFILE%\\.pyenv\\pyenv-win`.
 
+
+Logs
+- Version install/uninstall append to %USERPROFILE%\\.pyenv\\pyenv-win\\pyenv-actions.log with timestamps.
+

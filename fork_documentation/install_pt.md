@@ -94,3 +94,7 @@ Comportamento
 - Best-effort: nunca aborta. O doctor avisa sobre PATH de Máquina; o desinstalador tenta corrigir se estiver elevado.
 - Backups: antes de qualquer alteração no PATH/perfil, backups com timestamp são salvos em `%USERPROFILE%\\.pyenv\\pyenv-win`.
 
+
+Logs
+- Instalacao/desinstalacao de versoes grava em %USERPROFILE%\\.pyenv\\pyenv-win\\pyenv-actions.log com timestamp.
+
