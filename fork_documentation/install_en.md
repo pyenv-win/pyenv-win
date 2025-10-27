@@ -70,35 +70,17 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 
 ## Commands after install (pyenv)
 
-| Action           | Command                        | Copy |
-|------------------|--------------------------------|------|
-| List installed   | `pyenv versions`               | ```pwsh
-pyenv versions
-``` |
-| List available   | `pyenv install -l`             | ```pwsh
-pyenv install -l
-``` |
-| Install version  | `pyenv install 3.14.0`         | ```pwsh
-pyenv install 3.14.0
-``` |
-| Uninstall        | `pyenv uninstall 3.14.0`       | ```pwsh
-pyenv uninstall 3.14.0
-``` |
-| Set global       | `pyenv global 3.14.0`          | ```pwsh
-pyenv global 3.14.0
-``` |
-| Set local        | `pyenv local 3.14.0`           | ```pwsh
-pyenv local 3.14.0
-``` |
-| Show version     | `pyenv version`                | ```pwsh
-pyenv version
-``` |
-| Which python     | `pyenv which python`           | ```pwsh
-pyenv which python
-``` |
-| Rebuild shims    | `pyenv rehash`                 | ```pwsh
-pyenv rehash
-``` |
+| Action           | Command                  | Copy                 |
+|------------------|--------------------------|----------------------|
+| List installed   | `pyenv versions`         | `pyenv versions`     |
+| List available   | `pyenv install -l`       | `pyenv install -l`   |
+| Install version  | `pyenv install 3.14.0`   | `pyenv install 3.14.0` |
+| Uninstall        | `pyenv uninstall 3.14.0` | `pyenv uninstall 3.14.0` |
+| Set global       | `pyenv global 3.14.0`    | `pyenv global 3.14.0` |
+| Set local        | `pyenv local 3.14.0`     | `pyenv local 3.14.0` |
+| Show version     | `pyenv version`          | `pyenv version`      |
+| Which python     | `pyenv which python`     | `pyenv which python` |
+| Rebuild shims    | `pyenv rehash`           | `pyenv rehash`       |
 
 - Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
 
