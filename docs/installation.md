@@ -24,23 +24,67 @@ The easiest way to install pyenv-win is to run the following installation comman
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
 ```
 
-If you are getting any **UnauthorizedAccess** error as below then start Windows PowerShell with the "Run as administrator" option and run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine`, now re-run the above installation command.
+Execution policy friendly options (no global changes):
+- Check current policy first:
+  ```pwsh
+  Get-ExecutionPolicy -List
+  ```
+- If scripts are blocked, prefer a temporary, process-scoped run instead of changing your machine policy:
+  ```pwsh
+  PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
+  ```
+- Or from Command Prompt (no PowerShell policy change):
+  ```cmd
+  curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  ```
 
-```plaintext
-& : File C:\Users\kirankotari\install-pyenv-win.ps1 cannot be loaded because running scripts is disabled on this system. For
-more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
-At line:1 char:173
-+ ... n.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~ 
- + CategoryInfo          : SecurityError: (:) [], PSSecurityException 
- + FullyQualifiedErrorId : UnauthorizedAccess
+Only if you explicitly choose to change policy, prefer a scoped change and confirm with your administrator/security policy. Example for current user (not system-wide):
+```pwsh
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
-For more information on 'digitally signed' or 'Security warning' you can refer to following issue [#332](https://github.com/pyenv-win/pyenv-win/issues/332)
+If you see an error like:
+```plaintext
+& : File C:\Users\you\install-pyenv-win.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+use one of the temporary options above instead of changing LocalMachine policy.
+
+For more information on 'digitally signed' or 'Security warning' see [#332](https://github.com/pyenv-win/pyenv-win/issues/332)
 
 Installation is complete!
 
 [Return to README](../README.md#installation)
+
+***
+
+## **Troubleshooting**
+- Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
+
+
+- pyenv not found after install
+  - Reopen the terminal or export for this session only:
+    ```pwsh
+    $env:PYENV = "$HOME\.pyenv\pyenv-win"
+    $env:Path  = "$env:PYENV\bin;$env:PYENV\shims;$env:Path"
+    where pyenv
+    ```
+- Script is disabled (PSSecurityException)
+  - Run the installer with a process-scoped bypass (no global change):
+    ```pwsh
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
+    ```
+  - Or from Command Prompt:
+    ```cmd
+    curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+    ```
+- Python resolves to App Installer alias
+  - Disable Python aliases in Windows: Manage App Execution Aliases and turn off Python entries.
+- Old pyenv entries in PATH
+  - Remove other pyenv-win bin/shims from Path; keep the intended install first in the user Path.
+- Behind proxy
+  - Set `http_proxy` and `https_proxy` environment variables before running install/update.
+
+***
 
 ***
 

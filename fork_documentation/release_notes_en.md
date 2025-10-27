@@ -17,6 +17,8 @@
 - Installer does not auto update versions; run `pyenv update` when needed.
 
 ## Basic commands
+- Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
+
 
 ```pwsh
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
@@ -25,10 +27,10 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore
 ```
 ```pwsh
-cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.14.0
 ```
 ```pwsh
-cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64
+cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.14.0-arm64
 ```
 
 ## Full documentation
@@ -39,3 +41,28 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9
 - [install_pt.txt](../fork_documentation/install_pt.txt) - install text PT
 - [project_structure_en.md](../fork_documentation/project_structure_en.md) - project structure EN
 - [project_structure_pt.md](../fork_documentation/project_structure_pt.md) - project structure PT
+
+## Troubleshooting
+
+- pyenv not found after install
+  - Reopen the terminal or export for this session only:
+    ```pwsh
+    $env:PYENV = "$HOME\.pyenv\pyenv-win"
+    $env:Path  = "$env:PYENV\bin;$env:PYENV\shims;$env:Path"
+    where pyenv
+    ```
+- Script is disabled (PSSecurityException)
+  - Run installer with a process-scoped bypass:
+    ```pwsh
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
+    ```
+  - Or from CMD:
+    ```cmd
+    curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+    ```
+- Python resolves to App Installer alias
+  - Disable Python aliases in Windows: Manage App Execution Aliases.
+- Old pyenv entries in PATH
+  - Remove other pyenv-win bin/shims from PATH; keep this fork first (user PATH).
+- Behind proxy
+  - Set `http_proxy` and `https_proxy` before install/update.

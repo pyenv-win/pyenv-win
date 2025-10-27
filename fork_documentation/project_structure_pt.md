@@ -1,4 +1,4 @@
-## Achados sobre indice de versoes e fluxo de instalacao
+## Indice de versoes e fluxo de isntalacao
 
 - Base local de versoes: `pyenv-win/.versions_cache.xml`
 - Script de update: `pyenv-win/libexec/pyenv-update.vbs`
@@ -14,4 +14,3 @@
   - Para ARM64 use `-arm64`
 - Update apos instalacao:
   - `pyenv-win/install-pyenv-win.ps1` atualiza o cache apos instalar
-
