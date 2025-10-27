@@ -84,7 +84,7 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 | Doctor (check PATH) | `pyenv doctor`        |
 
 Uninstall
-- From pyenv: `pyenv remove` (default KeepVersions). Add `--full` for full removal.
+- From pyenv: `pyenv remove` (default KeepVersions). Interactive prompt offers Partial/Full/No; `--full` sets default to Full.
 
 - Keep versions (removes PATH/profile only):
   - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
@@ -99,5 +99,6 @@ Behavior
 
 Logs
 - Version install/uninstall append to %USERPROFILE%\\.pyenv\\pyenv-win\\pyenv-actions.log with timestamps.
+
 
 
