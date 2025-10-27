@@ -1,4 +1,4 @@
-## Findings about version index and install flow
+## Version index and install flow
 
 - Local version DB: `pyenv-win/.versions_cache.xml`
 - Update script: `pyenv-win/libexec/pyenv-update.vbs`
