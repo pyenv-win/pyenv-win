@@ -37,6 +37,12 @@ Execution policy friendly options (no global changes):
   ```cmd
   curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
   ```
+  ```cmd
+  wget -O %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  ```
+  ```cmd
+  certutil -urlcache -split -f https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1 %TEMP%\install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  ```
 
 Only if you explicitly choose to change policy, prefer a scoped change and confirm with your administrator/security policy. Example for current user (not system-wide):
 ```pwsh
