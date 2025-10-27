@@ -7,7 +7,19 @@ Instalacao deste fork no Windows
 Metodo 0 - One-liner PowerShell (recomendado)
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
 
+Respeitando a politica de execucao:
+  - Verifique a politica: Get-ExecutionPolicy -List
+  - Se estiver bloqueado, rode de forma temporaria (sem alterar global):
+    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
+
+Metodo 0b - Pelo CMD (sem mudar politica do PS)
+  curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  Ou use o helper incluso: install.cmd
+
 Metodo 1 - Git clone
+```cmd
+git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win
+```
 git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\.pyenv\pyenv-win
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-update.vbs --ignore
 cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list | Select-Object -First 20
@@ -23,50 +35,51 @@ Uso
 - Listar versoes:
   cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs --list
 - Instalar amd64:
-  cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9
+  cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.14.0
 - Instalar ARM64:
-  cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.13.9-arm64
+  cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.14.0-arm64
 
 
 ## Comandos apos instalar (pyenv)
 
-| Acao           | Command                |
-|------------------|------------------------|
-| Listar instalados   | `pyenv versions`       |
-| Listar disponiveis   | `pyenv install -l`     |
-| Instalar versao  | `pyenv install 3.13.9` |
-| Desinstalar versao        | `pyenv Desinstalar versao 3.13.9` |
-| Definir global       | `pyenv global 3.13.9`  |
-| Definir local        | `pyenv local 3.13.9`   |
-| Mostrar versao     | `pyenv version`        |
-| Qual python     | `pyenv Qual python`   |
-| Recriar shims    | `pyenv rehash`         |
+| Acao               | Comando                 |
+|--------------------|-------------------------|
+| Listar instalados  | pyenv versions          |
+| Listar disponiveis | pyenv install -l        |
+| Instalar versao    | pyenv install 3.14.0    |
+| Desinstalar versao | pyenv uninstall 3.14.0  |
+| Definir global     | pyenv global 3.14.0     |
+| Definir local      | pyenv local 3.14.0      |
+| Mostrar versao     | pyenv version           |
+| Qual python        | pyenv which python      |
+| Recriar shims      | pyenv rehash            |
 
-```pwsh
-# Listar instalados
-pyenv versions
+Exemplos pwsh
+- Dica: 'pyenv install 3.13' resolve para a ultima 3.13.x da sua arquitetura; 'pyenv install 3' resolve para a ultima 3.x.y.
 
-# Listar disponiveis
-pyenv install -l
+  # Listar instalados
+  pyenv versions
+  # Listar disponiveis
+  pyenv install -l
+  # Instalar versao
+  pyenv install 3.10.11
+  # Desinstalar versao
+  pyenv uninstall 3.10.11
+  # Definir global
+  pyenv global 3.10.11
+  # Definir local
+  pyenv local 3.10.11
+  # Mostrar versao
+  pyenv version
+  # Qual python
+  pyenv which python
+  # Recriar shims
+  pyenv rehash
 
-# Instalar versao
-pyenv install 3.13.9
+Uso imediato nesta sessao (se PATH ainda nao atualizou)
+  $env:PYENV = "$HOME\.pyenv\pyenv-win"
+  $env:Path  = "$env:PYENV\bin;$env:PYENV\shims;$env:Path"
+  pyenv --version
 
-# UnInstalar versao
-pyenv Desinstalar versao 3.13.9
-
-# Definir global
-pyenv global 3.13.9
-
-# Definir local
-pyenv local 3.13.9
-
-# Mostrar versao
-pyenv version
-
-# Qual python
-pyenv Qual python
-
-# Recriar shims
-pyenv rehash
-```
+Fallback via CMD sem PATH
+  "%USERPROFILE%\.pyenv\pyenv-win\bin\pyenv.bat" --version
