@@ -22,6 +22,12 @@ Execution policy friendly options:
   ```cmd
   curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
   ```
+  ```cmd
+  wget -O %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  ```
+  ```cmd
+  certutil -urlcache -split -f https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 %TEMP%\install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+  ```
 
 Method 2:
 - Click to install: run `install.cmd` (or `install.ps1`)
@@ -37,17 +43,35 @@ Method 4:
 
 ## Commands after install (pyenv)
 
-| Action           | Command                |
-|------------------|------------------------|
-| List installed   | `pyenv versions`       |
-| List available   | `pyenv install -l`     |
-| Install version  | `pyenv install 3.14.0` |
-| Uninstall        | `pyenv uninstall 3.14.0` |
-| Set global       | `pyenv global 3.14.0`  |
-| Set local        | `pyenv local 3.14.0`   |
-| Show version     | `pyenv version`        |
-| Which python     | `pyenv which python`   |
-| Rebuild shims    | `pyenv rehash`         |
+| Action           | Command                  | Copy |
+|------------------|--------------------------|------|
+| List installed   | `pyenv versions`         | ```pwsh
+pyenv versions
+``` |
+| List available   | `pyenv install -l`       | ```pwsh
+pyenv install -l
+``` |
+| Install version  | `pyenv install 3.14.0`   | ```pwsh
+pyenv install 3.14.0
+``` |
+| Uninstall        | `pyenv uninstall 3.14.0` | ```pwsh
+pyenv uninstall 3.14.0
+``` |
+| Set global       | `pyenv global 3.14.0`    | ```pwsh
+pyenv global 3.14.0
+``` |
+| Set local        | `pyenv local 3.14.0`     | ```pwsh
+pyenv local 3.14.0
+``` |
+| Show version     | `pyenv version`          | ```pwsh
+pyenv version
+``` |
+| Which python     | `pyenv which python`     | ```pwsh
+pyenv which python
+``` |
+| Rebuild shims    | `pyenv rehash`           | ```pwsh
+pyenv rehash
+``` |
 
 - Tip: 'pyenv install 3.13' resolves to the latest 3.13.x for your arch; 'pyenv install 3' resolves to the latest 3.x.y.
 
@@ -133,7 +157,11 @@ cscript //nologo %USERPROFILE%\.pyenv\pyenv-win\libexec\pyenv-install.vbs 3.14.0
 
 Note: This fork removes pre-releases (alpha/rc/beta) and pypy/graalpy from listings; CPython stable only.
 
-Original README
+---
+
+# Original README (upstream)
+
+Below is the original upstream README for reference. It is separate from this fork’s notes and quick start above.
 # pyenv for Windows
 
 [pyenv][1] is an amazing tool used to manage multiple versions of python in your machine. We have ported it to Windows. We need your thoughts to improve this library and your feedback helps to grow the project.

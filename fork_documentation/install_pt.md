@@ -22,6 +22,12 @@ Respeitando a politica de execucao:
 ```cmd
 curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
 ```
+```cmd
+wget -O %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+```
+```cmd
+certutil -urlcache -split -f https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 %TEMP%\install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+```
 
 Alternativa: use o helper incluso `install.cmd` (duplo clique ou execute no CMD). Ele usa bypass apenas no processo do instalador.
 
@@ -64,17 +70,35 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 
 ## Comandos apos instalar (pyenv)
 
-| Acao             | Comando                          |
-|------------------|----------------------------------|
-| Listar instalados| `pyenv versions`                 |
-| Listar disponiveis| `pyenv install -l`              |
-| Instalar versao  | `pyenv install 3.14.0`           |
-| Desinstalar      | `pyenv uninstall 3.14.0`         |
-| Definir global   | `pyenv global 3.14.0`            |
-| Definir local    | `pyenv local 3.14.0`             |
-| Mostrar versao   | `pyenv version`                  |
-| Qual python      | `pyenv which python`             |
-| Recriar shims    | `pyenv rehash`                   |
+| Acao               | Comando                        | Copiar |
+|--------------------|--------------------------------|--------|
+| Listar instalados  | `pyenv versions`               | ```pwsh
+pyenv versions
+``` |
+| Listar disponiveis | `pyenv install -l`             | ```pwsh
+pyenv install -l
+``` |
+| Instalar versao    | `pyenv install 3.14.0`         | ```pwsh
+pyenv install 3.14.0
+``` |
+| Desinstalar        | `pyenv uninstall 3.14.0`       | ```pwsh
+pyenv uninstall 3.14.0
+``` |
+| Definir global     | `pyenv global 3.14.0`          | ```pwsh
+pyenv global 3.14.0
+``` |
+| Definir local      | `pyenv local 3.14.0`           | ```pwsh
+pyenv local 3.14.0
+``` |
+| Mostrar versao     | `pyenv version`                | ```pwsh
+pyenv version
+``` |
+| Qual python        | `pyenv which python`           | ```pwsh
+pyenv which python
+``` |
+| Recriar shims      | `pyenv rehash`                 | ```pwsh
+pyenv rehash
+``` |
 
 - Dica: 'pyenv install 3.13' resolve para a ultima 3.13.x da sua arquitetura; 'pyenv install 3' resolve para a ultima 3.x.y.
 
