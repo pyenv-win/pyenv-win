@@ -58,12 +58,15 @@ Method 4:
 
 Uninstall
 - Keep versions (preserve downloads and installed Pythons; remove PATH/profile only):
-  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode KeepVersions`
+  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
   - CMD: run `uninstall.cmd`
-- Full removal (delete everything under `%USERPROFILE%\.pyenv\pyenv-win`, including versions and cache):
-  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode Full`
+- Full removal (delete everything under `%USERPROFILE%\\.pyenv\\pyenv-win`, including versions and cache):
+  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode Full`
 
-Notes
+Behavior
+- Best-effort: never abort. It warns about Machine PATH, attempts to fix if running elevated, and always preserves your data unless `-Mode Full`.
+- Backups: before any change to PATH/profile, it writes timestamped backups in `%USERPROFILE%\\.pyenv\\pyenv-win` (`backup_user_path_*.txt`, `backup_machine_path_*.txt`, `backup_profile_*.ps1`).
+- After uninstall, reopen the terminal (or run `. $PROFILE`) for PATH changes to take effect.
 - System PATH usage is not supported. `pyenv doctor` reports an error if `.pyenv\pyenv-win\bin` or `shims` are on the Machine PATH.
 - After uninstall, reopen the terminal (or run `. $PROFILE`) for PATH changes to take effect.
 
@@ -384,4 +387,5 @@ Thanks for all Contributors and Supports for patience for the latest major relea
 [1]: https://github.com/pyenv/pyenv
 [2]: https://github.com/rbenv/rbenv
 [3]: https://github.com/nak1114/rbenv-win
+
 
