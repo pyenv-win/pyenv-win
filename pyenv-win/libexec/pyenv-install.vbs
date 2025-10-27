@@ -44,6 +44,26 @@ Sub ShowHelp()
     WScript.Quit 0
 End Sub
 
+' Logging helpers
+Function LogFilePath()
+    Dim fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    LogFilePath = strDirRoot & "\\pyenv-actions.log"
+End Function
+
+Sub LogLine(msg)
+    On Error Resume Next
+    Dim fso, f
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Dim ts
+    ts = Year(Now) & "-" & Right("0" & Month(Now),2) & "-" & Right("0" & Day(Now),2) & _
+         " " & Right("0" & Hour(Now),2) & ":" & Right("0" & Minute(Now),2) & ":" & Right("0" & Second(Now),2)
+    Set f = fso.OpenTextFile(LogFilePath, 8, True)
+    f.WriteLine ts & " [install] " & msg
+    f.Close
+    On Error GoTo 0
+End Sub
+
 Sub EnsureFolder(path)
     ' WScript.echo "kkotari: pyenv-install.vbs EnsureFolder..!"
     Dim stack()
@@ -511,6 +531,14 @@ Sub main(arg)
     Set installed = CreateObject("Scripting.Dictionary")
     successCount = 0
 
+    Dim keys, k
+    keys = ""
+    For Each k In installVersions.Keys
+        If keys <> "" Then keys = keys & ","
+        keys = keys & CStr(k)
+    Next
+    If keys <> "" Then LogLine("start versions=" & keys)
+
     For Each version In installVersions.Keys
         If Not installed.Exists(version) Then
             verDef = versions(version)
@@ -534,12 +562,15 @@ Sub main(arg)
             If VerifyInstall(verDef(LV_Code), strDirVers &"\"& verDef(LV_Code), optStrict) Then
                 installed(version) = Empty
                 successCount = successCount + 1
+                LogLine("ok version=" & verDef(LV_Code))
             Else
                 WScript.Echo ":: [Error] :: verification failed for " & verDef(LV_Code)
+                LogLine("fail version=" & verDef(LV_Code))
             End If
         End If
     Next
     If successCount > 0 Then Rehash
+    LogLine("done success_count=" & CStr(successCount))
 End Sub
 
 Function VerifyInstall(code, installPath, strict)

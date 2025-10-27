@@ -30,6 +30,26 @@ Sub ShowHelp()
     WScript.Quit 0
 End Sub
 
+' Logging helpers
+Function LogFilePath()
+    Dim fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    LogFilePath = strDirRoot & "\\pyenv-actions.log"
+End Function
+
+Sub LogLine(msg)
+    On Error Resume Next
+    Dim fso, f
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Dim ts
+    ts = Year(Now) & "-" & Right("0" & Month(Now),2) & "-" & Right("0" & Day(Now),2) & _
+         " " & Right("0" & Hour(Now),2) & ":" & Right("0" & Minute(Now),2) & ":" & Right("0" & Second(Now),2)
+    Set f = fso.OpenTextFile(LogFilePath, 8, True)
+    f.WriteLine ts & " [uninstall] " & msg
+    f.Close
+    On Error GoTo 0
+End Sub
+
 Sub unregister(version)
     Dim sh, key
     Set sh = CreateObject("WScript.Shell")
@@ -79,6 +99,19 @@ Sub main(arg)
     Dim delError
     delError = 0
 
+    ' log start
+    Dim keys, k
+    keys = ""
+    If optAll Then
+        keys = "--all"
+    Else
+        For Each k In uninstallVersions.Keys
+            If keys <> "" Then keys = keys & ","
+            keys = keys & CStr(k)
+        Next
+    End If
+    If keys <> "" Then LogLine("start versions=" & keys)
+
     If optAll Then
         ' Confirm "uninstall all", if not forced.
         If optForce Then
@@ -122,17 +155,20 @@ Sub main(arg)
                 objfs.DeleteFolder uninstallPath, optForce
                 If Err.Number <> 0 Then
                     WScript.Echo "pyenv: Error ("& Err.Number &") uninstalling version "& folder &": "& Err.Description
+                    LogLine("fail version=" & folder & " err=" & CStr(Err.Number))
                     Err.Clear
                     delError = 1
                 Else
                     unregister folder
                     WScript.Echo "pyenv: Successfully uninstalled "& folder
+                    LogLine("ok version=" & folder)
                     uninstalled(folder) = Empty
                 End If
             End If
         End If
     Next
     If Not CBool(delError) Then Rehash
+    LogLine("done error=" & CStr(delError))
 
     WScript.Quit delError
 End Sub
