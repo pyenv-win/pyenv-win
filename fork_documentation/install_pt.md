@@ -112,36 +112,6 @@ pyenv which python
 pyenv rehash
 ```
 
-### Copiar comandos
-
-```pwsh
-pyenv versions
-```
-```pwsh
-pyenv install -l
-```
-```pwsh
-pyenv install 3.10.11
-```
-```pwsh
-pyenv uninstall 3.10.11
-```
-```pwsh
-pyenv global 3.10.11
-```
-```pwsh
-pyenv local 3.10.11
-```
-```pwsh
-pyenv version
-```
-```pwsh
-pyenv which python
-```
-```pwsh
-pyenv rehash
-```
-
 ## Uso imediato nesta sessao
 
 Se `pyenv` nao for encontrado logo apos a instalacao, reabra o terminal ou exporte o PATH apenas para esta sessao:
