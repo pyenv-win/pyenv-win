@@ -85,56 +85,12 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 
 Desinstalar
 - Preservar versões (remove apenas PATH/perfil):
-  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode KeepVersions`
+  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
   - CMD: `uninstall.cmd`
-- Remoção completa (apaga `%USERPROFILE%\.pyenv\pyenv-win` inteiro):
-  - PowerShell: `& .\pyenv-win\uninstall-pyenv-win.ps1 -Mode Full`
+- Remoção completa (apaga `%USERPROFILE%\\.pyenv\\pyenv-win` inteiro):
+  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode Full`
 
-Observação
-- Não é suportado usar PATH do sistema. `pyenv doctor` acusa erro se houver pyenv no PATH de Máquina.
-
-- Dica: 'pyenv install 3.13' resolve para a ultima 3.13.x da sua arquitetura; 'pyenv install 3' resolve para a ultima 3.x.y.
-
-Verificação pós-instalação
-- Padrão: a instalação é considerada concluída quando a pasta alvo e o `python.exe` existem. Se `Scripts/pip.exe` estiver ausente, o pyenv-win tenta `python -m ensurepip -U` e continua com um aviso. A verificação de versão via `python -V` também é apenas aviso.
-- Modo estrito: use `--strict-verify` para tratar falta do `pip.exe` ou divergência de versão como erro e abortar a instalação.
-
-## Uso imediato nesta sessao
-
-Se `pyenv` nao for encontrado logo apos a instalacao, reabra o terminal ou exporte o PATH apenas para esta sessao:
-```pwsh
-$env:PYENV = "$HOME\.pyenv\pyenv-win"
-$env:Path  = "$env:PYENV\bin;$env:PYENV\shims;$env:Path"
-pyenv --version
-```
-
-Fallback pelo CMD para testar sem PATH:
-```cmd
-"%USERPROFILE%\.pyenv\pyenv-win\bin\pyenv.bat" --version
-```
-
-## Troubleshooting
-
-- pyenv nao encontrado apos instalar
-  - Reabra o terminal ou exporte para esta sessao apenas:
-    ```pwsh
-    $env:PYENV = "$HOME\.pyenv\pyenv-win"
-    $env:Path  = "$env:PYENV\bin;$env:PYENV\shims;$env:Path"
-    where pyenv
-    ```
-- Script desabilitado (PSSecurityException)
-  - Rode o instalador com bypass apenas no processo (sem mudar politica):
-    ```pwsh
-    PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
-    ```
-  - Ou pelo CMD:
-    ```cmd
-    curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
-    ```
-- Python resolvendo para App Installer alias
-  - Desative os aliases do Python no Windows em Manage App Execution Aliases.
-- Entradas antigas do pyenv no PATH
-  - Remova outras entradas de bin/shims do pyenv-win; mantenha este fork primeiro no PATH do usuario.
-- Por tras de proxy
-  - Defina `http_proxy` e `https_proxy` antes de instalar/atualizar.
+Comportamento
+- Best-effort: nunca aborta. O doctor avisa sobre PATH de Máquina; o desinstalador tenta corrigir se estiver elevado.
+- Backups: antes de qualquer alteração no PATH/perfil, backups com timestamp são salvos em `%USERPROFILE%\\.pyenv\\pyenv-win`.
 
