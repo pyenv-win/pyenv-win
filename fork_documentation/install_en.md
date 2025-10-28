@@ -4,29 +4,23 @@
 - PATH (bin and shims) is set by the installer.
 - Version cache is refreshed after install.
 
-## Method 0 - One-liner PowerShell (recommended)
+## Method 0 - One-liner PowerShell (recommended, resilient)
 
 ```pwsh
-Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}
 ```
 
 Execution policy friendly:
 - Check policy first: `Get-ExecutionPolicy -List`
 - If scripts are blocked, prefer a temporary run that doesn’t change your machine policy:
   ```pwsh
-  PowerShell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
+  PowerShell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}"
   ```
 
 ## Method 0b - From Command Prompt (no PowerShell policy changes)
 
 ```cmd
-curl -L -o %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
-```
-```cmd
-wget -O %TEMP%\install-pyenv-win.ps1 https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
-```
-```cmd
-certutil -urlcache -split -f https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 %TEMP%\install-pyenv-win.ps1 && powershell -NoProfile -ExecutionPolicy Bypass -File %TEMP%\install-pyenv-win.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}"
 ```
 
 Alternatively, use the included helper: `install.cmd` (double-click or run from CMD). It uses a process-scoped policy bypass only for the installer run.
@@ -84,17 +78,12 @@ git clone https://github.com/mauriciomenon/pyenv-win_adaptado.git %USERPROFILE%\
 | Doctor (check PATH) | `pyenv doctor`        |
 
 Uninstall
-- From pyenv: `pyenv remove` (default KeepVersions). Interactive prompt offers Partial/Full/No; `--full` sets default to Full.
-
-- Keep versions (removes PATH/profile only):
-  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode KeepVersions`
-  - CMD: `uninstall.cmd`
-- Full removal (delete `%USERPROFILE%\\.pyenv\\pyenv-win`):
-  - PowerShell: `& .\\pyenv-win\\uninstall-pyenv-win.ps1 -Mode Full`
+- From pyenv: `pyenv remove`
+  - Always prompts for confirmation and then removes everything under `%USERPROFILE%\\.pyenv\\pyenv-win` (pyenv + versions + cache).
+  - Does not change PATH or shell profile automatically; prints up to 4 one‑liners (PowerShell, CMD, Git Bash) with the required privilege so you can adjust PATH and check your shell config yourself.
 
 Behavior
-- Best-effort: never abort. Doctor warns about Machine PATH; uninstaller attempts to fix Machine PATH if elevated.
-- Backups: before any change to PATH/profile, timestamped backups are written under `%USERPROFILE%\\.pyenv\\pyenv-win`.
+- Best-effort and non-destructive to system PATH/profile: doctor and uninstaller only suggest changes with one‑liners.
 
 
 Logs

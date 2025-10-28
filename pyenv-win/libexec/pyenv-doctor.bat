@@ -31,12 +31,11 @@ set "__ERRSYS="
 echo %MACHINE_PATH% | findstr /I /C:".pyenv\pyenv-win\bin" >nul && set "__ERRSYS=1"
 if not defined __ERRSYS echo %MACHINE_PATH% | findstr /I /C:".pyenv\pyenv-win\shims" >nul && set "__ERRSYS=1"
 if defined __ERRSYS (
-  echo [ERROR] pyenv encontrado no PATH do sistema (Maquina). Remova do PATH do sistema.
+  echo [WARN] pyenv encontrado no PATH do sistema (Maquina). Nao e recomendado.
   echo Sugestao (PowerShell Admin):
   echo   $mp = [Environment]::GetEnvironmentVariable('Path','Machine')
   echo   $mp = ($mp -split ';' ^| %% { $_ ^|? { $_ -notmatch '\\.pyenv\\pyenv-win\\(bin^|shims)' } }) -join ';'
   echo   [Environment]::SetEnvironmentVariable('Path',$mp,'Machine')
-  exit /b 2
 )
 
 :ok
