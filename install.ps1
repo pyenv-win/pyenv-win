@@ -11,6 +11,7 @@ for($i=1;$i -le $retries;$i++){
   } catch {
     if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429) {
       $ra = $_.Exception.Response.GetResponseHeader('Retry-After')
+      $s = 0
       if ([int]::TryParse($ra,[ref]$s)) { Start-Sleep -Seconds $s }
       else { Start-Sleep -Seconds ([int][math]::Pow(2,$i)) }
     } else { throw }
