@@ -233,7 +233,19 @@ if (Test-Path "$env:PYENV_ROOT\bin" -and (Test-Path "$env:PYENV_ROOT\shims")) {
 
     If (Test-Path $BackupDir) {
         Write-Host "Restoring Python installations..."
-        Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
+        try {
+            Get-ChildItem -LiteralPath $BackupDir -Force | ForEach-Object {
+                $target = Join-Path $PyEnvWinDir $_.Name
+                if (Test-Path $target) {
+                    Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force -ErrorAction SilentlyContinue
+                } else {
+                    Move-Item -LiteralPath $_.FullName -Destination $PyEnvWinDir -Force -ErrorAction SilentlyContinue
+                }
+            }
+            Remove-Item -LiteralPath $BackupDir -Recurse -Force -ErrorAction SilentlyContinue
+        } catch {
+            Write-Host "Warning: failed to fully restore backup: $($_.Exception.Message)"
+        }
     }
     
     # No automatic update of versions cache. Use 'pyenv update' when needed.
