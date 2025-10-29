@@ -104,25 +104,25 @@ Function Main() {
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
         $LatestVersion = Get-LatestVersion
-        If ($CurrentVersion -eq $LatestVersion) {
-            Write-Host "No updates available."
-            exit
-        }
-        Else {
+        # Only update when we have a non-empty latest and it differs
+        If ($LatestVersion -and ($CurrentVersion -ne $LatestVersion)) {
             Write-Host "New version available: $LatestVersion. Updating..."
             
             Write-Host "Backing up existing Python installations..."
             $FoldersToBackup = "install_cache", "versions", "shims"
             ForEach ($Dir in $FoldersToBackup) {
-                If (-not (Test-Path $BackupDir)) {
-                    New-Item -ItemType Directory -Path $BackupDir
-                }
-                Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
+                If (-not (Test-Path $BackupDir)) { New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null }
+                $src = Join-Path $PyEnvWinDir $Dir
+                if (Test-Path $src) { Move-Item -LiteralPath $src -Destination $BackupDir -Force -ErrorAction SilentlyContinue }
             }
             
             Write-Host "Removing $PyEnvDir..."
             Remove-Item -Path $PyEnvDir -Recurse
-        }   
+        } else {
+            Write-Host "No updates available."
+            exit
+        }
+    }
     }
 
     New-Item -Path $PyEnvDir -ItemType Directory
@@ -159,12 +159,12 @@ Function Main() {
     New-Item -ItemType Directory -Path (Join-Path $PyEnvWinDir 'shims') -Force | Out-Null
 
     # Update env vars
-    [System.Environment]::SetEnvironmentVariable('PYENV', "${PyEnvWinDir}\", "User")
-    [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "${PyEnvWinDir}\", "User")
-    [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "${PyEnvWinDir}\", "User")
-    $env:PYENV = "${PyEnvWinDir}\"
-    $env:PYENV_ROOT = "${PyEnvWinDir}\"
-    $env:PYENV_HOME = "${PyEnvWinDir}\"
+    [System.Environment]::SetEnvironmentVariable('PYENV', "$PyEnvWinDir", "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', "$PyEnvWinDir", "User")
+    [System.Environment]::SetEnvironmentVariable('PYENV_HOME', "$PyEnvWinDir", "User")
+    $env:PYENV = "$PyEnvWinDir"
+    $env:PYENV_ROOT = "$PyEnvWinDir"
+    $env:PYENV_HOME = "$PyEnvWinDir"
 
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
 
@@ -246,8 +246,12 @@ if (Test-Path "$env:PYENV_ROOT\bin" -and (Test-Path "$env:PYENV_ROOT\shims")) {
         try {
             Write-Host ""; Write-Host "Optional: install Python now?" -ForegroundColor Cyan
             $raw = & cscript //nologo "$PyEnvWinDir\libexec\pyenv-install.vbs" --list 2>$null
-            $matches = @(); foreach($line in $raw){ if ($line -match '^\s*(3\.\d+\.\d+)\s*$') { $matches += $Matches[1] } }
-            $vers = $matches | ForEach-Object { [version]$_ }
+            $versText = @()
+            foreach($line in $raw){
+              $m = [regex]::Match($line, '^\s*(3\.\d+\.\d+)\s*$')
+              if ($m.Success) { $versText += $m.Groups[1].Value }
+            }
+            $vers = $versText | ForEach-Object { [version]$_ }
             if ($vers.Count -gt 0) {
               $latest = ($vers | Sort-Object -Descending | Select-Object -First 1)
               function pickLatestMinor([int]$minor){ ($vers | Where-Object { $_.Major -eq 3 -and $_.Minor -eq $minor } | Sort-Object -Descending | Select-Object -First 1) }
