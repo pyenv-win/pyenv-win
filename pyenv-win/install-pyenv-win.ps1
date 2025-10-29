@@ -197,32 +197,15 @@ Function Main() {
 
 
 "@
-        $init = @"
+        $init = @'
 # pyenv-win (init)
-
-
-
-
-
-"@
-        $init = @"
-# pyenv-win (init)
-
-
-
-
-
-"@
-        $init = @"
-# pyenv-win (init)
-
-$env:PYENV_ROOT = '$PyEnvWinDir'
+$env:PYENV_ROOT = "$HOME\.pyenv\pyenv-win"
 if (Test-Path "$env:PYENV_ROOT\bin" -and (Test-Path "$env:PYENV_ROOT\shims")) {
   if ($env:PATH -notmatch [regex]::Escape("$env:PYENV_ROOT\bin")) {
     $env:PATH = "$env:PYENV_ROOT\bin;$env:PYENV_ROOT\shims;" + $env:PATH
   }
 }
-"@
+'@
         $current = Get-Content -Path $PROFILE -ErrorAction SilentlyContinue | Out-String
         if ($null -eq $current -or ($current -notmatch '# pyenv-win \(init\)')) {
             Add-Content -Path $PROFILE -Value "`r`n$init" -Encoding UTF8

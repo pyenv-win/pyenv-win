@@ -33,20 +33,18 @@ $PathsToRemove = @($Bin, $Shims)
 
 function Show-Manual-Remediation {
   Write-Host ''
-  Write-Info 'Verificacoes e comandos sugeridos (max 4 oneliners; nada e executado automaticamente):'
+  Write-Info 'Verificacoes e comandos sugeridos (max 4; nada e executado automaticamente):'
 
   $mp = [Environment]::GetEnvironmentVariable('Path','Machine')
   $up = [Environment]::GetEnvironmentVariable('Path','User')
 
-  # Sinais comuns de conflito (Scoop/Winget)
-  if ($mp -match '\\scoop\\apps\\pyenv\\current\\pyenv-win' -or $up -match '\\scoop\\apps\\pyenv\\current\\pyenv-win') {
-    Write-Warn 'Detectado pyenv do Scoop no PATH; reordene/remova conforme necessario.'
-  }
-  if ($mp -match '\\WindowsApps' -or $up -match '\\WindowsApps' -or $up -match 'AppData\\Local\\Programs\\Python') {
-    Write-Warn 'Detectadas entradas de Python do Windows Store/winget; podem preceder os shims.'
-  }
+  # Motivos (exibidos apenas quando detectados)
+  $why = @()
+  if ($mp -match '\\scoop\\apps\\pyenv\\current\\pyenv-win' -or $up -match '\\scoop\\apps\\pyenv\\current\\pyenv-win') { $why += 'PATH contem pyenv do Scoop' }
+  if ($mp -match '\\WindowsApps' -or $up -match '\\WindowsApps' -or $up -match 'AppData\\Local\\Programs\\Python') { $why += 'PATH contem WindowsApps/winget python' }
+  if ($why.Count -gt 0) { Write-Warn ("Porque: " + ($why -join '; ')) }
 
-  # Oneliners (max 4)
+  # Comandos (copiar e colar)
   Write-Host "  1) PS(Admin)> `$mp=[Environment]::GetEnvironmentVariable('Path','Machine');`$mp=(`$mp -split ';'|?{`$_ -notmatch '\\.pyenv\\pyenv-win\\(bin|shims)'} ) -join ';';[Environment]::SetEnvironmentVariable('Path',`$mp,'Machine')"
   Write-Host "  2) PS(User)>  `$up=[Environment]::GetEnvironmentVariable('Path','User');`$up=(`$up -split ';'|?{`$_ -notmatch '\\.pyenv\\pyenv-win\\(bin|shims)'} ) -join ';';[Environment]::SetEnvironmentVariable('Path',`$up,'User')"
   Write-Host "  3) Bash$>      echo ~/.bashrc    # verifique se nao ha linhas do pyenv"
@@ -104,14 +102,22 @@ Show-Manual-Remediation
 function Show-GitHub429-Tips {
   Write-Host ''
   Write-Info 'Se ocorrer 429 (Too Many Requests) ao baixar o instalador:'
-  # 1) PowerShell robusto com User-Agent e retry/backoff (salva em %TEMP%)
-  Write-Host "  PS> $u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if(\$_.Exception.Response -and \$_.Exception.Response.StatusCode.value__ -eq 429){$ra=\$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}" 
-  # 2) CMD chamando PowerShell
-  Write-Host "  CMD> powershell -NoProfile -ExecutionPolicy Bypass -Command \"$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if(\$_.Exception.Response -and \$_.Exception.Response.StatusCode.value__ -eq 429){$ra=\$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}\"" 
-  # 3) curl com retry e $env:TEMP via PowerShell (em Bash, ajuste %TEMP% -> $TMPDIR)
-  Write-Host "  Bash$> curl -L --retry 5 --retry-delay 2 -o \"$TMPDIR/install-pyenv-win.ps1\" https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 && pwsh -NoProfile -ExecutionPolicy Bypass -File \"$TMPDIR/install-pyenv-win.ps1\""
-  # 4) BitsTransfer (se certutil bloqueado)
-  Write-Host "  PS> Start-BitsTransfer -Source https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 -Destination (Join-Path $env:TEMP 'install-pyenv-win.ps1'); & (Join-Path $env:TEMP 'install-pyenv-win.ps1')"
+  $ps = @'
+PS> $u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1'
+    $o=Join-Path $env:TEMP 'install-pyenv-win.ps1'
+    for($i=1;$i -le 5;$i++){
+      try{ Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop; break }
+      catch{ if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){
+               $ra=$_.Exception.Response.GetResponseHeader('Retry-After'); $s=0; if([int]::TryParse($ra,[ref]$s)){ Start-Sleep -Seconds $s } else { Start-Sleep -Seconds ([int][math]::Pow(2,$i)) }
+             } else { throw } }
+    }
+    if(Test-Path $o){ & $o }
+'@
+  $cmd = @'
+CMD> powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');$s=0;if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}}"
+'@
+  Write-Host ($ps) -ForegroundColor DarkGray
+  Write-Host ($cmd) -ForegroundColor DarkGray
 }
 
 Show-GitHub429-Tips
