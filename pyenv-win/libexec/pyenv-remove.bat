@@ -5,6 +5,13 @@ chcp 65001 >nul 2>&1
 if /i [%1]==[--help] goto :help
 if /i [%1]==[-h] goto :help
 
+:: If user install root is missing, be explicit and exit cleanly
+set "USER_ROOT=%USERPROFILE%\.pyenv\pyenv-win"
+if not exist "%USER_ROOT%" (
+  echo pyenv remove: nothing to remove at "%USER_ROOT%".
+  exit /b 0
+)
+
 set "PS=powershell -NoProfile -ExecutionPolicy Bypass -Command"
 %PS% "& '%~dp0..\uninstall-pyenv-win.ps1'"
 exit /b %ERRORLEVEL%

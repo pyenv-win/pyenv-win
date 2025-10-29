@@ -123,7 +123,6 @@ Function Main() {
             exit
         }
     }
-    }
 
     New-Item -Path $PyEnvDir -ItemType Directory
 
@@ -150,9 +149,18 @@ Function Main() {
         "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path \`"$DownloadPath\`" -DestinationPath \`"$PyEnvDir\`"`""
     ) -NoNewWindow -Wait
 
-    Move-Item -Path "$PyEnvDir\pyenv-win_adaptado-master\*" -Destination "$PyEnvDir"
-    Remove-Item -Path "$PyEnvDir\pyenv-win_adaptado-master" -Recurse
-    Remove-Item -Path $DownloadPath
+    # Move only the pyenv-win payload into %USERPROFILE%\.pyenv\pyenv-win to avoid clutter
+    if (-not (Test-Path $PyEnvWinDir)) { New-Item -ItemType Directory -Path $PyEnvWinDir -Force | Out-Null }
+    if (Test-Path "$PyEnvDir\pyenv-win_adaptado-master\pyenv-win") {
+        Copy-Item -Recurse -Force "$PyEnvDir\pyenv-win_adaptado-master\pyenv-win\*" $PyEnvWinDir
+    } else {
+        # Fallback: if layout changes, copy only when pyenv-win exists at root
+        if (Test-Path "$PyEnvDir\pyenv-win") { Copy-Item -Recurse -Force "$PyEnvDir\pyenv-win\*" $PyEnvWinDir }
+    }
+    # Cleanup extracted tree and zip
+    if (Test-Path "$PyEnvDir\pyenv-win_adaptado-master") { Remove-Item -Path "$PyEnvDir\pyenv-win_adaptado-master" -Recurse -Force }
+    if (Test-Path "$PyEnvDir\pyenv-win") { Remove-Item -Path "$PyEnvDir\pyenv-win" -Recurse -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $DownloadPath) { Remove-Item -Path $DownloadPath -Force }
 
     # Ensure required folders exist
     New-Item -ItemType Directory -Path (Join-Path $PyEnvWinDir 'install_cache') -Force | Out-Null

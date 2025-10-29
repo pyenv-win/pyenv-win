@@ -7,9 +7,9 @@
 ## TLDR
 
 Recommended:
-- One-liner PowerShell (resilient, no admin):
+- One-liner PowerShell (no admin, simple):
   ```pwsh
-  $u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}
+  Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile "$env:TEMP\install-pyenv-win.ps1"; & "$env:TEMP\install-pyenv-win.ps1"
   ```
 
 Execution policy friendly options:
@@ -20,7 +20,7 @@ Execution policy friendly options:
   ```
 - From CMD (no PowerShell policy change):
   ```cmd
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1';$o=Join-Path $env:TEMP 'install-pyenv-win.ps1';for($i=1;$i -le 5;$i++){try{Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri $u -OutFile $o -ErrorAction Stop;break}catch{if($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 429){$ra=$_.Exception.Response.GetResponseHeader('Retry-After');if([int]::TryParse($ra,[ref]$s)){Start-Sleep -Seconds $s}else{Start-Sleep -Seconds ([int][math]::Pow(2,$i))}}else{throw}}};if(Test-Path $o){& $o}"
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile $env:TEMP\install-pyenv-win.ps1; & $env:TEMP\install-pyenv-win.ps1"
   ```
 
 Method 2:
@@ -34,6 +34,11 @@ Method 3:
 
 Method 4:
 - Release ZIP: latest release https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
+
+Install location and behavior
+- Installs to `%USERPROFILE%\.pyenv\pyenv-win`.
+- At the end of install, you are offered to auto-install Python (latest stable, or latest 3.10/3.11/3.12/3.13) and set it as global.
+- Uninstall via `pyenv remove` prompts and removes `%USERPROFILE%\.pyenv\pyenv-win`. If nothing exists there, it prints: `pyenv remove: nothing to remove at "%USERPROFILE%\.pyenv\pyenv-win"`.
 
 ## Commands after install (pyenv)
 
