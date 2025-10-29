@@ -259,6 +259,44 @@ if (Test-Path "$env:PYENV_ROOT\bin" -and (Test-Path "$env:PYENV_ROOT\shims")) {
         try { . $PROFILE } catch { }
         Write-Host "Quick check:"
         try { & "$PyEnvWinDir\bin\pyenv.bat" --version } catch {}
+        # Optional: offer immediate Python install
+        try {
+            Write-Host ""; Write-Host "Optional: install Python now?" -ForegroundColor Cyan
+            $raw = & cscript //nologo "$PyEnvWinDir\libexec\pyenv-install.vbs" --list 2>$null
+            $matches = @(); foreach($line in $raw){ if ($line -match '^\s*(3\.\d+\.\d+)\s*$') { $matches += $Matches[1] } }
+            $vers = $matches | ForEach-Object { [version]$_ }
+            if ($vers.Count -gt 0) {
+              $latest = ($vers | Sort-Object -Descending | Select-Object -First 1)
+              function pickLatestMinor([int]$minor){ ($vers | Where-Object { $_.Major -eq 3 -and $_.Minor -eq $minor } | Sort-Object -Descending | Select-Object -First 1) }
+              $v310 = pickLatestMinor 10; $v311 = pickLatestMinor 11; $v312 = pickLatestMinor 12; $v313 = pickLatestMinor 13
+              $menu = @(); if ($latest) { $menu += "1) Latest stable: $($latest.ToString())" }
+              if ($v310) { $menu += "2) 3.10 latest:   $($v310.ToString())" }
+              if ($v311) { $menu += "3) 3.11 latest:   $($v311.ToString())" }
+              if ($v312) { $menu += "4) 3.12 latest:   $($v312.ToString())" }
+              if ($v313) { $menu += "5) 3.13 latest:   $($v313.ToString())" }
+              $menu += "M) Manual (skip)"
+              $menu | ForEach-Object { Write-Host "  $_" }
+              $choice = Read-Host "Choose [1/2/3/4/5/M] (default: M)"
+              if ([string]::IsNullOrWhiteSpace($choice)) { $choice = 'M' }
+              $choice = ($choice.Substring(0,1)).ToUpper()
+              $target = $null
+              switch ($choice) { '1' { $target = $latest }; '2' { $target = $v310 }; '3' { $target = $v311 }; '4' { $target = $v312 }; '5' { $target = $v313 }; default { $target = $null } }
+              if ($target) {
+                $tv = $target.ToString()
+                Write-Host "Installing Python $tv ..." -ForegroundColor Yellow
+                & "$PyEnvWinDir\bin\pyenv.bat" install -s $tv
+                & "$PyEnvWinDir\bin\pyenv.bat" global $tv
+                & "$PyEnvWinDir\bin\pyenv.bat" rehash
+                try { python --version } catch {}
+                Write-Host "Installed and set global: $tv" -ForegroundColor Green
+              } else {
+                Write-Host "Skipping auto-install. You can run:" -ForegroundColor Yellow
+                Write-Host "  pyenv install <version>" -ForegroundColor DarkGray
+                Write-Host "  pyenv global <version>   # set default" -ForegroundColor DarkGray
+                Write-Host "  pyenv local  <version>   # per-folder" -ForegroundColor DarkGray
+              }
+            }
+        } catch { Write-Host "Note: could not offer auto-install ($($_.Exception.Message))." -ForegroundColor Yellow }
         Write-Host "Done. Open a new terminal for all apps to pick up PATH."
     }
     Else {
