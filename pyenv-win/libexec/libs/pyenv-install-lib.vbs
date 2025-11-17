@@ -4,14 +4,20 @@ Option Explicit
 ' WScript.echo "kkotari: pyenv-install-lib.vbs..!"
 
 Dim mirrors()
-ReDim mirrors(0)
-mirrors(0) = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
-If mirrors(0) = "" Then
-    ReDim Preserve mirrors(2)
+ReDim mirrors(2)
+On Error Resume Next
+Dim mirrorUrl
+mirrorUrl = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
+If Err.Number <> 0 Or mirrorUrl = "" Then
+    Err.Clear
     mirrors(0) = "https://www.python.org/ftp/python"
     mirrors(1) = "https://downloads.python.org/pypy/versions.json"
     mirrors(2) = "https://api.github.com/repos/oracle/graalpython/releases"
+Else
+    ReDim mirrors(0)
+    mirrors(0) = mirrorUrl
 End If
+On Error GoTo 0
 
 Const SFV_FileName = 0
 Const SFV_URL = 1
@@ -472,7 +478,25 @@ Function FindLatestVersion(prefix, known)
     Dim bestMatch
     Dim arch
 
+    On Error Resume Next
     arch = GetArchPostfix()
+    If Err.Number <> 0 Then
+        Err.Clear
+        ' 如果 GetArchPostfix 不可用，使用默认值
+        Dim archEnv
+        archEnv = objws.Environment("Process")("PYENV_FORCE_ARCH")
+        If archEnv = "" Then archEnv = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+        If UCase(archEnv) = "AMD64" Then
+            arch = ""
+        ElseIf UCase(archEnv) = "X86" Then
+            arch = "-win32"
+        ElseIf UCase(archEnv) = "ARM64" Then
+            arch = "-arm64"
+        Else
+            arch = ""
+        End If
+    End If
+    On Error GoTo 0
 
     For x = 0 To UBound(candidates) Step 1
         ' startswith
