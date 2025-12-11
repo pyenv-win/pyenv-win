@@ -1,5 +1,5 @@
-$null = @'
-<#
+$null = $null
+'<#
 .SYNOPSIS
   Interactive pyenv-win uninstaller (single-flow).
 
