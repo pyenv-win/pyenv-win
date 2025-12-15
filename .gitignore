@@ -122,3 +122,14 @@ local_dependency_report.md
 
 # GitHub workflows and templates (local only)
 .github/
+
+# IDE and editor configuration (local only)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files (local only)
+.DS_Store
+Thumbs.db
