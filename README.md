@@ -11,6 +11,22 @@ Recommended:
   ```pwsh
   Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1' -OutFile "$env:TEMP\install-pyenv-win.ps1"; & "$env:TEMP\install-pyenv-win.ps1"
   ```
+- Alternative with curl (if available):
+  ```pwsh
+  curl -L https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 -o "$env:TEMP\install-pyenv-win.ps1"; & "$env:TEMP\install-pyenv-win.ps1"
+  ```
+- Alternative with wget (if available):
+  ```pwsh
+  wget https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1 -O "$env:TEMP\install-pyenv-win.ps1"; & "$env:TEMP\install-pyenv-win.ps1"
+  ```
+- Native PowerShell with WebClient:
+  ```pwsh
+  (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1', "$env:TEMP\install-pyenv-win.ps1"); & "$env:TEMP\install-pyenv-win.ps1"
+  ```
+- Native PowerShell with HttpClient (PowerShell 5.1+):
+  ```pwsh
+  $client = New-Object System.Net.Http.HttpClient; $response = $client.GetAsync('https://raw.githubusercontent.com/mauriciomenon/pyenv-win_adaptado/master/pyenv-win/install-pyenv-win.ps1').Result; $content = $response.Content.ReadAsStringAsync().Result; Set-Content "$env:TEMP\install-pyenv-win.ps1" $content; & "$env:TEMP\install-pyenv-win.ps1"
+  ```
 
 Execution policy friendly options:
 - Check policy first: `Get-ExecutionPolicy -List`
@@ -34,6 +50,19 @@ Method 3:
 
 Method 4:
 - Release ZIP: latest release https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
+
+Method 5: Manual download (no command line tools)
+1. Download ZIP from latest release: https://github.com/mauriciomenon/pyenv-win_adaptado/releases/latest
+2. Extract to `%USERPROFILE%\.pyenv\pyenv-win`
+3. Add to PATH: `%USERPROFILE%\.pyenv\pyenv-win\bin` and `%USERPROFILE%\.pyenv\pyenv-win\shims`
+
+Method 6: Windows Explorer (GUI)
+1. Create folder: `C:\Users\[YourUsername]\.pyenv\pyenv-win`
+2. Download and extract release ZIP into that folder
+3. Right-click "This PC" → Properties → Advanced system settings → Environment Variables
+4. Add to User PATH:
+   - `%USERPROFILE%\.pyenv\pyenv-win\bin`
+   - `%USERPROFILE%\.pyenv\pyenv-win\shims`
 
 Install location and behavior
 - Installs to `%USERPROFILE%\.pyenv\pyenv-win`.
