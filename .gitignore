@@ -119,3 +119,6 @@ exec.bat
 
 # Local reports (do not commit)
 local_dependency_report.md
+
+# GitHub workflows and templates (local only)
+.github/
