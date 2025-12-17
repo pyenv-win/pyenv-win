@@ -260,9 +260,26 @@ Sub CommandWhence(arg)
     WScript.Quit foundAny
 End Sub
 
+Function GetPyenvVersion()
+    Dim candidates
+    Dim i
+    Dim candidate
+    candidates = Array(strPyenvParent & "\.version", strPyenvHome & "\.version")
+
+    For i = 0 To UBound(candidates)
+        candidate = candidates(i)
+        If objfs.FileExists(candidate) Then
+            GetPyenvVersion = objfs.OpenTextFile(candidate).ReadAll
+            Exit Function
+        End If
+    Next
+
+    GetPyenvVersion = "unknown (version file not found)"
+End Function
+
 Sub ShowHelp()
     '  WScript.echo "kkotari: pyenv.vbs show help..!"
-     WScript.Echo "pyenv " & objfs.OpenTextFile(strPyenvParent & "\.version").ReadAll
+     WScript.Echo "pyenv " & GetPyenvVersion()
      WScript.Echo "Usage: pyenv <command> [<args>]"
      WScript.Echo ""
      WScript.Echo "Some useful pyenv commands are:"

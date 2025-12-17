@@ -30,6 +30,7 @@ $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
+$VersionFilePath = "${PyEnvDir}\.version"
     
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
@@ -52,7 +53,6 @@ Function Remove-PyEnv() {
 }
 
 Function Get-CurrentVersion() {
-    $VersionFilePath = "$PyEnvDir\.version"
     If (Test-Path $VersionFilePath) {
         $CurrentVersion = Get-Content $VersionFilePath
     }
@@ -157,6 +157,17 @@ Function Main() {
         # Fallback: if layout changes, copy only when pyenv-win exists at root
         if (Test-Path "$PyEnvDir\pyenv-win") { Copy-Item -Recurse -Force "$PyEnvDir\pyenv-win\*" $PyEnvWinDir }
     }
+
+    # Persist version file at the top-level pyenv directory for CLI scripts (pyenv.vbs) to read
+    $SourceVersionPath = Join-Path $PyEnvDir 'pyenv-win_adaptado-master\.version'
+    if (Test-Path $SourceVersionPath) {
+        Copy-Item -LiteralPath $SourceVersionPath -Destination $VersionFilePath -Force
+    } elseif (Test-Path (Join-Path $PyEnvWinDir '.version')) {
+        Copy-Item -LiteralPath (Join-Path $PyEnvWinDir '.version') -Destination $VersionFilePath -Force
+    } elseif ($LatestVersion) {
+        Set-Content -Path $VersionFilePath -Value $LatestVersion -Encoding ASCII
+    }
+
     # Cleanup extracted tree and zip
     if (Test-Path "$PyEnvDir\pyenv-win_adaptado-master") { Remove-Item -Path "$PyEnvDir\pyenv-win_adaptado-master" -Recurse -Force }
     if (Test-Path "$PyEnvDir\pyenv-win") { Remove-Item -Path "$PyEnvDir\pyenv-win" -Recurse -Force -ErrorAction SilentlyContinue }
