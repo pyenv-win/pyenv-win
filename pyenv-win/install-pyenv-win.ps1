@@ -31,6 +31,7 @@ $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
 $VersionFilePath = "${PyEnvDir}\.version"
+$PayloadVersionPath = Join-Path $PyEnvWinDir '.version'
     
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
@@ -158,14 +159,24 @@ Function Main() {
         if (Test-Path "$PyEnvDir\pyenv-win") { Copy-Item -Recurse -Force "$PyEnvDir\pyenv-win\*" $PyEnvWinDir }
     }
 
-    # Persist version file at the top-level pyenv directory for CLI scripts (pyenv.vbs) to read
+    # Write version once into payload and link top-level .version to it to keep a single source of truth
     $SourceVersionPath = Join-Path $PyEnvDir 'pyenv-win_adaptado-master\.version'
     if (Test-Path $SourceVersionPath) {
-        Copy-Item -LiteralPath $SourceVersionPath -Destination $VersionFilePath -Force
-    } elseif (Test-Path (Join-Path $PyEnvWinDir '.version')) {
-        Copy-Item -LiteralPath (Join-Path $PyEnvWinDir '.version') -Destination $VersionFilePath -Force
+        Copy-Item -LiteralPath $SourceVersionPath -Destination $PayloadVersionPath -Force
     } elseif ($LatestVersion) {
-        Set-Content -Path $VersionFilePath -Value $LatestVersion -Encoding ASCII
+        Set-Content -Path $PayloadVersionPath -Value $LatestVersion -Encoding ASCII
+    } elseif (-not (Test-Path $PayloadVersionPath)) {
+        Set-Content -Path $PayloadVersionPath -Value "unknown" -Encoding ASCII
+    }
+
+    if (Test-Path $VersionFilePath) {
+        Remove-Item -LiteralPath $VersionFilePath -Force
+    }
+    try {
+        New-Item -ItemType SymbolicLink -Path $VersionFilePath -Target $PayloadVersionPath -Force | Out-Null
+    } catch {
+        # If symlink is not allowed, fall back to copy
+        Copy-Item -LiteralPath $PayloadVersionPath -Destination $VersionFilePath -Force
     }
 
     # Cleanup extracted tree and zip
