@@ -163,7 +163,7 @@ Function Main() {
     $SourceVersionPath = Join-Path $PyEnvDir 'pyenv-win_adaptado-master\.version'
     if (Test-Path $SourceVersionPath) {
         Copy-Item -LiteralPath $SourceVersionPath -Destination $PayloadVersionPath -Force
-    } elseif ($LatestVersion) {
+    } elseif ((Get-Variable -Name 'LatestVersion' -ErrorAction SilentlyContinue) -and $LatestVersion) {
         Set-Content -Path $PayloadVersionPath -Value $LatestVersion -Encoding ASCII
     } elseif (-not (Test-Path $PayloadVersionPath)) {
         Set-Content -Path $PayloadVersionPath -Value "unknown" -Encoding ASCII
