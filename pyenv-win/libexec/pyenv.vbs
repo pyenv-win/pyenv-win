@@ -260,14 +260,20 @@ Sub CommandWhence(arg)
     WScript.Quit foundAny
 End Sub
 
-Function GetPyenvVersion()
-    Dim candidates
-    Dim i
     Dim candidate
-    Dim ts
-    Dim versionText
-
+    Dim version
     candidates = Array(strPyenvParent & "\.version", strPyenvHome & "\.version")
+
+    For i = 0 To UBound(candidates)
+        candidate = candidates(i)
+        If objfs.FileExists(candidate) Then
+            version = objfs.OpenTextFile(candidate).ReadAll
+            If Len(Trim(version)) > 0 Then
+                GetPyenvVersion = version
+            Else
+                GetPyenvVersion = "unknown (empty version file)"
+            End If
+            Exit Function
 
     For i = 0 To UBound(candidates)
         candidate = candidates(i)
