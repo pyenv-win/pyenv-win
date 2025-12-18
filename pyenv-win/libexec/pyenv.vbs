@@ -269,7 +269,10 @@ Function GetPyenvVersion()
     For i = 0 To UBound(candidates)
         candidate = candidates(i)
         If objfs.FileExists(candidate) Then
-            GetPyenvVersion = objfs.OpenTextFile(candidate).ReadAll
+            Dim textFile
+            Set textFile = objfs.OpenTextFile(candidate)
+            GetPyenvVersion = textFile.ReadAll
+            textFile.Close
             Exit Function
         End If
     Next
