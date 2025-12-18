@@ -159,7 +159,7 @@ Function Main() {
         if (Test-Path "$PyEnvDir\pyenv-win") { Copy-Item -Recurse -Force "$PyEnvDir\pyenv-win\*" $PyEnvWinDir }
     }
 
-    # Write version once into payload and link top-level .version to it to keep a single source of truth
+    # Write version once into payload and point top-level .version to it via symlink when possible (or copy as fallback) to keep a single source of truth
     $SourceVersionPath = Join-Path $PyEnvDir 'pyenv-win_adaptado-master\.version'
     if (Test-Path $SourceVersionPath) {
         Copy-Item -LiteralPath $SourceVersionPath -Destination $PayloadVersionPath -Force
