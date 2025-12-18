@@ -173,7 +173,11 @@ Function Main() {
         Remove-Item -LiteralPath $VersionFilePath -Force
     }
     try {
-        New-Item -ItemType SymbolicLink -Path $VersionFilePath -Target $PayloadVersionPath -Force | Out-Null
+        if (Test-Path $PayloadVersionPath) {
+            New-Item -ItemType SymbolicLink -Path $VersionFilePath -Target $PayloadVersionPath -Force | Out-Null
+        } else {
+            throw "Target version file does not exist"
+        }
     } catch {
         # If symlink is not allowed, fall back to copy
         Copy-Item -LiteralPath $PayloadVersionPath -Destination $VersionFilePath -Force
