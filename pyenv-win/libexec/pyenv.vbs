@@ -284,7 +284,7 @@ Function GetPyenvVersion()
         End If
     Next
 
-    GetPyenvVersion = "unknown (version file not found)"
+    GetPyenvVersion = "unknown"
 End Function
 
 Sub ShowHelp()
