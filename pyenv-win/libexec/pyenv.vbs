@@ -263,16 +263,23 @@ End Sub
 Function GetPyenvVersion()
     Dim candidates
     Dim i
+Function GetPyenvVersion()
+    Dim candidates
+    Dim i
     Dim candidate
+    Dim ts
+    Dim versionText
+
     candidates = Array(strPyenvParent & "\.version", strPyenvHome & "\.version")
 
     For i = 0 To UBound(candidates)
         candidate = candidates(i)
         If objfs.FileExists(candidate) Then
-            Dim textFile
-            Set textFile = objfs.OpenTextFile(candidate)
-            GetPyenvVersion = textFile.ReadAll
-            textFile.Close
+            Set ts = objfs.OpenTextFile(candidate, 1, False)
+            versionText = ts.ReadAll
+            ts.Close
+            Set ts = Nothing
+            GetPyenvVersion = versionText
             Exit Function
         End If
     Next
