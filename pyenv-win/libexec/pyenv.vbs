@@ -263,9 +263,6 @@ End Sub
 Function GetPyenvVersion()
     Dim candidates
     Dim i
-Function GetPyenvVersion()
-    Dim candidates
-    Dim i
     Dim candidate
     Dim ts
     Dim versionText
