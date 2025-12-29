@@ -10,6 +10,7 @@ import json
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
+from urllib.parse import urlparse
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -153,7 +154,9 @@ def scan_json_releases(mirror_url):
     installers = {}
     
     # Set User-Agent for GitHub API
-    headers = {'User-Agent': 'pyenv-win-updater'} if 'github.com' in mirror_url else None
+    parsed_url = urlparse(mirror_url)
+    is_github = parsed_url.netloc == 'api.github.com' or parsed_url.netloc == 'github.com'
+    headers = {'User-Agent': 'pyenv-win-updater'} if is_github else None
     content = fetch_url(mirror_url, headers=headers)
     if not content:
         return installers
@@ -162,7 +165,7 @@ def scan_json_releases(mirror_url):
         # Parse as JSON
         data = json.loads(content)
         
-        if 'github.com' in mirror_url:
+        if is_github:
             # GitHub API format (GraalPython)
             for release in data:
                 if 'assets' not in release:
@@ -351,7 +354,13 @@ def main():
     for mirror in MIRRORS:
         print(f":: [Info] ::  Mirror: {mirror}")
         
-        if mirror.endswith('.json') or 'api.github.com' in mirror:
+        # Properly parse URL to check if it's a JSON API endpoint
+        parsed_url = urlparse(mirror)
+        is_json_api = (mirror.endswith('.json') or 
+                      parsed_url.netloc == 'api.github.com' or 
+                      parsed_url.path.endswith('.json'))
+        
+        if is_json_api:
             installers = scan_json_releases(mirror)
         else:
             installers = scan_cpython_versions(mirror)
