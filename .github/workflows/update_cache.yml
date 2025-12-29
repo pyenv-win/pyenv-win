@@ -19,14 +19,14 @@ jobs:
       HOME: D:/a/pyenv-win/pyenv-win
     steps:
     - name: Checkout master
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Create a branch
       run: git checkout -b automated/update_cache
     - name: Invoke update
       run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update
       shell: bash
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
+      uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: ${{ env.DEPLOY_COMMIT_MESSAGE }} [skip ci]

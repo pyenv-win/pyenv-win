@@ -19,7 +19,7 @@ jobs:
     steps:
 
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: pytest_ps1 pwsh command
         shell: pwsh
