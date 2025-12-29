@@ -20,10 +20,13 @@ jobs:
     steps:
     - name: Checkout master
       uses: actions/checkout@v4
-    - name: Invoke update
-      run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update --ignore
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+    - name: Update versions cache
+      run: python ${{ env.HOME }}/.github/scripts/update_versions_cache.py
       shell: bash
-      continue-on-error: true
     - name: Commit and push changes
       run: |
         git config user.name "${{ env.DEPLOY_USER }}"
