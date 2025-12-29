@@ -21,8 +21,9 @@ jobs:
     - name: Checkout master
       uses: actions/checkout@v4
     - name: Invoke update
-      run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update
+      run: ${{ env.HOME }}/pyenv-win/bin/pyenv.bat update --ignore
       shell: bash
+      continue-on-error: true
     - name: Commit and push changes
       run: |
         git config user.name "${{ env.DEPLOY_USER }}"
