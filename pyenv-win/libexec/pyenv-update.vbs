@@ -31,25 +31,6 @@ Sub ShowHelp()
     WScript.Quit 0
 End Sub
 
-Sub EnsureBaseURL(ByRef html, ByVal URL)
-    Dim head
-    Dim base
-
-    Set head = html.getElementsByTagName("head")(0)
-    If head Is Nothing Then
-        Set head = html.createElement("head")
-        html.insertBefore html.body, head
-    End If
-
-    Set base = head.getElementsByTagName("base")(0)
-    If base Is Nothing Then
-        If Len(URL) And Right(URL, 1) <> "/" Then URL = URL &"/"
-        Set base = html.createElement("base")
-        base.href = URL
-        head.appendChild base
-    End If
-End Sub
-
 Function CollectionToArray(collection) _
     Dim i
     Dim arr()
@@ -83,11 +64,62 @@ Sub UpdateDictionary(dict1, dict2)
     Next
 End Sub
 
+' Helper function to extract links from HTML using regex
+Function ExtractLinksFromHTML(htmlContent, baseURL)
+    Dim links
+    Set links = CreateObject("Scripting.Dictionary")
+    
+    ' Regex to match <a href="...">text</a> tags
+    Dim regexLink
+    Set regexLink = New RegExp
+    regexLink.Pattern = "<a[^>]+href=""([^""]+)""[^>]*>([^<]*)</a>"
+    regexLink.Global = True
+    regexLink.IgnoreCase = True
+    
+    Dim matches, match
+    Set matches = regexLink.Execute(htmlContent)
+    
+    Dim href, innerText, fullURL
+    For Each match In matches
+        href = match.SubMatches(0)
+        innerText = match.SubMatches(1)
+        
+        ' Make absolute URL if needed
+        If Left(href, 4) = "http" Then
+            fullURL = href
+        ElseIf Left(href, 2) = "//" Then
+            fullURL = "https:" & href
+        ElseIf Left(href, 1) = "/" Then
+            ' Extract base domain from baseURL
+            Dim regexBase
+            Set regexBase = New RegExp
+            regexBase.Pattern = "(https?://[^/]+)"
+            Dim baseMatch
+            Set baseMatch = regexBase.Execute(baseURL)
+            If baseMatch.Count > 0 Then
+                fullURL = baseMatch(0).Value & href
+            Else
+                fullURL = href
+            End If
+        Else
+            ' Relative URL
+            If Right(baseURL, 1) <> "/" Then baseURL = baseURL & "/"
+            fullURL = baseURL & href
+        End If
+        
+        ' Store as dictionary: key=innerText, value=fullURL
+        If Not links.Exists(Trim(innerText)) Then
+            links.Add Trim(innerText), fullURL
+        End If
+    Next
+    
+    Set ExtractLinksFromHTML = links
+End Function
+
 Function ScanForVersions(URL, optIgnore, ByRef pageCount)
-    Dim objHTML
-    Set objHTML = CreateObject("htmlfile")
     Set ScanForVersions = CreateObject("Scripting.Dictionary")
 
+    Dim responseText
     With objweb
         .open "GET", URL, False
         On Error Resume Next
@@ -104,23 +136,26 @@ Function ScanForVersions(URL, optIgnore, ByRef pageCount)
             WScript.Quit 1
         End If
 
-        objHTML.write .responseText
+        responseText = .responseText
         pageCount = pageCount + 1
     End With
-    EnsureBaseURL objHTML, URL
 
-    Dim link
+    ' Extract links from HTML
+    Dim links
+    Set links = ExtractLinksFromHTML(responseText, URL)
+    
+    Dim linkText, linkHref
     Dim fileName
     Dim matches
-    Dim major, minor, patch, rel
-    For Each link In objHTML.links
-        fileName = Trim(link.innerText)
+    For Each linkText In links.Keys
+        fileName = Trim(linkText)
+        linkHref = links(linkText)
         Set matches = regexFile.Execute(fileName)
         If matches.Count = 1 Then
             ' Save as a dictionary entry with Key/Value as:
             '  -Key: [filename]
             '  -Value: Array([filename], [url], Array([regex submatches]))
-            ScanForVersions.Add fileName, Array(fileName, link.href, CollectionToArray(matches(0).SubMatches))
+            ScanForVersions.Add fileName, Array(fileName, linkHref, CollectionToArray(matches(0).SubMatches))
         End If
     Next
 End Function
@@ -137,15 +172,14 @@ Sub main(arg)
         End If
     End If
 
-    Dim objHTML
     Dim pageCount
     pageCount = 0
 
     Dim installers1
     Set installers1 = CreateObject("Scripting.Dictionary")
 
+    Dim responseText
     For Each mirror In mirrors
-        Set objHTML = CreateObject("htmlfile")
         With objweb
             On Error Resume Next
             .Open "GET", mirror, False
@@ -169,18 +203,27 @@ Sub main(arg)
                 WScript.Quit 1
             End If
 
-            objHTML.write .responseText
+            responseText = .responseText
             pageCount = pageCount + 1
         End With
-        EnsureBaseURL objHTML, mirror
 
-        Dim link
+        ' Extract links from HTML
+        Dim links
+        Set links = ExtractLinksFromHTML(responseText, mirror)
+        
+        Dim linkText, linkHref
         Dim version
         Dim matches
-        If objHTML.links.Length = 0 Then
+        
+        If links.Count = 0 Then
             ' Assume we're dealing with JSON
             Dim match
-            Set matches = regexJsonUrl.Execute(objHTML.body.innerHTML)
+            Dim bodyHTML
+            
+            ' For JSON responses, just use the raw response text
+            bodyHTML = responseText
+            
+            Set matches = regexJsonUrl.Execute(bodyHTML)
             For Each match in matches
                 ' we matched: Array([url], [filename], [ziproot], [major], [minor], [patch], [x64], [ARM])
                 ' we need: Array([filename], [url], Array([major], [minor], [patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
@@ -191,11 +234,16 @@ Sub main(arg)
                 )
             Next
         Else
-            For Each link In objHTML.links
-                version = objfs.GetFileName(link.pathname)
+            For Each linkText In links.Keys
+                linkHref = links(linkText)
+                version = objfs.GetFileName(linkHref)
+                ' Remove trailing slash if present
+                If Right(version, 1) = "/" Then
+                    version = Left(version, Len(version) - 1)
+                End If
                 Set matches = regexVer.Execute(version)
                 If matches.Count = 1 Then _
-                    UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+                    UpdateDictionary installers1, ScanForVersions(linkHref, optIgnore, pageCount)
             Next
         End If
     Next
