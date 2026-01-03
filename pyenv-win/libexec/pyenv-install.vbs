@@ -16,7 +16,7 @@ End Sub
 Import "libs\pyenv-lib.vbs"
 Import "libs\pyenv-install-lib.vbs"
 
-' 检查 mirrors 是否已定义（从 pyenv-install-lib.vbs 导入）
+' Check if mirrors are defined (imported from pyenv-install-lib.vbs)
 On Error Resume Next
 Dim mirror
 For Each mirror In mirrors
@@ -80,27 +80,27 @@ Sub download(params)
     DownloadFile params(LV_URL), params(IP_InstallFile)
 End Sub
 
-' 从镜像源下载 MSI 文件
-' 参数：
-'   params - 安装参数数组
-'   cachePath - 缓存目录路径
-'   mirrorUrl - 镜像源 URL（例如：https://mirrors.huaweicloud.com/python/）
-' 返回值：
-'   0 表示成功，非 0 表示失败
+' Download MSI files from mirror source
+' Parameters:
+'   params - Installation parameter array
+'   cachePath - Cache directory path
+'   mirrorUrl - Mirror source URL (e.g., https://mirrors.huaweicloud.com/python/)
+' Returns:
+'   0 for success, non-zero for failure
 Function DownloadMSIsFromMirror(params, cachePath, mirrorUrl)
     ' WScript.echo "kkotari: pyenv-install.vbs DownloadMSIsFromMirror..!"
     On Error Resume Next
     
-    ' 确保缓存目录存在
+    ' Ensure cache directory exists
     If Not objfs.FolderExists(cachePath) Then
         EnsureFolder(cachePath)
     End If
     
-    ' 解析版本号和架构
+    ' Parse version number and architecture
     Dim versionCode, version, arch, archDir
     versionCode = params(LV_Code)
     
-    ' 提取版本号（去除 -win32 或 -amd64 后缀）
+    ' Extract version number (remove -win32 or -amd64 suffix)
     version = versionCode
     If InStr(versionCode, "-win32") > 0 Then
         version = Replace(versionCode, "-win32", "")
@@ -118,25 +118,25 @@ Function DownloadMSIsFromMirror(params, cachePath, mirrorUrl)
         archDir = "win32"
     End If
     
-    ' 构建镜像源 URL
+    ' Construct mirror source URL
     Dim baseUrl, msiUrl
-    baseUrl = Trim(mirrorUrl)  ' 去除首尾空格
-    ' 确保 URL 以 / 结尾
+    baseUrl = Trim(mirrorUrl)  ' Remove leading and trailing spaces
+    ' Ensure URL ends with /
     If Right(baseUrl, 1) <> "/" Then
         baseUrl = baseUrl & "/"
     End If
-    ' 构建完整的 MSI 文件目录 URL（例如：https://mirrors.huaweicloud.com/python/3.13.6/amd64/）
+    ' Construct complete MSI file directory URL (e.g., https://mirrors.huaweicloud.com/python/3.13.6/amd64/)
     msiUrl = baseUrl & version & "/" & archDir & "/"
     
     WScript.Echo ":: [Info] :: Downloading MSI files from mirror: " & msiUrl
     
-    ' 定义需要下载的 MSI 文件列表
+    ' Define list of MSI files to download
     Dim msiFiles
     msiFiles = Array("core.msi", "dev.msi", "lib.msi", "tcltk.msi", "test.msi", "pip.msi", "exe.msi", "freethreaded.msi", "ucrt.msi", _
                      "core_d.msi", "dev_d.msi", "lib_d.msi", "tcltk_d.msi", "test_d.msi", "exe_d.msi", "freethreaded_d.msi", _
                      "core_pdb.msi", "lib_pdb.msi", "tcltk_pdb.msi", "exe_pdb.msi", "freethreaded_pdb.msi", "test_pdb.msi")
     
-    ' 下载每个 MSI 文件
+    ' Download each MSI file
     Dim msiFile, localPath, downloadUrl, downloadSuccess
     Dim downloadCount, successCount
     downloadCount = 0
@@ -146,43 +146,76 @@ Function DownloadMSIsFromMirror(params, cachePath, mirrorUrl)
         localPath = cachePath & "\" & msiFile
         downloadUrl = msiUrl & msiFile
         
-        ' 如果文件已存在，跳过下载
+        ' Skip download if file already exists
         If objfs.FileExists(localPath) Then
             WScript.Echo ":: [Info] :: MSI file already exists: " & msiFile
             successCount = successCount + 1
         Else
             WScript.Echo ":: [Downloading] :: " & msiFile & " from " & downloadUrl
             downloadSuccess = False
-            
-            ' 尝试下载文件
-            objweb.Open "GET", downloadUrl, False
-            If Err.Number = 0 Then
-                objweb.Send
-                If Err.Number = 0 And objweb.Status = 200 Then
-                    ' 保存文件
-                    With CreateObject("ADODB.Stream")
-                        .Open
-                        .Type = 1
-                        .Write objweb.responseBody
-                        .SaveToFile localPath, 2
-                        .Close
-                    End With
-                    If objfs.FileExists(localPath) Then
+
+            ' Try up to 3 times
+            Dim retryCount
+            retryCount = 0
+            Do While (Not downloadSuccess) And (retryCount < 3)
+                retryCount = retryCount + 1
+                If retryCount > 1 Then
+                    WScript.Echo ":: [Retry] :: Attempt " & retryCount & " of 3"
+                End If
+
+                ' Use a simple batch file approach
+                On Error Resume Next
+                WScript.Echo ":: [Downloading] :: Using PowerShell..."
+
+                ' Create a temporary batch file with proper escaping
+                Dim tempBatch
+                tempBatch = cachePath & "\download.bat"
+                Dim batchContent
+                batchContent = "@echo off" & vbCrLf
+                batchContent = batchContent & "echo Starting download..." & vbCrLf
+                batchContent = batchContent & "powershell -ExecutionPolicy Bypass -Command ""$ProgressPreference='SilentlyContinue'; Write-Host 'Downloading...'; Invoke-WebRequest -Uri '" & Replace(downloadUrl, "'", "''") & "' -OutFile '" & Replace(localPath, "'", "''") & "'""" & vbCrLf
+                batchContent = batchContent & "echo Done." & vbCrLf
+                batchContent = batchContent & "pause" & vbCrLf
+
+                With objfs.CreateTextFile(tempBatch, True)
+                    .WriteLine batchContent
+                    .Close
+                End With
+
+                objws.Run tempBatch, 1, True  ' Use 1 to show window
+
+                If objfs.FileExists(tempBatch) Then
+                    objfs.DeleteFile tempBatch
+                End If
+
+                ' Check if file exists and has content
+                If Err.Number = 0 And objfs.FileExists(localPath) Then
+                    Dim fileSize
+                    fileSize = objfs.GetFile(localPath).Size
+                    If fileSize > 1000 Then  ' At least 1KB
                         downloadSuccess = True
                         successCount = successCount + 1
-                        WScript.Echo ":: [Success] :: Downloaded: " & msiFile
+                        WScript.Echo ":: [Success] :: Downloaded: " & msiFile & " (" & fileSize \ 1024 \ 1024 & " MB)"
+                    Else
+                        Err.Clear
+                        WScript.Echo ":: [Warning] :: Downloaded file is too small: " & fileSize & " bytes"
                     End If
+                Else
+                    Err.Clear
+                    WScript.Echo ":: [Warning] :: Download failed or file not found"
                 End If
-            End If
-            
+                On Error GoTo 0
+            Loop
+
             If Not downloadSuccess Then
-                WScript.Echo ":: [Warning] :: Failed to download: " & msiFile & " (Status: " & objweb.Status & ")"
-                ' 如果文件不存在，尝试删除可能创建的空文件
+                WScript.Echo ":: [Warning] :: Failed to download: " & msiFile
+                WScript.Echo ":: [Warning] :: If this error persists, try running as Administrator"
+                ' If file does not exist, try to delete possibly created empty file
                 If objfs.FileExists(localPath) Then
                     objfs.DeleteFile localPath
                 End If
             End If
-            
+
             Err.Clear
             downloadCount = downloadCount + 1
         End If
@@ -190,7 +223,7 @@ Function DownloadMSIsFromMirror(params, cachePath, mirrorUrl)
     
     On Error GoTo 0
     
-    ' 检查是否至少下载了一些核心文件
+    ' Check if at least some core files were downloaded
     Dim coreFiles
     coreFiles = Array("core.msi", "exe.msi", "lib.msi")
     Dim hasCoreFiles
@@ -224,15 +257,15 @@ Function deepExtract(params, web)
 
     If Not objfs.FolderExists(cachePath) Then
         If web Then
-            ' 检查是否设置了镜像源，如果设置了则从镜像源下载 MSI 文件
+            ' Check if mirror source is set, if set then download MSI files from mirror source
             Dim mirrorUrl
             mirrorUrl = objws.Environment("Process")("PYTHON_BUILD_MIRROR_URL")
             If mirrorUrl <> "" Then
-                ' 从镜像源下载 MSI 文件
+                ' Download MSI files from mirror source
                 deepExtract = DownloadMSIsFromMirror(params, cachePath, mirrorUrl)
                 If deepExtract Then
                     WScript.Echo ":: [Error] :: error downloading MSI files from mirror, falling back to web installer."
-                    ' 如果镜像源下载失败，回退到使用 web installer
+                    ' If mirror source download fails, fall back to using web installer
                     deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& cachePath &"""", 0, True)
                     If deepExtract Then
                         WScript.Echo ":: [Error] :: error extracting the web portion from the installer."
@@ -240,7 +273,7 @@ Function deepExtract(params, web)
                     End If
                 End If
             Else
-                ' 没有设置镜像源，使用原来的方式
+                ' No mirror source set, use original method
                 deepExtract = objws.Run(""""& params(IP_InstallFile) &""" /quiet /layout """& cachePath &"""", 0, True)
                 If deepExtract Then
                     WScript.Echo ":: [Error] :: error extracting the web portion from the installer."

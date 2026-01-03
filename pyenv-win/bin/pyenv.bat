@@ -1,6 +1,6 @@
 @echo off
 setlocal
-chcp 65001 >nul 2>&1
+chcp 1250 >nul
 
 set "pyenv=cscript //nologo "%~dp0..\libexec\pyenv.vbs""
 
@@ -48,7 +48,7 @@ if /i [%1]==[help] (
 )
 
 :: let pyenv.vbs handle these
-set "commands=rehash global local version vname version-name versions commands shims which whence help --help"
+set "commands=rehash global local version vname version-name versions commands shims which whence help --help --version"
 for %%a in (%commands%) do (
   if /i [%1]==[%%a] (
     rem endlocal not really needed here since above commands do not set any variable
@@ -68,11 +68,11 @@ if not exist "%bindir%" (
   echo No global/local python version has been set yet. Please set the global/local version by typing:
   echo pyenv global 3.7.4
   echo pyenv local 3.7.4
-  exit /b 1
+  exit /b
 )
 
-set cmdline=%*
-set cmdline=%cmdline:~5%
+set "cmdline=%*"
+set "cmdline=%cmdline:~5%"
 
 :: update PATH to active version and run command
 :: endlocal needed only if cmdline sets a variable: SET FOO=BAR
@@ -142,17 +142,15 @@ if exist "%exe%.bat" (
 ) else if exist "%exe%.vbs" (
   set "exe=cscript //nologo "%exe%.vbs""
 
-) else if exist "%exe%.lnk" (
-  set "exe=start '' "%exe%.bat""
 ) else (
   echo pyenv: no such command '%1'
   exit /b 1
 )
 
 :: replace first arg with %exe%
-set cmdline=%*
-set cmdline=%cmdline:^=^^%
-set cmdline=%cmdline:!=^!%
+set "cmdline=%*"
+set "cmdline=%cmdline:^=^^%"
+set "cmdline=%cmdline:!=^!%"
 set "arg1=%1"
 set "len=1"
 :loop_len
@@ -161,7 +159,7 @@ set "arg1=%arg1:~1%"
 if not [%arg1%]==[] goto :loop_len
 
 setlocal enabledelayedexpansion
-set cmdline=!exe! !cmdline:~%len%!
+set "cmdline=!exe! !cmdline:~%len%!"
 :: run command (no need to update PATH for plugins)
 :: endlocal needed to ensure exit will not automatically close setlocal
 :: otherwise PYTHON_VERSION will be lost
@@ -177,7 +175,7 @@ goto :eof
 :: compute list of paths to add for all activated python versions
 :extrapath
 call :normalizepath %1 bindir
-set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;%bindir%\bin;"
+set "extrapaths=%extrapaths%%bindir%;%bindir%\Scripts;"
 goto :eof
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: check pyenv python shim is first in PATH
