@@ -6,8 +6,8 @@ export PATH="$PYENV/bin:$PYENV/shims:$PATH"
 
 pyenv --version
 pyenv update
-pyenv install -q 3.7.4
-pyenv global 3.7.4
+pyenv install -q 3.11.9
+pyenv global 3.11.9
 pyenv versions
 python --version
 pip install --user --upgrade pip
