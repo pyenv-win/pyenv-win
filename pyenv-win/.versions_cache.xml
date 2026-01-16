@@ -4165,6 +4165,36 @@
 		<file>python-3.15.0a3-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a3-amd64.exe</URL>
 	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0a4-win32</code>
+		<file>python-3.15.0a4.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a4.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0a4-arm</code>
+		<file>python-3.15.0a4-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a4-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0a4</code>
+		<file>python-3.15.0a4-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a4-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0a5-win32</code>
+		<file>python-3.15.0a5.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a5.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0a5-arm</code>
+		<file>python-3.15.0a5-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a5-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0a5</code>
+		<file>python-3.15.0a5-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a5-amd64.exe</URL>
+	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy2.7-v7.3.4-win64</code>
 		<file>pypy2.7-v7.3.4-win64.zip</file>
