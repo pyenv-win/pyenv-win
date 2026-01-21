@@ -1,4 +1,3 @@
-$OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
 If (($Args.Count -ge 2) -and ($Args[0] -eq "shell")) {
     if ($Args[1] -eq "--help") {
