@@ -4567,4 +4567,10 @@
 		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.1/graalpy-25.0.1-windows-amd64.zip</URL>
 		<zipRootDir>graalpy-25.0.1-windows-amd64</zipRootDir>
 	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-25.0.2-windows-amd64</code>
+		<file>graalpy-25.0.2-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.2/graalpy-25.0.2-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-25.0.2-windows-amd64</zipRootDir>
+	</version>
 </versions>
