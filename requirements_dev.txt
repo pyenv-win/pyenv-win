@@ -1,5 +1,5 @@
 pytest-cov==2.12.1
-pytest==6.2.5
+pytest==9.0.3
 coveralls==3.2.0
 coverage==5.5
 pathlib==1.0.1
