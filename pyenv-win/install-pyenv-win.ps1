@@ -76,7 +76,7 @@ Function Get-LatestVersion() {
 Function Main() {
     If ($Uninstall) {
         Remove-PyEnv
-        If ($? -eq $True) {
+        If ($LastExitCode -eq 0) {
             Write-Host "pyenv-win successfully uninstalled."
         }
         Else {
@@ -117,12 +117,7 @@ Function Main() {
     $DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
     (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win/archive/master.zip", $DownloadPath)
-
-    Start-Process -FilePath "powershell.exe" -ArgumentList @(
-        "-NoProfile",
-        "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path \`"$DownloadPath\`" -DestinationPath \`"$PyEnvDir\`"`""
-    ) -NoNewWindow -Wait
-
+    Expand-Archive -Path $DownloadPath -DestinationPath $PyEnvDir
     Move-Item -Path "$PyEnvDir\pyenv-win-master\*" -Destination "$PyEnvDir"
     Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
     Remove-Item -Path $DownloadPath
@@ -145,7 +140,7 @@ Function Main() {
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
     
-    If ($? -eq $True) {
+    If ($LastExitCode -eq 0) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }
     Else {

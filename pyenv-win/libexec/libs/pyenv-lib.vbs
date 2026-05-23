@@ -7,7 +7,22 @@ Dim objweb
 ' WScript.echo "kkotari: pyenv-lib.vbs..!"
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
-Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
+On Error Resume Next
+Set objweb = CreateObject("WinHttp.WinHttpRequest")
+If Err.Number <> 0 Then
+    Err.Clear
+    Set objweb = CreateObject("MSXML2.XMLHTTP")
+End If
+On Error GoTo 0
+
+' Set timeout to 30 seconds (only for WinHttpRequest)
+Dim webType
+webType = TypeName(objweb)
+If InStr(webType, "WinHttp") > 0 Then
+    objweb.SetTimeouts 30000, 30000, 30000, 30000
+    ' Ignore SSL certificate errors
+    objweb.Option 4 = 13056 ' INTERNET_OPTION_IGNORE_SCHANNEL_SSL_ERRORS
+End If
 
 ' Set proxy settings, called on library import for objweb.
 Sub SetProxy()
@@ -16,25 +31,20 @@ Sub SetProxy()
     Dim proxyArr
 
     httpProxy = objws.Environment("Process")("http_proxy")
-    If httpProxy = "" Then
-        httpProxy = objws.Environment("Process")("https_proxy")
-    End If
-
-    If httpProxy = "" Then Exit Sub
-
-    httpProxy = Replace(Replace(httpProxy, "http://", ""), "https://", "")
-    If Right(httpProxy, 1) = "/" Then
-        httpProxy = Left(httpProxy, Len(httpProxy) - 1)
-    End If
-
-    If InStr(1, httpProxy, "@") > 0 Then
-        ' The http_proxy environment variable is set with basic authentication
-        ' WinHttp seems to work fine without the credentials, so we should be
-        ' okay with just the hostname/port part
-        proxyArr = Split(httpProxy, "@")
-        objweb.setProxy 2, proxyArr(1)
-    Else
-        objweb.setProxy 2, httpProxy
+    If httpProxy <> "" Then
+        If InStr(1, httpProxy, "@") > 0 Then
+            ' The http_proxy environment variable is set with basic authentication
+            ' WinHttp seems to work fine without the credentials, so we should be
+            ' okay with just the hostname/port part
+            proxyArr = Split(httpProxy, "@")
+            On Error Resume Next
+            objweb.setProxy 2, proxyArr(1)
+            On Error GoTo 0
+        Else
+            On Error Resume Next
+            objweb.setProxy 2, httpProxy
+            On Error GoTo 0
+        End If
     End If
 End Sub
 SetProxy
@@ -171,14 +181,12 @@ Function GetCurrentVersion()
     Dim str
     str = GetCurrentVersionNoError
     If IsNull(str) Then
-        WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
-        WScript.echo "pyenv global <python-version>"
-        WScript.echo "pyenv global 3.7.4"
-        WScript.echo "pyenv global <python-version>"
-        WScript.echo "pyenv global 3.7.4"
-        WScript.quit 1
-    End If
-    GetCurrentVersion = str
+		WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
+		WScript.echo "pyenv global 3.7.4"
+        WScript.echo "pyenv local 3.7.4"
+    WScript.quit 1
+	End If
+	GetCurrentVersion = str
 End Function
 
 Function GetCurrentVersionNoError()
@@ -195,14 +203,12 @@ Function GetCurrentVersions()
     Dim versions
     Set versions = GetCurrentVersionsNoError
     If versions.Count = 0 Then
-        WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
-        WScript.echo "pyenv global <python-version>"
-        WScript.echo "pyenv global 3.7.4"
-        WScript.echo "pyenv local <python-version>"
+		WScript.echo "No global/local python version has been set yet. Please set the global/local version by typing:"
+		WScript.echo "pyenv global 3.7.4"
         WScript.echo "pyenv local 3.7.4"
-        WScript.quit 1
-    End If
-    Set GetCurrentVersions = versions
+    WScript.quit 1
+	End If
+	Set GetCurrentVersions = versions
 End Function
 
 Function GetCurrentVersionsNoError()
@@ -214,13 +220,13 @@ Function GetCurrentVersionsNoError()
     str = GetCurrentVersionsShell
     If Not(IsNull(str)) Then
         For Each v1 in str
-            versions.Item(v1(0)) = v1(1)
+            versions.Add v1(0), v1(1)
         Next
     Else
         str = GetCurrentVersionsLocal(strCurrent)
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
+                versions.Add v1(0), v1(1)
             Next
         End If
     End If
@@ -228,7 +234,7 @@ Function GetCurrentVersionsNoError()
         str = GetCurrentVersionsGlobal
         If Not(IsNull(str)) Then
             For Each v1 in str
-                versions.Item(TryResolveVersion(v1(0), False)) = v1(1)
+                versions.Add v1(0), v1(1)
             Next
         End If
     End If
@@ -238,7 +244,7 @@ End Function
 Function GetInstalledVersions()
     ' WScript.echo "kkotari: pyenv-lib.vbs get installed versions..!"
     Dim rootBinDir, winBinDir, version, versions()
-    ReDim Preserve versions(-1)
+    ReDim Preserve versions(0)
     If objfs.FolderExists(strDirVers) Then
         Set rootBinDir = objfs.GetFolder(strDirVers)
         For Each winBinDir in rootBinDir.SubFolders
@@ -305,23 +311,6 @@ Function GetExtensionsNoPeriod(addPy)
     Next
 End Function
 
-' pyenv - bin - exe files
-Sub LinkExeFiles(baseName, file)
-    ' WScript.echo "kkotari: pyenv-lib.vbs link exe files..!"
-    Dim filespec
-    Dim link
-    link = strDirShims &"\"& baseName &".lnk"
-    If Not objfs.FileExists(link) Then
-        Set filespec = objws.CreateShortcut(link)
-        filespec.TargetPath = file
-        filespec.Description = baseName
-        filespec.IconLocation = file &", 2"
-        filespec.WindowStyle = "1"
-        filespec.WorkingDirectory = objfs.getParentFolderName(file)
-        filespec.Save
-    End If
-End Sub
-
 ' pyenv - bin - windows
 Sub WriteWinScript(baseName)
     ' WScript.echo "kkotari: pyenv-lib.vbs write win script..!"
@@ -367,7 +356,7 @@ Sub WriteLinuxScript(baseName)
                 .Close
             End With
         End If
-
+        
     End If
 End Sub
 
@@ -395,47 +384,23 @@ Sub Rehash()
             ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir"
             If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
                 baseName = objfs.GetBaseName(file)
-                If LCase(objfs.GetExtensionName(file)) <> "exe" Then
-                    LinkExeFiles baseName, file
-                    WriteWinScript baseName
-                    WriteLinuxScript baseName
-                Else
+                WriteWinScript baseName
+                WriteLinuxScript baseName
+            End If
+        Next
+
+        If objfs.FolderExists(winBinDir & "\Scripts") Then
+            For Each file In objfs.GetFolder(winBinDir & "\Scripts").Files
+                ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
+                If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
+                    baseName = objfs.GetBaseName(file)
                     WriteWinScript baseName
                     WriteLinuxScript baseName
                 End If
-            End If
-        Next
-
-        Dim subDir
-        For Each subDir in Array("\Scripts", "\bin")
-            If objfs.FolderExists(winBinDir & subDir) Then
-                For Each file In objfs.GetFolder(winBinDir & subDir).Files
-                    ' WScript.echo "kkotari: pyenv-lib.vbs rehash for winBinDir\Scripts"
-                    If exts.Exists(LCase(objfs.GetExtensionName(file))) Then
-                        baseName = objfs.GetBaseName(file)
-                        If LCase(objfs.GetExtensionName(file)) <> "exe" Then
-                            LinkExeFiles baseName, file
-                        Else
-                            WriteWinScript baseName
-                            WriteLinuxScript baseName
-                        End If
-                    End If
-                Next
-            End If
-        Next
+            Next
+        End If
     Next
 End Sub
-
-Function GetArchPostfix()
-    Dim arch
-
-    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
-    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
-
-    If UCase(arch) = "AMD64" Then GetArchPostfix = ""
-    If UCase(arch) = "X86"   Then GetArchPostfix = "-win32"
-    If UCase(arch) = "ARM64" Then GetArchPostfix = "-arm64"  ' NOT TESTED
-End Function
 
 ' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()
