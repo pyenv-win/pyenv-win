@@ -4454,6 +4454,12 @@
 		<zipRootDir>pypy2.7-v7.3.22-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.23-win64</code>
+		<file>pypy2.7-v7.3.23-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.23-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.23-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.7-v7.3.4-win64</code>
 		<file>pypy3.7-v7.3.4-win64.zip</file>
 		<URL>https://downloads.python.org/pypy/pypy3.7-v7.3.4-win64.zip</URL>
@@ -4658,6 +4664,12 @@
 		<zipRootDir>pypy3.11-v7.3.22-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.11-v7.3.23-win64</code>
+		<file>pypy3.11-v7.3.23-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.11-v7.3.23-win64.zip</URL>
+		<zipRootDir>pypy3.11-v7.3.23-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
 		<code>graalpy-23.1.0-windows-amd64</code>
 		<file>graalpy-23.1.0-windows-amd64.zip</file>
 		<URL>https://github.com/oracle/graalpython/releases/download/graal-23.1.0/graalpy-23.1.0-windows-amd64.zip</URL>
@@ -4746,5 +4758,11 @@
 		<file>graalpy-25.0.2-windows-amd64.zip</file>
 		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.2/graalpy-25.0.2-windows-amd64.zip</URL>
 		<zipRootDir>graalpy-25.0.2-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-25.0.3-windows-amd64</code>
+		<file>graalpy-25.0.3-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.3/graalpy-25.0.3-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-25.0.3-windows-amd64</zipRootDir>
 	</version>
 </versions>
