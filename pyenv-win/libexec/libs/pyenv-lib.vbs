@@ -3,11 +3,20 @@ Option Explicit
 Dim objfs
 Dim objws
 Dim objweb
+Dim regexVer
 
 ' WScript.echo "kkotari: pyenv-lib.vbs..!"
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+' A bare CPython version code like 3, 3.11, 3.11.0 or 3.11.0rc1
+Set regexVer = New RegExp
+With regexVer
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
+    .Global = True
+    .IgnoreCase = True
+End With
 
 ' Set proxy settings, called on library import for objweb.
 Sub SetProxy()
@@ -492,12 +501,22 @@ Function CheckArch(version)
     If postfix <> "" Then CheckArch = version & postfix
 End Function
 
-' Installer filenames use -arm64 while version codes use -arm; accept either from the user.
+' Installer filenames can have postfixes like -arm64 and -amd64, while version codes use
+' -arm and a bare name. Accept either spelling, but only for CPython codes: pypy and
+' graalpy archive codes such as graalpy-24.2.0-windows-amd64 remain unchanged.
 Function NormalizeArchPostfix(version)
-    If Right(LCase(version), 6) = "-arm64" Then
-        NormalizeArchPostfix = Left(version, Len(version) - 6) & "-arm"
+    Dim lower, stripped
+    lower = LCase(version)
+    NormalizeArchPostfix = version
+
+    If Right(lower, 6) <> "-arm64" And Right(lower, 6) <> "-amd64" Then Exit Function
+    stripped = Left(version, Len(version) - 6)
+    If Not regexVer.Test(stripped) Then Exit Function
+
+    If Right(lower, 6) = "-arm64" Then
+        NormalizeArchPostfix = stripped & "-arm"
     Else
-        NormalizeArchPostfix = version
+        NormalizeArchPostfix = stripped
     End If
 End Function
 
@@ -505,13 +524,21 @@ End Function
 ' ARM64 runs x64 builds under emulation, so those remain valid targets.
 Function CheckArchInstalled(ByVal version)
     Dim candidate
-    version = NormalizeArchPostfix(version)
-    candidate = CheckArch(version)
+    Dim normalized
+    normalized = NormalizeArchPostfix(version)
+
+    ' An explicitly named architecture is final; only a bare code prefers the native build.
+    If normalized <> version Or HasArchPostfix(normalized) Then
+        CheckArchInstalled = normalized
+        Exit Function
+    End If
+
+    candidate = CheckArch(normalized)
     If Not IsArm() Then
         CheckArchInstalled = candidate
     ElseIf objfs.FolderExists(strDirVers &"\"& candidate) Then
         CheckArchInstalled = candidate
     Else
-        CheckArchInstalled = version
+        CheckArchInstalled = normalized
     End If
 End Function
