@@ -12,10 +12,12 @@ on:
 
 jobs:
   build:
-    name: pyenv-win pytest_ps1
-    runs-on: windows-latest
-    env:
-      HOME: D:/a/pyenv-win/pyenv-win
+    name: pyenv-win pytest_ps1 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
     steps:
 
       - name: checkout
@@ -23,10 +25,13 @@ jobs:
 
       - name: pytest_ps1 pwsh command
         shell: pwsh
-        run : |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+        env:
+          SRC_REPO: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          SRC_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          Write-Host "Installing from $env:SRC_REPO @ $env:SRC_REF"
+          ./pyenv-win/install-pyenv-win.ps1 -Repo $env:SRC_REPO -Ref $env:SRC_REF
 
       - name: pytest bash script
-        run: ${{ env.HOME }}/.github/scripts/ps1.sh
+        run: bash ./.github/scripts/ps1.sh
         shell: bash

@@ -9,6 +9,12 @@
     .PARAMETER Uninstall
     Uninstall pyenv-win. Note that this uninstalls any Python versions that were installed with pyenv-win.
 
+    .PARAMETER Repo
+    GitHub repository to install from. Defaults to the official one.
+
+    .PARAMETER Ref
+    Branch, tag or commit SHA to install. Defaults to master.
+
     .INPUTS
     None.
 
@@ -21,16 +27,18 @@
     .LINK
     Online version: https://pyenv-win.github.io/pyenv-win/
 #>
-    
+
 param (
-    [Switch] $Uninstall = $False
+    [Switch] $Uninstall = $False,
+    [String] $Repo = "pyenv-win/pyenv-win",
+    [String] $Ref = "master"
 )
-    
+
 $PyEnvDir = "${env:USERPROFILE}\.pyenv"
 $PyEnvWinDir = "${PyEnvDir}\pyenv-win"
 $BinPath = "${PyEnvWinDir}\bin"
 $ShimsPath = "${PyEnvWinDir}\shims"
-    
+
 Function Remove-PyEnvVars() {
     $PathParts = [System.Environment]::GetEnvironmentVariable('PATH', "User") -Split ";"
     $NewPathParts = $PathParts.Where{ $_ -ne $BinPath }.Where{ $_ -ne $ShimsPath }
@@ -65,7 +73,7 @@ Function Get-CurrentVersion() {
 
 Function Get-LatestVersion() {
     $LatestVersionFilePath = "$PyEnvDir\latest.version"
-    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/.version", $LatestVersionFilePath)
+    (New-Object System.Net.WebClient).DownloadFile("https://raw.githubusercontent.com/${Repo}/${Ref}/.version", $LatestVersionFilePath)
     $LatestVersion = Get-Content $LatestVersionFilePath
 
     Remove-Item -Path $LatestVersionFilePath
@@ -86,7 +94,7 @@ Function Main() {
     }
 
     $BackupDir = "${env:Temp}/pyenv-win-backup"
-    
+
     $CurrentVersion = Get-CurrentVersion
     If ($CurrentVersion) {
         Write-Host "pyenv-win $CurrentVersion installed."
@@ -97,7 +105,7 @@ Function Main() {
         }
         Else {
             Write-Host "New version available: $LatestVersion. Updating..."
-            
+
             Write-Host "Backing up existing Python installations..."
             $FoldersToBackup = "install_cache", "versions", "shims"
             ForEach ($Dir in $FoldersToBackup) {
@@ -106,25 +114,33 @@ Function Main() {
                 }
                 Move-Item -Path "${PyEnvWinDir}/${Dir}" -Destination $BackupDir
             }
-            
+
             Write-Host "Removing $PyEnvDir..."
             Remove-Item -Path $PyEnvDir -Recurse
-        }   
+        }
     }
 
     New-Item -Path $PyEnvDir -ItemType Directory
 
     $DownloadPath = "$PyEnvDir\pyenv-win.zip"
 
-    (New-Object System.Net.WebClient).DownloadFile("https://github.com/pyenv-win/pyenv-win/archive/master.zip", $DownloadPath)
+    (New-Object System.Net.WebClient).DownloadFile("https://github.com/${Repo}/archive/${Ref}.zip", $DownloadPath)
 
     Start-Process -FilePath "powershell.exe" -ArgumentList @(
         "-NoProfile",
         "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path \`"$DownloadPath\`" -DestinationPath \`"$PyEnvDir\`"`""
     ) -NoNewWindow -Wait
 
-    Move-Item -Path "$PyEnvDir\pyenv-win-master\*" -Destination "$PyEnvDir"
-    Remove-Item -Path "$PyEnvDir\pyenv-win-master" -Recurse
+    # GitHub names the extracted folder "<repo>-<ref>", with slashes replaced by dashes.
+    $RepoName = $Repo.Split("/")[-1]
+    $ExtractedDir = Get-ChildItem -Path $PyEnvDir -Directory |
+        Where-Object { $_.Name -like "${RepoName}-*" } | Select-Object -First 1
+    If (-not $ExtractedDir) {
+        Write-Host "Could not find an extracted '${RepoName}-*' folder in $PyEnvDir."
+        exit 1
+    }
+    Move-Item -Path "$($ExtractedDir.FullName)\*" -Destination "$PyEnvDir"
+    Remove-Item -Path $ExtractedDir.FullName -Recurse
     Remove-Item -Path $DownloadPath
 
     # Update env vars
@@ -144,7 +160,7 @@ Function Main() {
         Write-Host "Restoring Python installations..."
         Move-Item -Path "$BackupDir/*" -Destination $PyEnvWinDir
     }
-    
+
     If ($? -eq $True) {
         Write-Host "pyenv-win is successfully installed. You may need to close and reopen your terminal before using it."
     }

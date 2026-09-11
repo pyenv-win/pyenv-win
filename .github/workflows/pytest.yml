@@ -12,15 +12,34 @@ on:
 
 jobs:
   build:
-    name: pyenv-win pytest
-    runs-on: windows-latest
-    env:
-      HOME: D:/a/pyenv-win/pyenv-win
+    name: pyenv-win pytest (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, windows-11-arm]
     steps:
 
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: report architecture and script engine
+        shell: pwsh
+        run: |
+          "Runner label          : ${{ matrix.os }}"
+          "PROCESSOR_ARCHITECTURE: $env:PROCESSOR_ARCHITECTURE"
+          "Machine architecture  : $([Environment]::GetEnvironmentVariable('PROCESSOR_ARCHITECTURE','Machine'))"
+          "OS                    : $((Get-CimInstance Win32_OperatingSystem).Caption)"
+
+          # VBScript is a Feature on Demand; pyenv-win cannot run without it.
+          $probe = Join-Path $env:RUNNER_TEMP 'probe.vbs'
+          Set-Content -Path $probe -Value 'WScript.Quit 0' -Encoding ASCII
+          & cscript.exe //nologo //B $probe
+          if ($LASTEXITCODE -ne 0) {
+            throw "VBScript engine unavailable on this image (cscript exit $LASTEXITCODE)."
+          }
+          'VBScript engine: OK'
+
       - name: pytest bash script
-        run: ${{ env.HOME }}/.github/scripts/build.sh
+        run: bash ./.github/scripts/build.sh
         shell: bash
