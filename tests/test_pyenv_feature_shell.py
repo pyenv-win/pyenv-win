@@ -92,8 +92,11 @@ def test_shell_set_many_versions(local_path, shell, shell_ext, run):
 
 
 @pytest.mark.parametrize('settings', [lambda: {'versions': [Native("3.7.7")]}])
-def test_shell_set_many_versions_one_not_installed(pyenv):
-    assert pyenv.shell(Arch("3.7.7"), Arch("3.8.9")) == (not_installed_output(Native("3.8.9")), "")
+def test_shell_set_many_versions_one_not_installed(pyenv, current_arch):
+    # ARM64 keeps the bare name: not every release has a native ARM64 build, so
+    # `pyenv install 3.8.9` is actionable where `pyenv install 3.8.9-arm` would not be.
+    expected = Arch("3.8.9") if current_arch == 'ARM64' else Native("3.8.9")
+    assert pyenv.shell(Arch("3.7.7"), Arch("3.8.9")) == (not_installed_output(expected), "")
 
 
 def test_shell_many_versions_defined(pyenv):
