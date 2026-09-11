@@ -101,7 +101,7 @@ Sub main(arg)
     End If
 
     If uninstallVersions.Count = 1 Then
-        folder = Check32Bit(uninstallVersions.Keys()(0))
+        folder = CheckArchInstalled(uninstallVersions.Keys()(0))
         If Not objfs.FolderExists(strDirVers &"\"& folder) Then
             WScript.Echo "pyenv: version '"& folder &"' not installed"
             Exit Sub
@@ -114,7 +114,7 @@ Sub main(arg)
 
     On Error Resume Next
     For Each folder In uninstallVersions.Keys
-        folder = Check32Bit(folder)
+        folder = CheckArchInstalled(folder)
 
         If Not uninstalled.Exists(folder) Then
             uninstallPath = strDirVers &"\"& folder

@@ -37,13 +37,13 @@ Const LV_x64 = 3
 Const LV_Web = 4
 Const LV_MSI = 5
 Const LV_ZipRootDir = 6
-' Const LV_ARM = 7 # need to validate what number is this
+Const LV_ARM = 7
 
 ' Installation parameters used for clear/extract, extension of LV.
-Const IP_InstallPath = 7
-Const IP_InstallFile = 8
-Const IP_Quiet = 9
-Const IP_Dev = 10
+Const IP_InstallPath = 8
+Const IP_InstallFile = 9
+Const IP_Quiet = 10
+Const IP_Dev = 11
 
 Dim regexVer
 Dim regexVerArch
@@ -59,7 +59,8 @@ With regexVer
     .IgnoreCase = True
 End With
 With regexVerArch
-    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|win32))?$"
+    ' "-arm" is the canonical postfix emitted by JoinWin32String; the others are accepted as user input.
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|arm|win32))?$"
     .Global = True
     .IgnoreCase = True
 End With
@@ -227,7 +228,8 @@ Function LoadVersionsXML(xmlPath)
             CBool(version.getAttribute("x64")), _
             CBool(version.getAttribute("webInstall")), _
             CBool(version.getAttribute("msi")), _
-            zipRootDir _
+            zipRootDir, _
+            (Right(LCase(code), 4) = "-arm") _
         )
     Next
 End Function
@@ -441,38 +443,11 @@ Function JoinVersionString(pieces)
     If Len(pieces(VRX_Arch))      Then JoinVersionString = JoinVersionString & pieces(VRX_Arch)
 End Function
 
-' Resolves latest python version by given prefix
-' known=False to find latest _installed_ version
-' See `pyenv latest --help`
-Function FindLatestVersion(prefix, known)
-    Dim candidates
-
-    if known Then
-        Dim cachedVersions
-        Set cachedVersions = LoadVersionsXML(strDBFile)
-
-        Dim cachedVersion
-
-        Dim convertor()
-        ReDim Preserve convertor(-1)
-
-        For Each cachedVersion In cachedVersions.Keys
-            ReDim Preserve convertor(UBound(convertor) + 1)
-            convertor(UBound(convertor)) = cachedVersion
-        Next
-
-        candidates = convertor
-    else
-        candidates = GetInstalledVersions()
-    end if
-
+' Finds the newest candidate matching prefix for exactly one architecture postfix.
+Function FindLatestForArch(candidates, prefix, arch)
     Dim x
     Dim matches
-
     Dim bestMatch
-    Dim arch
-
-    arch = GetArchPostfix()
 
     For x = 0 To UBound(candidates) Step 1
         ' startswith
@@ -498,11 +473,57 @@ Function FindLatestVersion(prefix, known)
         End If
     Next
 
-    if IsEmpty(bestMatch) Then
-        FindLatestVersion = ""
+    If IsEmpty(bestMatch) Then
+        FindLatestForArch = ""
+    Else
+        FindLatestForArch = JoinVersionString(bestMatch)
+    End If
+End Function
+
+' Resolves latest python version by given prefix
+' known=False to find latest _installed_ version
+' See `pyenv latest --help`
+Function FindLatestVersion(prefix, known)
+    Dim candidates
+
+    if known Then
+        Dim cachedVersions
+        Set cachedVersions = LoadVersionsXML(strDBFile)
+
+        Dim cachedVersion
+
+        Dim convertor()
+        ReDim Preserve convertor(-1)
+
+        For Each cachedVersion In cachedVersions.Keys
+            ReDim Preserve convertor(UBound(convertor) + 1)
+            convertor(UBound(convertor)) = cachedVersion
+        Next
+
+        candidates = convertor
     else
-        FindLatestVersion = JoinVersionString(bestMatch)
+        candidates = GetInstalledVersions()
     end if
+
+    FindLatestVersion = FindLatestForArch(candidates, prefix, GetArchPostfix())
+
+    ' Not every release ships a native ARM64 build; the x64 build runs under emulation.
+    If FindLatestVersion = "" And IsArm() Then _
+        FindLatestVersion = FindLatestForArch(candidates, prefix, "")
+End Function
+
+' Picks the version code to install for the native architecture, given the available cache.
+Function ResolveArchCode(version, versions)
+    Dim candidate
+    candidate = CheckArch(version)
+
+    If versions.Exists(candidate) Then
+        ResolveArchCode = candidate
+    ElseIf IsArm() And Not HasArchPostfix(version) Then
+        ResolveArchCode = version
+    Else
+        ResolveArchCode = ""
+    End If
 End Function
 
 Function TryResolveVersion(prefix, known)

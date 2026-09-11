@@ -426,30 +426,60 @@ Sub Rehash()
     Next
 End Sub
 
+' SYSTEM:PROCESSOR_ARCHITECTURE is the native architecture of the machine,
+' unaffected by the bitness of the running cscript.exe.
+Function GetNativeArch()
+    GetNativeArch = objws.Environment("Process")("PYENV_FORCE_ARCH")
+    If GetNativeArch = "" Then _
+        GetNativeArch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+    GetNativeArch = UCase(GetNativeArch)
+End Function
+
+' Postfix used in version codes, matching JoinWin32String in pyenv-install-lib.vbs.
 Function GetArchPostfix()
-    Dim arch
-
-    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
-    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
-
-    If UCase(arch) = "AMD64" Then GetArchPostfix = ""
-    If UCase(arch) = "X86"   Then GetArchPostfix = "-win32"
-    If UCase(arch) = "ARM64" Then GetArchPostfix = "-arm64"  ' NOT TESTED
+    Select Case GetNativeArch()
+        Case "AMD64" GetArchPostfix = ""
+        Case "X86"   GetArchPostfix = "-win32"
+        Case "ARM64" GetArchPostfix = "-arm"
+        Case Else    GetArchPostfix = ""
+    End Select
 End Function
 
-' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()
-    ' WScript.echo "kkotari: pyenv-lib.vbs is32bit..!"
-    Dim arch
-    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
-    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
-    Is32Bit = (UCase(arch) = "X86")
+    Is32Bit = (GetNativeArch() = "X86")
 End Function
 
-' If on a 32bit computer, default to -win32 versions.
-Function Check32Bit(version)
-    ' WScript.echo "kkotari: pyenv-lib.vbs check32bit..!"
-    If Is32Bit And Right(LCase(version), 6) <> "-win32" Then _
-        version = version & "-win32"
-    Check32Bit = version
+Function IsArm()
+    IsArm = (GetNativeArch() = "ARM64")
+End Function
+
+' True when the version code already carries an architecture postfix.
+Function HasArchPostfix(version)
+    Dim lower
+    lower = LCase(version)
+    HasArchPostfix = (Right(lower, 6) = "-win32") Or (Right(lower, 4) = "-arm")
+End Function
+
+' Append the native architecture postfix to a version code.
+Function CheckArch(version)
+    Dim postfix
+    postfix = GetArchPostfix()
+    CheckArch = version
+    If postfix = "" Then Exit Function
+    If Right(LCase(version), Len(postfix)) = postfix Then Exit Function
+    CheckArch = version & postfix
+End Function
+
+' Like CheckArch, but keeps the bare code when no native build is installed.
+' ARM64 runs x64 builds under emulation, so those remain valid targets.
+Function CheckArchInstalled(version)
+    Dim candidate
+    candidate = CheckArch(version)
+    If Not IsArm() Then
+        CheckArchInstalled = candidate
+    ElseIf objfs.FolderExists(strDirVers &"\"& candidate) Then
+        CheckArchInstalled = candidate
+    Else
+        CheckArchInstalled = version
+    End If
 End Function
