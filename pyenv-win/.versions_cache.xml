@@ -3896,6 +3896,36 @@
 		<URL>https://www.python.org/ftp/python/3.13.13/python-3.13.13-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.13.14-win32</code>
+		<file>python-3.13.14.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.14/python-3.13.14.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.14-arm</code>
+		<file>python-3.13.14-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.14/python-3.13.14-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.14</code>
+		<file>python-3.13.14-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.14/python-3.13.14-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.13.15-win32</code>
+		<file>python-3.13.15.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.15/python-3.13.15.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.15-arm</code>
+		<file>python-3.13.15-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.15/python-3.13.15-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.13.15</code>
+		<file>python-3.13.15-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.13.15/python-3.13.15-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.14.0a1-win32</code>
 		<file>python-3.14.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.14.0/python-3.14.0a1.exe</URL>
@@ -4211,6 +4241,36 @@
 		<URL>https://www.python.org/ftp/python/3.14.5/python-3.14.5-amd64.exe</URL>
 	</version>
 	<version x64="false" webInstall="false" msi="false">
+		<code>3.14.6-win32</code>
+		<file>python-3.14.6.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.6/python-3.14.6.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.6-arm</code>
+		<file>python-3.14.6-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.6/python-3.14.6-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.6</code>
+		<file>python-3.14.6-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.6/python-3.14.6-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.14.7-win32</code>
+		<file>python-3.14.7.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.7/python-3.14.7.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.7-arm</code>
+		<file>python-3.14.7-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.7/python-3.14.7-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.14.7</code>
+		<file>python-3.14.7-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.14.7/python-3.14.7-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
 		<code>3.15.0a1-win32</code>
 		<file>python-3.15.0a1.exe</file>
 		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0a1.exe</URL>
@@ -4345,6 +4405,81 @@
 		<file>python-3.15.0b1-amd64.exe</file>
 		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b1-amd64.exe</URL>
 	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0b2-win32</code>
+		<file>python-3.15.0b2.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b2.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b2-arm</code>
+		<file>python-3.15.0b2-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b2-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b2</code>
+		<file>python-3.15.0b2-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b2-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0b3-win32</code>
+		<file>python-3.15.0b3.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b3.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b3-arm</code>
+		<file>python-3.15.0b3-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b3-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b3</code>
+		<file>python-3.15.0b3-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b3-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0b4-win32</code>
+		<file>python-3.15.0b4.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b4.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b4-arm</code>
+		<file>python-3.15.0b4-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b4-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0b4</code>
+		<file>python-3.15.0b4-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0b4-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0rc1-win32</code>
+		<file>python-3.15.0rc1.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc1.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0rc1-arm</code>
+		<file>python-3.15.0rc1-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc1-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0rc1</code>
+		<file>python-3.15.0rc1-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc1-amd64.exe</URL>
+	</version>
+	<version x64="false" webInstall="false" msi="false">
+		<code>3.15.0rc2-win32</code>
+		<file>python-3.15.0rc2.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc2.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0rc2-arm</code>
+		<file>python-3.15.0rc2-arm64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc2-arm64.exe</URL>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>3.15.0rc2</code>
+		<file>python-3.15.0rc2-amd64.exe</file>
+		<URL>https://www.python.org/ftp/python/3.15.0/python-3.15.0rc2-amd64.exe</URL>
+	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy2.7-v7.3.4-win64</code>
 		<file>pypy2.7-v7.3.4-win64.zip</file>
@@ -4452,6 +4587,12 @@
 		<file>pypy2.7-v7.3.22-win64.zip</file>
 		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.22-win64.zip</URL>
 		<zipRootDir>pypy2.7-v7.3.22-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>pypy2.7-v7.3.23-win64</code>
+		<file>pypy2.7-v7.3.23-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy2.7-v7.3.23-win64.zip</URL>
+		<zipRootDir>pypy2.7-v7.3.23-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
 		<code>pypy3.7-v7.3.4-win64</code>
@@ -4658,6 +4799,12 @@
 		<zipRootDir>pypy3.11-v7.3.22-win64</zipRootDir>
 	</version>
 	<version x64="true" webInstall="false" msi="false">
+		<code>pypy3.11-v7.3.23-win64</code>
+		<file>pypy3.11-v7.3.23-win64.zip</file>
+		<URL>https://downloads.python.org/pypy/pypy3.11-v7.3.23-win64.zip</URL>
+		<zipRootDir>pypy3.11-v7.3.23-win64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
 		<code>graalpy-23.1.0-windows-amd64</code>
 		<file>graalpy-23.1.0-windows-amd64.zip</file>
 		<URL>https://github.com/oracle/graalpython/releases/download/graal-23.1.0/graalpy-23.1.0-windows-amd64.zip</URL>
@@ -4746,5 +4893,11 @@
 		<file>graalpy-25.0.2-windows-amd64.zip</file>
 		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.2/graalpy-25.0.2-windows-amd64.zip</URL>
 		<zipRootDir>graalpy-25.0.2-windows-amd64</zipRootDir>
+	</version>
+	<version x64="true" webInstall="false" msi="false">
+		<code>graalpy-25.0.3-windows-amd64</code>
+		<file>graalpy-25.0.3-windows-amd64.zip</file>
+		<URL>https://github.com/oracle/graalpython/releases/download/graal-25.0.3/graalpy-25.0.3-windows-amd64.zip</URL>
+		<zipRootDir>graalpy-25.0.3-windows-amd64</zipRootDir>
 	</version>
 </versions>
