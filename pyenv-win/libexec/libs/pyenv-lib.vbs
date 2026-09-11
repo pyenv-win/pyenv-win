@@ -475,20 +475,30 @@ Function IsRunnableArch(version)
     End If
 End Function
 
-' Append the native architecture postfix to a version code.
+' Append the native architecture postfix to a bare version code. A code that already names
+' an architecture is left alone, so an explicit request survives on any host.
 Function CheckArch(version)
     Dim postfix
-    postfix = GetArchPostfix()
     CheckArch = version
-    If postfix = "" Then Exit Function
-    If Right(LCase(version), Len(postfix)) = postfix Then Exit Function
-    CheckArch = version & postfix
+    If HasArchPostfix(version) Then Exit Function
+    postfix = GetArchPostfix()
+    If postfix <> "" Then CheckArch = version & postfix
+End Function
+
+' Installer filenames use -arm64 while version codes use -arm; accept either from the user.
+Function NormalizeArchPostfix(version)
+    If Right(LCase(version), 6) = "-arm64" Then
+        NormalizeArchPostfix = Left(version, Len(version) - 6) & "-arm"
+    Else
+        NormalizeArchPostfix = version
+    End If
 End Function
 
 ' Like CheckArch, but keeps the bare code when no native build is installed.
 ' ARM64 runs x64 builds under emulation, so those remain valid targets.
-Function CheckArchInstalled(version)
+Function CheckArchInstalled(ByVal version)
     Dim candidate
+    version = NormalizeArchPostfix(version)
     candidate = CheckArch(version)
     If Not IsArm() Then
         CheckArchInstalled = candidate

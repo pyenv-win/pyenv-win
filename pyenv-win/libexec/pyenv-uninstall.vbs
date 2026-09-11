@@ -34,11 +34,13 @@ Sub unregister(version)
     Dim sh, key
     Set sh = CreateObject("WScript.Shell")
     key = "HKCU\SOFTWARE\Python\PythonCore\"& version &"\"
-    ' No problem removing keys that do not exist
+    ' Versions installed without -r were never registered, so ignore any RegDelete errors.
+    On Error Resume Next
     sh.RegDelete key & "InstallPath\"
     sh.RegDelete key & "InstalledFeatures\"
     sh.RegDelete key & "PythonPath\"
     sh.RegDelete key
+    Err.Clear
 End Sub
 
 Sub main(arg)
@@ -100,7 +102,8 @@ Sub main(arg)
         Next
     End If
 
-    If uninstallVersions.Count = 1 Then
+    ' --all enumerates real folder names, so only user-supplied names need resolving.
+    If uninstallVersions.Count = 1 And Not optAll Then
         folder = CheckArchInstalled(uninstallVersions.Keys()(0))
         If Not objfs.FolderExists(strDirVers &"\"& folder) Then
             WScript.Echo "pyenv: version '"& folder &"' not installed"
@@ -114,7 +117,7 @@ Sub main(arg)
 
     On Error Resume Next
     For Each folder In uninstallVersions.Keys
-        folder = CheckArchInstalled(folder)
+        If Not optAll Then folder = CheckArchInstalled(folder)
 
         If Not uninstalled.Exists(folder) Then
             uninstallPath = strDirVers &"\"& folder

@@ -484,18 +484,17 @@ End Function
 ' partial request like "3.11-arm" resolves as prefix "3.11" filtered to the ARM builds.
 ' Returns True when one was found; bare and archPostfix receive the two halves.
 Function ExtractArchPostfix(ByRef bare, ByRef archPostfix)
-    Dim lower, stripped, postfix, found
-    lower = LCase(bare)
+    Dim lower, candidate, stripped, postfix, found
+    candidate = NormalizeArchPostfix(bare)
+    lower = LCase(candidate)
     found = True
 
-    If Right(lower, 6) = "-arm64" Then
-        postfix = "-arm" : stripped = Left(bare, Len(bare) - 6)
-    ElseIf Right(lower, 4) = "-arm" Then
-        postfix = "-arm" : stripped = Left(bare, Len(bare) - 4)
+    If Right(lower, 4) = "-arm" Then
+        postfix = "-arm" : stripped = Left(candidate, Len(candidate) - 4)
     ElseIf Right(lower, 6) = "-win32" Then
-        postfix = "-win32" : stripped = Left(bare, Len(bare) - 6)
+        postfix = "-win32" : stripped = Left(candidate, Len(candidate) - 6)
     ElseIf Right(lower, 6) = "-amd64" Then
-        postfix = "" : stripped = Left(bare, Len(bare) - 6)
+        postfix = "" : stripped = Left(candidate, Len(candidate) - 6)
     Else
         found = False
     End If
