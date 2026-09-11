@@ -131,11 +131,12 @@ Function Main() {
         "-Command `"Microsoft.PowerShell.Archive\Expand-Archive -Path \`"$DownloadPath\`" -DestinationPath \`"$PyEnvDir\`"`""
     ) -NoNewWindow -Wait
 
-    # GitHub names the extracted folder after the ref, with slashes replaced by dashes.
+    # GitHub names the extracted folder "<repo>-<ref>", with slashes replaced by dashes.
+    $RepoName = $Repo.Split("/")[-1]
     $ExtractedDir = Get-ChildItem -Path $PyEnvDir -Directory |
-        Where-Object { $_.Name -like "pyenv-win-*" } | Select-Object -First 1
+        Where-Object { $_.Name -like "${RepoName}-*" } | Select-Object -First 1
     If (-not $ExtractedDir) {
-        Write-Host "Could not find the extracted archive in $PyEnvDir."
+        Write-Host "Could not find an extracted '${RepoName}-*' folder in $PyEnvDir."
         exit 1
     }
     Move-Item -Path "$($ExtractedDir.FullName)\*" -Destination "$PyEnvDir"
