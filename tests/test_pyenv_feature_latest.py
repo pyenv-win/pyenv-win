@@ -60,6 +60,25 @@ def test_latest_arm_falls_back_to_x64(pyenv, current_arch):
     assert pyenv.latest("3.1") == (Arch("3.1.4"), "")
 
 
+@pytest.mark.parametrize('settings', [lambda: {
+        'versions': [X86("3.1.0"), Arch("3.1.4"), Arm("3.1.2")]
+    }])
+def test_latest_partial_prefix_with_arch(pyenv):
+    # A pinned architecture applies to the prefix search, whatever the host is.
+    assert pyenv.latest("3.1-win32") == (X86("3.1.0"), "")
+    assert pyenv.latest("3.1-arm") == (Arm("3.1.2"), "")
+    assert pyenv.latest("3.1-arm64") == (Arm("3.1.2"), "")
+    assert pyenv.latest("3.1-amd64") == (Arch("3.1.4"), "")
+
+
+@pytest.mark.parametrize('settings', [lambda: {
+        'versions': [X86("3.1.0"), Arch("3.1.4")]
+    }])
+def test_latest_pinned_arch_does_not_fall_back(pyenv):
+    # No ARM build is installed, and an explicit request must not silently pick another.
+    assert pyenv.latest("3.1-arm") == ("pyenv-latest: no installed versions match the prefix '3.1-arm'.", "")
+
+
 def test_latest_quiet(pyenv):
     assert pyenv.latest("-q") == ("", "")
     assert pyenv.latest("-q", "-k") == ("", "")

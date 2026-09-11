@@ -480,11 +480,52 @@ Function FindLatestForArch(candidates, prefix, arch)
     End If
 End Function
 
+' Splits a trailing architecture postfix off a user-supplied version reference, so that a
+' partial request like "3.11-arm" resolves as prefix "3.11" filtered to the ARM builds.
+' Returns True when one was found; bare and archPostfix receive the two halves.
+Function ExtractArchPostfix(ByRef bare, ByRef archPostfix)
+    Dim lower, stripped, postfix, found
+    lower = LCase(bare)
+    found = True
+
+    If Right(lower, 6) = "-arm64" Then
+        postfix = "-arm" : stripped = Left(bare, Len(bare) - 6)
+    ElseIf Right(lower, 4) = "-arm" Then
+        postfix = "-arm" : stripped = Left(bare, Len(bare) - 4)
+    ElseIf Right(lower, 6) = "-win32" Then
+        postfix = "-win32" : stripped = Left(bare, Len(bare) - 6)
+    ElseIf Right(lower, 6) = "-amd64" Then
+        postfix = "" : stripped = Left(bare, Len(bare) - 6)
+    Else
+        found = False
+    End If
+
+    ' Only CPython codes carry an architecture postfix; pypy and graalpy codes such as
+    ' "graalpy-24.0.1-windows-amd64" embed those words in the name itself.
+    If found Then found = regexVer.Test(stripped)
+
+    If found Then
+        bare = stripped
+        archPostfix = postfix
+    Else
+        archPostfix = ""
+    End If
+    ExtractArchPostfix = found
+End Function
+
 ' Resolves latest python version by given prefix
 ' known=False to find latest _installed_ version
 ' See `pyenv latest --help`
 Function FindLatestVersion(prefix, known)
     Dim candidates
+    Dim bare
+    Dim explicitArch
+    Dim pinned
+
+    bare = prefix
+    ' An explicitly requested architecture is honoured exactly, with no emulation fallback.
+    pinned = ExtractArchPostfix(bare, explicitArch)
+    If Not pinned Then explicitArch = GetArchPostfix()
 
     if known Then
         Dim cachedVersions
@@ -505,11 +546,12 @@ Function FindLatestVersion(prefix, known)
         candidates = GetInstalledVersions()
     end if
 
-    FindLatestVersion = FindLatestForArch(candidates, prefix, GetArchPostfix())
+    FindLatestVersion = FindLatestForArch(candidates, bare, explicitArch)
+    If pinned Then Exit Function
 
     ' Not every release ships a native ARM64 build; the x64 build runs under emulation.
     If FindLatestVersion = "" And IsArm() Then _
-        FindLatestVersion = FindLatestForArch(candidates, prefix, "")
+        FindLatestVersion = FindLatestForArch(candidates, bare, "")
 End Function
 
 ' Picks the version code to install for the native architecture, given the available cache.
@@ -535,10 +577,6 @@ End Function
 
 Function TryResolveVersion(prefix, known)
     Dim resolved
-
-    ' Installer filenames use -arm64; version codes use -arm. Accept either from the user.
-    If Right(LCase(prefix), 6) = "-arm64" Then _
-        prefix = Left(prefix, Len(prefix) - 6) & "-arm"
 
     resolved = FindLatestVersion(prefix, known)
 
