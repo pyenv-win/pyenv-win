@@ -513,21 +513,32 @@ Function FindLatestVersion(prefix, known)
 End Function
 
 ' Picks the version code to install for the native architecture, given the available cache.
+' Returns "" when the cache entry cannot run on this machine.
 Function ResolveArchCode(version, versions)
     Dim candidate
-    candidate = CheckArch(version)
+    ResolveArchCode = ""
 
+    ' An explicit architecture is honoured as-is, so --32only still works on ARM64.
+    If HasArchPostfix(version) Then
+        If IsRunnableArch(version) Then ResolveArchCode = version
+        Exit Function
+    End If
+
+    candidate = CheckArch(version)
     If versions.Exists(candidate) Then
         ResolveArchCode = candidate
-    ElseIf IsArm() And Not HasArchPostfix(version) Then
+    ElseIf IsRunnableArch(version) Then
+        ' No native build published; the x64 build runs under emulation.
         ResolveArchCode = version
-    Else
-        ResolveArchCode = ""
     End If
 End Function
 
 Function TryResolveVersion(prefix, known)
     Dim resolved
+
+    ' Installer filenames use -arm64; version codes use -arm. Accept either from the user.
+    If Right(LCase(prefix), 6) = "-arm64" Then _
+        prefix = Left(prefix, Len(prefix) - 6) & "-arm"
 
     resolved = FindLatestVersion(prefix, known)
 

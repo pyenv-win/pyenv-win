@@ -460,6 +460,21 @@ Function HasArchPostfix(version)
     HasArchPostfix = (Right(lower, 6) = "-win32") Or (Right(lower, 4) = "-arm")
 End Function
 
+' True when a build with this version code can execute on the current machine.
+' 32-bit runs everywhere (WoW64 on x64, emulation on ARM64) and ARM64 emulates x64,
+' but x64 and ARM64 builds cannot run on x86.
+Function IsRunnableArch(version)
+    Dim lower
+    lower = LCase(version)
+    If Right(lower, 4) = "-arm" Then
+        IsRunnableArch = IsArm()
+    ElseIf Right(lower, 6) = "-win32" Then
+        IsRunnableArch = True
+    Else
+        IsRunnableArch = Not Is32Bit()
+    End If
+End Function
+
 ' Append the native architecture postfix to a version code.
 Function CheckArch(version)
     Dim postfix

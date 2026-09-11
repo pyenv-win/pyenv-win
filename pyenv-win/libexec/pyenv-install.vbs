@@ -416,8 +416,17 @@ Sub main(arg)
         opt64 = False
         optArm = False
     End If
-    If CInt(opt32) + CInt(opt64) + CInt(optArm) < -1 Then
+    Dim archOpts
+    archOpts = 0
+    If opt32 Then archOpts = archOpts + 1
+    If opt64 Then archOpts = archOpts + 1
+    If optArm Then archOpts = archOpts + 1
+    If archOpts > 1 Then
         WScript.Echo "pyenv-install: only one of --32only, --64only or --armonly may be specified."
+        WScript.Quit 1
+    End If
+    If optArm And Not IsArm Then
+        WScript.Echo "pyenv-install: --armonly is only supported on ARM64 Windows."
         WScript.Quit 1
     End If
     If optReg Then
@@ -472,24 +481,28 @@ Sub main(arg)
     End If
 
     If optAll Then
-        ' Add all versions, but only versions runnable on this platform.
-        ' --32only/--64only/--armonly is disabled on 32-bit platforms.
+        ' Add every version this machine can run, honouring an explicit architecture filter.
         installVersions.RemoveAll
         For Each version In versions.Keys
-            version = ResolveArchCode(version, versions)
-            If versions.Exists(version) Then
-                If opt64 Then
-                    If versions(version)(LV_x64) And Not versions(version)(LV_ARM) Then _
-                        installVersions(version) = Empty
-                ElseIf opt32 Then
-                    If Not versions(version)(LV_x64) Then _
-                        installVersions(version) = Empty
-                ElseIf optArm Then
-                    If versions(version)(LV_ARM) Then _
-                        installVersions(version) = Empty
-                Else
-                    installVersions(version) = Empty
+            If opt32 Or opt64 Or optArm Then
+                ' Filter the cache keys directly: resolving to the native build first would
+                ' hide the x64 records behind their -arm counterparts on ARM64.
+                If IsRunnableArch(version) Then
+                    If opt64 Then
+                        If versions(version)(LV_x64) And Not versions(version)(LV_ARM) Then _
+                            installVersions(version) = Empty
+                    ElseIf opt32 Then
+                        If Not versions(version)(LV_x64) Then _
+                            installVersions(version) = Empty
+                    Else
+                        If versions(version)(LV_ARM) Then _
+                            installVersions(version) = Empty
+                    End If
                 End If
+            Else
+                version = ResolveArchCode(version, versions)
+                If versions.Exists(version) Then _
+                    installVersions(version) = Empty
             End If
         Next
     Else
@@ -512,6 +525,10 @@ Sub main(arg)
             WScript.Echo
             WScript.Echo "See all available versions with `pyenv install --list`."
             WScript.Echo "Does the list seem out of date? Update it using `pyenv update`."
+            WScript.Quit 1
+        End If
+        If Not IsRunnableArch(version) Then
+            WScript.Echo "pyenv-install: "& version &" cannot run on "& GetNativeArch() &" Windows."
             WScript.Quit 1
         End If
     Next
