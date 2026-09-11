@@ -453,22 +453,29 @@ Function IsArm()
     IsArm = (GetNativeArch() = "ARM64")
 End Function
 
+' True when a version code names an ARM64 build. CPython codes end in -arm, while the
+' pypy/graalpy archive codes keep their upstream "-windows-aarch64" naming.
+Function IsArmCode(version)
+    Dim lower
+    lower = LCase(version)
+    IsArmCode = (Right(lower, 4) = "-arm") Or (Right(lower, 6) = "-arm64") _
+        Or (Right(lower, 8) = "-aarch64")
+End Function
+
 ' True when the version code already carries an architecture postfix.
 Function HasArchPostfix(version)
     Dim lower
     lower = LCase(version)
-    HasArchPostfix = (Right(lower, 6) = "-win32") Or (Right(lower, 4) = "-arm")
+    HasArchPostfix = (Right(lower, 6) = "-win32") Or IsArmCode(version)
 End Function
 
 ' True when a build with this version code can execute on the current machine.
 ' 32-bit runs everywhere (WoW64 on x64, emulation on ARM64) and ARM64 emulates x64,
 ' but x64 and ARM64 builds cannot run on x86.
 Function IsRunnableArch(version)
-    Dim lower
-    lower = LCase(version)
-    If Right(lower, 4) = "-arm" Then
+    If IsArmCode(version) Then
         IsRunnableArch = IsArm()
-    ElseIf Right(lower, 6) = "-win32" Then
+    ElseIf Right(LCase(version), 6) = "-win32" Then
         IsRunnableArch = True
     Else
         IsRunnableArch = Not Is32Bit()

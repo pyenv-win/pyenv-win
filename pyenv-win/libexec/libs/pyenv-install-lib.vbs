@@ -229,7 +229,7 @@ Function LoadVersionsXML(xmlPath)
             CBool(version.getAttribute("webInstall")), _
             CBool(version.getAttribute("msi")), _
             zipRootDir, _
-            (Right(LCase(code), 4) = "-arm") _
+            IsArmCode(code) _
         )
     Next
 End Function
