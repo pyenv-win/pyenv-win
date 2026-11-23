@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*"
+             Name="pyenv-win"
+             Language="1033"
+             Version="3.1.1"
+             Manufacturer="Kiran Kumar Kotari"
+             UpgradeCode="B30B56A7-77B4-45DB-A6F2-0C1F4B5017B4">
+
+        <Package InstallScope="perUser"
+                 InstallPrivileges="limited"
+                 Compressed="yes"
+                 Description="pyenv-win – Python version management for Windows"
+                 Manufacturer="Kiran Kumar Kotari"
+                 Comments="pyenv-win is licensed under MIT"
+                 Keywords="python;version;management;pyenv"
+                 Platform="x64" />
+
+        <Media Id="1" Cabinet="pyenv.cab" EmbedCab="yes" />
+
+        <Property Id="INSTALLDIR" Secure="yes" />
+        <SetProperty Id="INSTALLDIR"
+                     Value="[%USERPROFILE]\.pyenv\pyenv-win\"
+                     Sequence="both"
+                     Before="CostFinalize" />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="INSTALLDIR">
+                <Directory Id="BIN_DIR" Name="bin">
+                    <Directory Id="WIX_DIR" Name="WiX" />
+                </Directory>
+                <Directory Id="LIBEXEC_DIR" Name="libexec">
+                    <Directory Id="LIBS_DIR" Name="libs" />
+                </Directory>
+                <Directory Id="SHIMS_DIR" Name="shims" />
+                <Directory Id="VERSIONS_DIR" Name="versions" />
+                <Directory Id="INSTALL_CACHE_DIR" Name="install_cache" />
+            </Directory>
+        </Directory>
+
+        <ComponentGroup Id="ProductComponents">
+            <!-- Root pyenv-win files + environment variables -->
+            <Component Id="RootFiles" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890" Directory="INSTALLDIR">
+                <CreateFolder />
+                <File Source="..\pyenv-win\__init__.py" KeyPath="yes" />
+                <File Source="..\pyenv-win\.versions_cache.xml" />
+                <File Source="..\pyenv-win\install-pyenv-win.ps1" />
+                <File Source="..\.version" />
+                <Environment Id="PYENV"
+                             Name="PYENV"
+                             Value="[INSTALLDIR]"
+                             Permanent="no"
+                             System="no"
+                             Action="set"
+                             Part="all" />
+                <Environment Id="PYENV_ROOT"
+                             Name="PYENV_ROOT"
+                             Value="[INSTALLDIR]"
+                             Permanent="no"
+                             System="no"
+                             Action="set"
+                             Part="all" />
+                <Environment Id="PYENV_HOME"
+                             Name="PYENV_HOME"
+                             Value="[INSTALLDIR]"
+                             Permanent="no"
+                             System="no"
+                             Action="set"
+                             Part="all" />
+                <Environment Id="PATH_BIN"
+                             Name="PATH"
+                             Value="[BIN_DIR]"
+                             Permanent="no"
+                             System="no"
+                             Action="set"
+                             Part="first" />
+                <Environment Id="PATH_SHIMS"
+                             Name="PATH"
+                             Value="[SHIMS_DIR]"
+                             Permanent="no"
+                             System="no"
+                             Action="set"
+                             Part="first" />
+            </Component>
+
+            <!-- bin/ -->
+            <Component Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678901" Directory="BIN_DIR">
+                <File Source="..\pyenv-win\bin\pyenv" KeyPath="yes" />
+                <File Source="..\pyenv-win\bin\pyenv.bat" />
+                <File Source="..\pyenv-win\bin\pyenv.ps1" />
+            </Component>
+
+            <!-- bin/WiX/ -->
+            <Component Guid="C3D4E5F6-A7B8-9012-CDEF-123456789012" Directory="WIX_DIR">
+                <File Source="..\pyenv-win\bin\WiX\dark.exe" KeyPath="yes" />
+                <File Source="..\pyenv-win\bin\WiX\dark.exe.config" />
+                <File Source="..\pyenv-win\bin\WiX\LICENSE.TXT" />
+                <File Source="..\pyenv-win\bin\WiX\winterop.dll" />
+                <File Source="..\pyenv-win\bin\WiX\wix.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixDependencyExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixDifxAppExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixDirectXExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixFirewallExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixGamingExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixHttpExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixIIsExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixNetFxExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixSqlExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixUIExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixUtilExtension.dll" />
+                <File Source="..\pyenv-win\bin\WiX\WixVSExtension.dll" />
+            </Component>
+
+            <!-- libexec/ -->
+            <Component Guid="D4E5F6A7-B8C9-0123-DEF1-234567890123" Directory="LIBEXEC_DIR">
+                <File Source="..\pyenv-win\libexec\pyenv---version.bat" KeyPath="yes" />
+                <File Source="..\pyenv-win\libexec\pyenv-commands.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-duplicate.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-exec.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-export.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-global.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-help.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-install.vbs" />
+                <File Source="..\pyenv-win\libexec\pyenv-latest.vbs" />
+                <File Source="..\pyenv-win\libexec\pyenv-local.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-migrate.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-rehash.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-shell.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-shims.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-uninstall.vbs" />
+                <File Source="..\pyenv-win\libexec\pyenv-update.vbs" />
+                <File Source="..\pyenv-win\libexec\pyenv-version-name.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-version.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-versions.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-vname.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-whence.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv-which.bat" />
+                <File Source="..\pyenv-win\libexec\pyenv.vbs" />
+            </Component>
+
+            <!-- libexec/libs/ -->
+            <Component Guid="E5F6A7B8-C9D0-1234-EF12-345678901234" Directory="LIBS_DIR">
+                <File Source="..\pyenv-win\libexec\libs\pyenv-install-lib.vbs" KeyPath="yes" />
+                <File Source="..\pyenv-win\libexec\libs\pyenv-lib.vbs" />
+            </Component>
+
+            <!-- Empty directories (ensure they exist) -->
+            <Component Id="CreateShimsDir" Guid="F6A7B8C9-D0E1-2345-F123-456789012345" Directory="SHIMS_DIR">
+                <CreateFolder />
+                <RemoveFolder Id="RemoveSHIMS_DIR" Directory="SHIMS_DIR" On="uninstall" />
+            </Component>
+            <Component Id="CreateVersionsDir" Guid="A7B8C9D0-E1F2-3456-1234-567890123456" Directory="VERSIONS_DIR">
+                <CreateFolder />
+                <RemoveFolder Id="RemoveVERSIONS_DIR" Directory="VERSIONS_DIR" On="uninstall" />
+            </Component>
+            <Component Id="CreateInstallCacheDir" Guid="B8C9D0E1-F2A3-4567-2345-678901234567" Directory="INSTALL_CACHE_DIR">
+                <CreateFolder />
+                <RemoveFolder Id="RemoveINSTALL_CACHE_DIR" Directory="INSTALL_CACHE_DIR" On="uninstall" />
+            </Component>
+
+        </ComponentGroup>
+
+        <Feature Id="ProductFeature"
+                 Title="pyenv-win"
+                 Description="Python version management for Windows"
+                 Level="1"
+                 Display="expand"
+                 AllowAdvertise="no"
+                 InstallDefault="local"
+                 TypicalDefault="install">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+
+        <UIRef Id="WixUI_InstallDir" />
+        <UIRef Id="WixUI_ErrorProgressText" />
+
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+
+        <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+    </Product>
+</Wix>
