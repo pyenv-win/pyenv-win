@@ -24,7 +24,7 @@ Next
 Sub ShowHelp()
     ' WScript.echo "kkotari: pyenv-install.vbs..!"
     WScript.Echo "Usage: pyenv install [-s] [-f] <version> [<version> ...] [-r|--register]"
-    WScript.Echo "       pyenv install [-f] [--32only|--64only] -a|--all"
+    WScript.Echo "       pyenv install [-f] [--32only|--64only|--armonly] -a|--all"
     WScript.Echo "       pyenv install [-f] -c|--clear"
     WScript.Echo "       pyenv install -l|--list"
     WScript.Echo ""
@@ -36,7 +36,8 @@ Sub ShowHelp()
     WScript.Echo "  -r/--register          Register version for py launcher"
     WScript.Echo "  -q/--quiet             Install using /quiet. This does not show the UI nor does it prompt for inputs"
     WScript.Echo "  --32only               Installs only 32bit Python using -a/--all switch, no effect on 32-bit windows."
-    WScript.Echo "  --64only               Installs only 64bit Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --64only               Installs only 64bit x64 Python using -a/--all switch, no effect on 32-bit windows."
+    WScript.Echo "  --armonly              Installs only ARM64 Python using -a/--all switch, no effect on 32-bit windows."
     WScript.Echo "  --dev                  Installs precompiled standard libraries, debug symbols, and debug binaries (only applies to web installer)."
     WScript.Echo "  --help                 Help, list of options allowed on pyenv install"
     WScript.Echo ""
@@ -217,8 +218,8 @@ Sub registerVersion(version, installPath)
     Set sh = CreateObject("WScript.Shell")
     Set env = sh.Environment("Process")
     Dim arch
-    arch = env("PROCESSOR_ARCHITECTURE")
-    if arch = "x86" Then
+    arch = UCase(env("PROCESSOR_ARCHITECTURE"))
+    if arch = "X86" Then
         WScript.Echo "Python registration not supported in 32 bits"
         Exit Sub
     End If
@@ -236,15 +237,22 @@ Sub registerVersion(version, installPath)
     sysVersion = parts(0) &"."& parts(1)
     featureVersion = parts(0) &"."& parts(1) &"."& parts(2) &".0"
 
-    dim bitDepth, versionAttribute
+    dim sysArch, displayArch, versionAttribute
 
+    ' SysArchitecture values understood by the py launcher: 32bit, 64bit, ARM64.
     If InStr(version, "-win32") Then
-        bitDepth = "32"
+        sysArch = "32bit"
+        displayArch = "32-bit"
         versionAttribute = Replace(version, "-win32", "")
+    ElseIf Right(LCase(version), 4) = "-arm" Then
+        sysArch = "ARM64"
+        displayArch = "ARM64"
+        versionAttribute = Left(version, Len(version) - 4)
     Else
-        bitDepth = "64"
+        sysArch = "64bit"
+        displayArch = "64-bit"
         versionAttribute = version
-    End If     
+    End If
 
     key = "HKCU\SOFTWARE\Python\PythonCore\"
     ' I prefer not overriding default Python registry values (that might already exist)
@@ -253,9 +261,9 @@ Sub registerVersion(version, installPath)
     ' http://www.python.org/
     'sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
     key = key & version &"\"
-    sh.RegWrite key & "DisplayName","Python "& sysVersion &" (" & bitDepth & "-bit)","REG_SZ"
+    sh.RegWrite key & "DisplayName","Python "& sysVersion &" (" & displayArch & ")","REG_SZ"
     sh.RegWrite key & "SupportUrl","https://github.com/pyenv-win/pyenv-win/issues","REG_SZ"
-    sh.RegWrite key & "SysArchitecture",bitDepth & "bit","REG_SZ"
+    sh.RegWrite key & "SysArchitecture",sysArch,"REG_SZ"
     sh.RegWrite key & "SysVersion",sysVersion,"REG_SZ"
     sh.RegWrite key & "Version",versionAttribute,"REG_SZ"
     ' python only (not pypy)
@@ -359,6 +367,7 @@ Sub main(arg)
     Dim optAll
     Dim opt32
     Dim opt64
+    Dim optArm
     Dim optDev
     Dim optReg
     Dim optClear
@@ -371,6 +380,7 @@ Sub main(arg)
     optAll = False
     opt32 = False
     opt64 = False
+    optArm = False
     optDev = False
     optReg = False
     Set installVersions = CreateObject("Scripting.Dictionary")
@@ -392,6 +402,8 @@ Sub main(arg)
             Case "--clear"          optClear = True
             Case "--32only"         opt32 = True
             Case "--64only"         opt64 = True
+            Case "--armonly"        optArm = True
+            Case "--arm64only"      optArm = True
             Case "--dev"            optDev = True
             Case "-r"               optReg = True
             Case "--register"       optReg = True
@@ -402,9 +414,19 @@ Sub main(arg)
     If Is32Bit Then
         opt32 = False
         opt64 = False
+        optArm = False
     End If
-    If opt32 And opt64 Then
-        WScript.Echo "pyenv-install: only --32only or --64only may be specified, not both."
+    Dim archOpts
+    archOpts = 0
+    If opt32 Then archOpts = archOpts + 1
+    If opt64 Then archOpts = archOpts + 1
+    If optArm Then archOpts = archOpts + 1
+    If archOpts > 1 Then
+        WScript.Echo "pyenv-install: only one of --32only, --64only or --armonly may be specified."
+        WScript.Quit 1
+    End If
+    If optArm And Not IsArm Then
+        WScript.Echo "pyenv-install: --armonly is only supported on ARM64 Windows."
         WScript.Quit 1
     End If
     If optReg Then
@@ -459,21 +481,28 @@ Sub main(arg)
     End If
 
     If optAll Then
-        ' Add all versions, but only 32-bit versions for 32-bit platforms.
-        ' --32only/--64only is disabled on 32-bit platforms.
+        ' Add every version this machine can run, honouring an explicit architecture filter.
         installVersions.RemoveAll
         For Each version In versions.Keys
-            version = Check32Bit(version)
-            If versions.Exists(version) Then
-                If opt64 Then
-                    If versions(version)(LV_x64) Then _
-                        installVersions(version) = Empty
-                ElseIf opt32 Then
-                    If Not versions(version)(LV_x64) Then _
-                        installVersions(version) = Empty
-                Else
-                    installVersions(version) = Empty
+            If opt32 Or opt64 Or optArm Then
+                ' Filter the cache keys directly: resolving to the native build first would
+                ' hide the x64 records behind their -arm counterparts on ARM64.
+                If IsRunnableArch(version) Then
+                    If opt64 Then
+                        If versions(version)(LV_x64) And Not versions(version)(LV_ARM) Then _
+                            installVersions(version) = Empty
+                    ElseIf opt32 Then
+                        If Not versions(version)(LV_x64) Then _
+                            installVersions(version) = Empty
+                    Else
+                        If versions(version)(LV_ARM) Then _
+                            installVersions(version) = Empty
+                    End If
                 End If
+            Else
+                version = ResolveArchCode(version, versions)
+                If versions.Exists(version) Then _
+                    installVersions(version) = Empty
             End If
         Next
     Else
@@ -498,6 +527,10 @@ Sub main(arg)
             WScript.Echo "Does the list seem out of date? Update it using `pyenv update`."
             WScript.Quit 1
         End If
+        If Not IsRunnableArch(version) Then
+            WScript.Echo "pyenv-install: "& version &" cannot run on "& GetNativeArch() &" Windows."
+            WScript.Quit 1
+        End If
     Next
 
     Dim verDef
@@ -516,6 +549,7 @@ Sub main(arg)
                 verDef(LV_Web), _
                 verDef(LV_MSI), _
                 verDef(LV_ZipRootDir), _
+                verDef(LV_ARM), _
                 strDirVers &"\"& verDef(LV_Code), _
                 strDirCache &"\"& verDef(LV_FileName), _
                 optQuiet, _

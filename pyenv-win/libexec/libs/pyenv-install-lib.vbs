@@ -37,29 +37,23 @@ Const LV_x64 = 3
 Const LV_Web = 4
 Const LV_MSI = 5
 Const LV_ZipRootDir = 6
-' Const LV_ARM = 7 # need to validate what number is this
+Const LV_ARM = 7
 
 ' Installation parameters used for clear/extract, extension of LV.
-Const IP_InstallPath = 7
-Const IP_InstallFile = 8
-Const IP_Quiet = 9
-Const IP_Dev = 10
+Const IP_InstallPath = 8
+Const IP_InstallFile = 9
+Const IP_Quiet = 10
+Const IP_Dev = 11
 
-Dim regexVer
 Dim regexVerArch
 Dim regexFile
 Dim regexJsonUrl
-Set regexVer = New RegExp
 Set regexVerArch = New RegExp
 Set regexFile = New RegExp
 Set regexJsonUrl = New RegExp
-With regexVer
-    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
-    .Global = True
-    .IgnoreCase = True
-End With
 With regexVerArch
-    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|win32))?$"
+    ' "-arm" is the canonical postfix emitted by JoinWin32String; the others are accepted as user input.
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?([\.-](?:amd64|arm64|arm|win32))?$"
     .Global = True
     .IgnoreCase = True
 End With
@@ -227,7 +221,8 @@ Function LoadVersionsXML(xmlPath)
             CBool(version.getAttribute("x64")), _
             CBool(version.getAttribute("webInstall")), _
             CBool(version.getAttribute("msi")), _
-            zipRootDir _
+            zipRootDir, _
+            IsArmCode(code) _
         )
     Next
 End Function
@@ -441,38 +436,11 @@ Function JoinVersionString(pieces)
     If Len(pieces(VRX_Arch))      Then JoinVersionString = JoinVersionString & pieces(VRX_Arch)
 End Function
 
-' Resolves latest python version by given prefix
-' known=False to find latest _installed_ version
-' See `pyenv latest --help`
-Function FindLatestVersion(prefix, known)
-    Dim candidates
-
-    if known Then
-        Dim cachedVersions
-        Set cachedVersions = LoadVersionsXML(strDBFile)
-
-        Dim cachedVersion
-
-        Dim convertor()
-        ReDim Preserve convertor(-1)
-
-        For Each cachedVersion In cachedVersions.Keys
-            ReDim Preserve convertor(UBound(convertor) + 1)
-            convertor(UBound(convertor)) = cachedVersion
-        Next
-
-        candidates = convertor
-    else
-        candidates = GetInstalledVersions()
-    end if
-
+' Finds the newest candidate matching prefix for exactly one architecture postfix.
+Function FindLatestForArch(candidates, prefix, arch)
     Dim x
     Dim matches
-
     Dim bestMatch
-    Dim arch
-
-    arch = GetArchPostfix()
 
     For x = 0 To UBound(candidates) Step 1
         ' startswith
@@ -498,11 +466,108 @@ Function FindLatestVersion(prefix, known)
         End If
     Next
 
-    if IsEmpty(bestMatch) Then
-        FindLatestVersion = ""
+    If IsEmpty(bestMatch) Then
+        FindLatestForArch = ""
+    Else
+        FindLatestForArch = JoinVersionString(bestMatch)
+    End If
+End Function
+
+' Splits a trailing architecture postfix off a user-supplied version reference, so that a
+' partial request like "3.11-arm" resolves as prefix "3.11" filtered to the ARM builds.
+' Returns True when one was found; bare and archPostfix receive the two halves.
+Function ExtractArchPostfix(ByRef bare, ByRef archPostfix)
+    Dim lower, stripped, postfix, found
+    lower = LCase(bare)
+    found = True
+
+    ' Not NormalizeArchPostfix: that collapses -amd64 to a bare code, which would lose the
+    ' fact that x64 was pinned and let the native postfix be applied instead.
+    If Right(lower, 6) = "-arm64" Then
+        postfix = "-arm" : stripped = Left(bare, Len(bare) - 6)
+    ElseIf Right(lower, 4) = "-arm" Then
+        postfix = "-arm" : stripped = Left(bare, Len(bare) - 4)
+    ElseIf Right(lower, 6) = "-win32" Then
+        postfix = "-win32" : stripped = Left(bare, Len(bare) - 6)
+    ElseIf Right(lower, 6) = "-amd64" Then
+        postfix = "" : stripped = Left(bare, Len(bare) - 6)
+    Else
+        found = False
+    End If
+
+    ' Only CPython codes carry an architecture postfix; pypy and graalpy codes such as
+    ' "graalpy-24.0.1-windows-amd64" embed those words in the name itself.
+    If found Then found = regexVer.Test(stripped)
+
+    If found Then
+        bare = stripped
+        archPostfix = postfix
+    Else
+        archPostfix = ""
+    End If
+    ExtractArchPostfix = found
+End Function
+
+' Resolves latest python version by given prefix
+' known=False to find latest _installed_ version
+' See `pyenv latest --help`
+Function FindLatestVersion(prefix, known)
+    Dim candidates
+    Dim bare
+    Dim explicitArch
+    Dim pinned
+
+    bare = prefix
+    ' An explicitly requested architecture is honoured exactly, with no emulation fallback.
+    pinned = ExtractArchPostfix(bare, explicitArch)
+    If Not pinned Then explicitArch = GetArchPostfix()
+
+    if known Then
+        Dim cachedVersions
+        Set cachedVersions = LoadVersionsXML(strDBFile)
+
+        Dim cachedVersion
+
+        Dim convertor()
+        ReDim Preserve convertor(-1)
+
+        For Each cachedVersion In cachedVersions.Keys
+            ReDim Preserve convertor(UBound(convertor) + 1)
+            convertor(UBound(convertor)) = cachedVersion
+        Next
+
+        candidates = convertor
     else
-        FindLatestVersion = JoinVersionString(bestMatch)
+        candidates = GetInstalledVersions()
     end if
+
+    FindLatestVersion = FindLatestForArch(candidates, bare, explicitArch)
+    If pinned Then Exit Function
+
+    ' Not every release ships a native ARM64 build; the x64 build runs under emulation.
+    If FindLatestVersion = "" And IsArm() Then _
+        FindLatestVersion = FindLatestForArch(candidates, bare, "")
+End Function
+
+' Picks the version code to install for the native architecture, given the available cache.
+' Returns "" when the cache entry cannot run on this machine.
+Function ResolveArchCode(version, versions)
+    Dim candidate
+    ResolveArchCode = ""
+
+    ' An explicit architecture is honoured as-is, so --32only still works on ARM64.
+    If HasArchPostfix(version) Then
+        If IsRunnableArch(version) Then ResolveArchCode = version
+        Exit Function
+    End If
+
+    candidate = CheckArch(version)
+    If versions.Exists(candidate) Then
+        ResolveArchCode = candidate
+    ElseIf IsRunnableArch(version) Then
+        ' No native build published; the x64 build runs under emulation.
+        ResolveArchCode = version
+    End If
 End Function
 
 Function TryResolveVersion(prefix, known)

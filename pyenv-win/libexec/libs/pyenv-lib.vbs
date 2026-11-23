@@ -3,11 +3,20 @@ Option Explicit
 Dim objfs
 Dim objws
 Dim objweb
+Dim regexVer
 
 ' WScript.echo "kkotari: pyenv-lib.vbs..!"
 Set objfs = CreateObject("Scripting.FileSystemObject")
 Set objws = WScript.CreateObject("WScript.Shell")
 Set objweb = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+' A bare CPython version code like 3, 3.11, 3.11.0 or 3.11.0rc1
+Set regexVer = New RegExp
+With regexVer
+    .Pattern = "^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$"
+    .Global = True
+    .IgnoreCase = True
+End With
 
 ' Set proxy settings, called on library import for objweb.
 Sub SetProxy()
@@ -426,30 +435,110 @@ Sub Rehash()
     Next
 End Sub
 
+' SYSTEM:PROCESSOR_ARCHITECTURE is the native architecture of the machine,
+' unaffected by the bitness of the running cscript.exe.
+Function GetNativeArch()
+    GetNativeArch = objws.Environment("Process")("PYENV_FORCE_ARCH")
+    If GetNativeArch = "" Then _
+        GetNativeArch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
+    GetNativeArch = UCase(GetNativeArch)
+End Function
+
+' Postfix used in version codes, matching JoinWin32String in pyenv-install-lib.vbs.
 Function GetArchPostfix()
-    Dim arch
-
-    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
-    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
-
-    If UCase(arch) = "AMD64" Then GetArchPostfix = ""
-    If UCase(arch) = "X86"   Then GetArchPostfix = "-win32"
-    If UCase(arch) = "ARM64" Then GetArchPostfix = "-arm64"  ' NOT TESTED
+    Select Case GetNativeArch()
+        Case "AMD64" GetArchPostfix = ""
+        Case "X86"   GetArchPostfix = "-win32"
+        Case "ARM64" GetArchPostfix = "-arm"
+        Case Else    GetArchPostfix = ""
+    End Select
 End Function
 
-' SYSTEM:PROCESSOR_ARCHITECTURE = AMD64 on 64-bit computers. (even when using 32-bit cmd.exe)
 Function Is32Bit()
-    ' WScript.echo "kkotari: pyenv-lib.vbs is32bit..!"
-    Dim arch
-    arch = objws.Environment("Process")("PYENV_FORCE_ARCH")
-    If arch = "" Then arch = objws.Environment("System")("PROCESSOR_ARCHITECTURE")
-    Is32Bit = (UCase(arch) = "X86")
+    Is32Bit = (GetNativeArch() = "X86")
 End Function
 
-' If on a 32bit computer, default to -win32 versions.
-Function Check32Bit(version)
-    ' WScript.echo "kkotari: pyenv-lib.vbs check32bit..!"
-    If Is32Bit And Right(LCase(version), 6) <> "-win32" Then _
-        version = version & "-win32"
-    Check32Bit = version
+Function IsArm()
+    IsArm = (GetNativeArch() = "ARM64")
+End Function
+
+' True when a version code names an ARM64 build. CPython codes end in -arm, while the
+' pypy/graalpy archive codes keep their upstream "-windows-aarch64" naming.
+Function IsArmCode(version)
+    Dim lower
+    lower = LCase(version)
+    IsArmCode = (Right(lower, 4) = "-arm") Or (Right(lower, 6) = "-arm64") _
+        Or (Right(lower, 8) = "-aarch64")
+End Function
+
+' True when the version code already carries an architecture postfix.
+Function HasArchPostfix(version)
+    Dim lower
+    lower = LCase(version)
+    HasArchPostfix = (Right(lower, 6) = "-win32") Or IsArmCode(version)
+End Function
+
+' True when a build with this version code can execute on the current machine.
+' 32-bit runs everywhere (WoW64 on x64, emulation on ARM64) and ARM64 emulates x64,
+' but x64 and ARM64 builds cannot run on x86.
+Function IsRunnableArch(version)
+    If IsArmCode(version) Then
+        IsRunnableArch = IsArm()
+    ElseIf Right(LCase(version), 6) = "-win32" Then
+        IsRunnableArch = True
+    Else
+        IsRunnableArch = Not Is32Bit()
+    End If
+End Function
+
+' Append the native architecture postfix to a bare version code. A code that already names
+' an architecture is left alone, so an explicit request survives on any host.
+Function CheckArch(version)
+    Dim postfix
+    CheckArch = version
+    If HasArchPostfix(version) Then Exit Function
+    postfix = GetArchPostfix()
+    If postfix <> "" Then CheckArch = version & postfix
+End Function
+
+' Installer filenames can have postfixes like -arm64 and -amd64, while version codes use
+' -arm and a bare name. Accept either spelling, but only for CPython codes: pypy and
+' graalpy archive codes such as graalpy-24.2.0-windows-amd64 remain unchanged.
+Function NormalizeArchPostfix(version)
+    Dim lower, stripped
+    lower = LCase(version)
+    NormalizeArchPostfix = version
+
+    If Right(lower, 6) <> "-arm64" And Right(lower, 6) <> "-amd64" Then Exit Function
+    stripped = Left(version, Len(version) - 6)
+    If Not regexVer.Test(stripped) Then Exit Function
+
+    If Right(lower, 6) = "-arm64" Then
+        NormalizeArchPostfix = stripped & "-arm"
+    Else
+        NormalizeArchPostfix = stripped
+    End If
+End Function
+
+' Like CheckArch, but keeps the bare code when no native build is installed.
+' ARM64 runs x64 builds under emulation, so those remain valid targets.
+Function CheckArchInstalled(ByVal version)
+    Dim candidate
+    Dim normalized
+    normalized = NormalizeArchPostfix(version)
+
+    ' An explicitly named architecture is final; only a bare code prefers the native build.
+    If normalized <> version Or HasArchPostfix(normalized) Then
+        CheckArchInstalled = normalized
+        Exit Function
+    End If
+
+    candidate = CheckArch(normalized)
+    If Not IsArm() Then
+        CheckArchInstalled = candidate
+    ElseIf objfs.FolderExists(strDirVers &"\"& candidate) Then
+        CheckArchInstalled = candidate
+    Else
+        CheckArchInstalled = normalized
+    End If
 End Function

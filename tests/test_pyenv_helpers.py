@@ -126,6 +126,10 @@ def do_run(*args, **kwargs):
     return stdout, stderr
 
 
+# Version code postfix per architecture, matching GetArchPostfix in pyenv-lib.vbs.
+ARCH_POSTFIX = {'AMD64': '', 'X86': '-win32', 'ARM64': '-arm'}
+
+
 class Arch(str):
     version = None
 
@@ -138,10 +142,7 @@ class Arch(str):
 class Native(Arch):
     def __new__(cls, content):
         ver = content
-        if os.environ['PYENV_FORCE_ARCH'] == 'X86':
-            content = content + '-win32'
-        if os.environ['PYENV_FORCE_ARCH'] == 'ARM64':
-            content = content + '-arm64'
+        content = content + ARCH_POSTFIX[os.environ['PYENV_FORCE_ARCH']]
         self = super().__new__(cls, content)
         self.version = ver
         return self
@@ -156,10 +157,15 @@ class X86(Arch):
         return self
 
 
-class Amd64(Arch):
+class Arm(Arch):
     def __new__(cls, content):
         ver = content
-        content = content + '-amd64'
+        content = content + '-arm'
         self = super().__new__(cls, content)
         self.version = ver
         return self
+
+
+class Amd64(Arch):
+    """x64 builds carry no postfix in pyenv version codes."""
+    pass

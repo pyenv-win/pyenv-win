@@ -1,7 +1,7 @@
 import pytest
 
 import os
-from test_pyenv_helpers import Native
+from test_pyenv_helpers import Arch, Native
 
 
 def test_check_pyenv_install_list(pyenv):
@@ -30,6 +30,8 @@ def test_check_pyenv_install_list(pyenv):
     assert "3.9.0" in result
     assert "3.9.1-win32" in result
     assert "3.9.1" in result
+    assert "3.11.0-arm" in result
+    assert "3.12.0-arm" in result
     assert "graalpy" in result
     assert "pypy" in result
 
@@ -43,9 +45,14 @@ def test_check_pyenv_installation():
 def test_patched_venv_module(version, python, arch, pyenv, run, tmp_path):
     if arch != os.environ["PROCESSOR_ARCHITECTURE"]:
         pytest.skip()
-    pyenv.install(Native(version), check=True)
+    # python.org ships native ARM64 builds from 3.11 on; older releases resolve to the emulated x64 build.
+    if arch == 'ARM64' and tuple(int(p) for p in version.split('.')[:2]) < (3, 11):
+        expected = Arch(version)
+    else:
+        expected = Native(version)
+    pyenv.install(expected, check=True)
     pyenv.rehash(check=True)
-    pyenv("global", Native(version), check=True)
+    pyenv("global", expected, check=True)
     pyenv.exec(python, "-m", "venv", str(tmp_path / "venv"), check=True)
     stdout, stderr = run(str(tmp_path / "venv" / "Scripts" / "pip.exe"), "--version")
     assert stderr == "", stdout

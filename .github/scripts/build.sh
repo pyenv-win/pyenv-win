@@ -1,4 +1,5 @@
-export HOME="/d/a/pyenv-win/pyenv-win"
+# The workspace drive differs per runner image (D: on windows-latest, C: on windows-11-arm).
+export HOME="$PWD"
 export PYENV="$HOME/pyenv-win"
 export PYENV_HOME="$HOME/pyenv-win"
 export PYENV_ROOT="$HOME/pyenv-win"
