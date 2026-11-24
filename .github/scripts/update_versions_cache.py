@@ -29,7 +29,7 @@ REGEX_FILE = re.compile(
 )
 
 REGEX_JSON_URL = re.compile(
-    r'"download_url":\s*"(https://[^\s"]+/((?:pypy\d+\.\d+-v|graalpy-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(?:(win64|windows-amd64)|(windows-aarch64))\.zip))"'
+    r'"download_url":\s*"(https://[^\s"]+/((?:pypy\d+\.\d+-v|graalpy(?:\d+\.\d+)?-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(?:(win64|windows-amd64)|(windows-aarch64))\.zip))"'
 )
 
 REGEX_VER = re.compile(r'^(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:([a-z]+)(\d*))?$', re.IGNORECASE)
@@ -178,7 +178,7 @@ def scan_json_releases(mirror_url):
                         continue
                     
                     # Match: graalpy-23.1.0-windows-amd64.zip
-                    match = re.match(r'^(graalpy-(\d+)\.(\d+)\.(\d+)-(windows-amd64|windows-aarch64))\.zip$', name)
+                    match = re.match(r'^(graalpy(?:\d+\.\d+)?-(\d+)\.(\d+)\.(\d+)-(windows-amd64|windows-aarch64))\.zip$', name)
                     if match:
                         zip_root = match.group(1)
                         download_url = asset.get('browser_download_url', '')
@@ -310,7 +310,7 @@ def sort_versions(installers):
             return (impl_type, major, minor, patch, rel_sort[0], rel_sort[1], rel_sort[2], arch_sort, code)
         
         # For pypy/graalpy, extract version numbers
-        numbers = re.findall(r'\d+', code)
+        numbers = re.findall(r'\d+', re.sub(r'^graalpy\d+\.\d+-', 'graalpy-', code))
         return (impl_type,) + tuple(int(n) for n in numbers) + (0, '', 0, 0, code,)
     
     return sorted(installers.items(), key=version_key)

@@ -71,7 +71,7 @@ End With
 With regexJsonUrl
     ' example for graalpy: graalpy-24.0.1-windows-amd64.zip
     ' example for pypy: pypy3.7-v7.3.4-win64.zip
-    .Pattern = "download_url"": ?""(https://[^\s""]+/(((?:pypy\d+\.\d+-v|graalpy-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(win64|windows-amd64)?(windows-aarch64)?).zip))"""
+    .Pattern = "download_url"": ?""(https://[^\s""]+/(((?:pypy\d+\.\d+-v|graalpy(?:\d+\.\d+)?-)(\d+)(?:\.(\d+))?(?:\.(\d+))?-(win64|windows-amd64)?(windows-aarch64)?).zip))"""
     .Global = True
     .IgnoreCase = True
 End With
