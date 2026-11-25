@@ -95,7 +95,20 @@ Currently we support following ways, choose any of your comfort:
 - [Python pip](docs/installation.md#python-pip) - for existing users
 - [Chocolatey](docs/installation.md#chocolatey)
 - [How to use 32-train](docs/installation.md#how-to-use-32-train)
-  - [check announcements](#announcements)
+- [check announcements](#announcements)
+
+To uninstall, open a powershell terminal, go to your pyenv-win folder and execute `install-pyenv-win.ps1 -UNINSTALL`.
+
+```sh
+cd ${env:PYENV_HOME}
+install-pyenv-win.ps1 -UNINSTALL
+```
+
+If you're having issues, you can also try to get the latest script from the repository before executing it. Example for Powershell
+
+```sh
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1" -UNINSTALL
+```
 
 Please see the [Installation](./docs/installation.md) page for more details.
 
