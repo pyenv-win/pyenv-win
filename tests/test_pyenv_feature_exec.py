@@ -46,7 +46,7 @@ def remove_python_exe(pyenv, pyenv_path, settings):
     "command",
     [
         lambda path: [str(path / "bin" / "pyenv.bat"), "exec", "python"],
-        lambda path: [str(path / "shims" / "python.bat")],
+        lambda path: [str(path / "shims" / "python.exe")],
     ],
     ids=["pyenv exec", "python shim"],
 )
@@ -112,7 +112,7 @@ def test_exec_help(args, env, pyenv):
 
 
 def test_path_not_updated(pyenv_path, local_path, env, run):
-    python = str(pyenv_path / "shims" / "python.bat")
+    python = str(pyenv_path / "shims" / "python.exe")
     tmp_bat = str(Path(local_path, "tmp.bat"))
     with open(tmp_bat, "w") as f:
         # must chain commands because env var is lost when cmd ends
