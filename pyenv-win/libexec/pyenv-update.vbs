@@ -31,24 +31,6 @@ Sub ShowHelp()
     WScript.Quit 0
 End Sub
 
-Sub EnsureBaseURL(ByRef html, ByVal URL)
-    Dim head
-    Dim base
-
-    Set head = html.getElementsByTagName("head")(0)
-    If head Is Nothing Then
-        Set head = html.createElement("head")
-        html.insertBefore html.body, head
-    End If
-
-    Set base = head.getElementsByTagName("base")(0)
-    If base Is Nothing Then
-        If Len(URL) And Right(URL, 1) <> "/" Then URL = URL &"/"
-        Set base = html.createElement("base")
-        base.href = URL
-        head.appendChild base
-    End If
-End Sub
 
 Function CollectionToArray(collection) _
     Dim i
@@ -84,8 +66,7 @@ Sub UpdateDictionary(dict1, dict2)
 End Sub
 
 Function ScanForVersions(URL, optIgnore, ByRef pageCount)
-    Dim objHTML
-    Set objHTML = CreateObject("htmlfile")
+    Dim responseText, actualURL
     Set ScanForVersions = CreateObject("Scripting.Dictionary")
 
     With objweb
@@ -104,23 +85,29 @@ Function ScanForVersions(URL, optIgnore, ByRef pageCount)
             WScript.Quit 1
         End If
 
-        objHTML.write .responseText
+        responseText = .responseText
+        actualURL = .Option(1)
         pageCount = pageCount + 1
     End With
-    EnsureBaseURL objHTML, URL
 
-    Dim link
-    Dim fileName
-    Dim matches
-    Dim major, minor, patch, rel
-    For Each link In objHTML.links
-        fileName = Trim(link.innerText)
+    Dim reLink, linkMatches, linkMatch
+    Set reLink = New RegExp
+    reLink.Pattern = "<a\s+[^>]*?href=[""']?([^""' >]+)[""']?[^>]*>([\s\S]*?)</a>"
+    reLink.IgnoreCase = True
+    reLink.Global = True
+
+    Set linkMatches = reLink.Execute(responseText)
+    Dim href, innerText, fileName, matches
+    For Each linkMatch In linkMatches
+        href = ResolveURL(linkMatch.SubMatches(0), actualURL)
+        innerText = StripTags(linkMatch.SubMatches(1))
+        fileName = Trim(innerText)
         Set matches = regexFile.Execute(fileName)
         If matches.Count = 1 Then
             ' Save as a dictionary entry with Key/Value as:
             '  -Key: [filename]
             '  -Value: Array([filename], [url], Array([regex submatches]))
-            ScanForVersions.Add fileName, Array(fileName, link.href, CollectionToArray(matches(0).SubMatches))
+            ScanForVersions.Add fileName, Array(fileName, href, CollectionToArray(matches(0).SubMatches))
         End If
     Next
 End Function
@@ -137,15 +124,20 @@ Sub main(arg)
         End If
     End If
 
-    Dim objHTML
     Dim pageCount
     pageCount = 0
 
     Dim installers1
     Set installers1 = CreateObject("Scripting.Dictionary")
 
+    Dim reLink
+    Set reLink = New RegExp
+    reLink.Pattern = "<a\s+[^>]*?href=[""']?([^""' >]+)[""']?[^>]*>([\s\S]*?)</a>"
+    reLink.IgnoreCase = True
+    reLink.Global = True
+
     For Each mirror In mirrors
-        Set objHTML = CreateObject("htmlfile")
+        Dim responseText, actualURL
         With objweb
             On Error Resume Next
             .Open "GET", mirror, False
@@ -169,18 +161,19 @@ Sub main(arg)
                 WScript.Quit 1
             End If
 
-            objHTML.write .responseText
+            responseText = .responseText
+            actualURL = .Option(1)
             pageCount = pageCount + 1
         End With
-        EnsureBaseURL objHTML, mirror
 
-        Dim link
-        Dim version
-        Dim matches
-        If objHTML.links.Length = 0 Then
+        Dim linkMatches, linkMatch
+        Set linkMatches = reLink.Execute(responseText)
+
+        Dim href, version, matches, innerText, pathname
+        If linkMatches.Count = 0 Then
             ' Assume we're dealing with JSON
+            Set matches = regexJsonUrl.Execute(responseText)
             Dim match
-            Set matches = regexJsonUrl.Execute(objHTML.body.innerHTML)
             For Each match in matches
                 ' we matched: Array([url], [filename], [ziproot], [major], [minor], [patch], [x64], [ARM])
                 ' we need: Array([filename], [url], Array([major], [minor], [patch], [rel], [rel_num], [x64], [ARM], [webinstall], [ext], [ziproot]))
@@ -191,11 +184,15 @@ Sub main(arg)
                 )
             Next
         Else
-            For Each link In objHTML.links
-                version = objfs.GetFileName(link.pathname)
+            For Each linkMatch In linkMatches
+                href = ResolveURL(linkMatch.SubMatches(0), actualURL)
+                innerText = StripTags(linkMatch.SubMatches(1))
+                pathname = GetPathName(href)
+                If Right(pathname, 1) = "/" Then pathname = Left(pathname, Len(pathname) - 1)
+                version = objfs.GetFileName(pathname)
                 Set matches = regexVer.Execute(version)
                 If matches.Count = 1 Then _
-                    UpdateDictionary installers1, ScanForVersions(link.href, optIgnore, pageCount)
+                    UpdateDictionary installers1, ScanForVersions(href, optIgnore, pageCount)
             Next
         End If
     Next
@@ -241,3 +238,66 @@ Sub main(arg)
 End Sub
 
 main(WScript.Arguments)
+
+Function ResolveURL(ByVal relURL, ByVal baseURL)
+    If InStr(1, relURL, "://") > 0 Then
+        ResolveURL = relURL
+        Exit Function
+    End If
+    
+    Dim proto, host, path
+    Dim pos
+    pos = InStr(1, baseURL, "://")
+    If pos > 0 Then
+        proto = Left(baseURL, pos + 2)
+        baseURL = Mid(baseURL, pos + 3)
+    Else
+        proto = "http://"
+    End If
+    
+    pos = InStr(1, baseURL, "/")
+    If pos > 0 Then
+        host = Left(baseURL, pos - 1)
+        path = Mid(baseURL, pos)
+    Else
+        host = baseURL
+        path = "/"
+    End If
+    
+    If Left(relURL, 1) = "/" Then
+        ResolveURL = proto & host & relURL
+    Else
+        Dim lastSlash
+        lastSlash = InStrRev(path, "/")
+        ResolveURL = proto & host & Left(path, lastSlash) & relURL
+    End If
+End Function
+
+Function StripTags(ByVal html)
+    Dim re
+    Set re = New RegExp
+    re.Pattern = "<[^>]*>"
+    re.Global = True
+    html = re.Replace(html, "")
+    html = Replace(html, "&nbsp;", " ")
+    html = Replace(html, "&amp;", "&")
+    html = Replace(html, "&lt;", "<")
+    html = Replace(html, "&gt;", ">")
+    html = Replace(html, "&quot;", """")
+    StripTags = html
+End Function
+
+Function GetPathName(ByVal url)
+    Dim pos
+    pos = InStr(1, url, "://")
+    If pos > 0 Then
+        pos = InStr(pos + 3, url, "/")
+        If pos > 0 Then
+            GetPathName = Mid(url, pos)
+        Else
+            GetPathName = "/"
+        End If
+    Else
+        GetPathName = url
+    End If
+End Function
