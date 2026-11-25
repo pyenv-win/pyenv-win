@@ -1,6 +1,6 @@
 @echo off
 setlocal
-for /f %%v in ('type "%~dp0..\..\.version"') do set "KNOWN_VER=%%v"
+for /f %%v in ('type "%~dp0..\.version"') do set "KNOWN_VER=%%v"
 
 if "%1" == "--help" (
 echo Usage: pyenv --version
@@ -26,7 +26,7 @@ IF "%PYENV%" == "" (
         echo PYENV_HOME variable is not set, recommended to set the variable.
     )
 ) ELSE IF EXIST %PYENV%\..\.version (
-    set version=<"%PYENV%\..\.version"
+    for /f %%v in ('type "%PYENV%\..\.version"') do set "version=%%v"
     IF "%version%" == "" set version=%KNOWN_VER%
 ) ELSE (
     set version=%KNOWN_VER%
